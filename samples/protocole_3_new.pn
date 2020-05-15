@@ -1,0 +1,151 @@
+Module : 3
+
+Places
+Marquage : 2
+     N
+Marquage : 1
+     CM     
+Marquage : 0
+    RM,P
+
+End
+Transitions
+	   full,inc,reset,t1,t2 ;
+End
+Input
+   full [ CM ,P - 2  ]
+   inc  [ N,CM ]
+   reset [ CM  ]
+   t1  [ N - 2,RM ]
+   t2  [ P,RM ]   
+   
+End
+
+Output
+   full [ N - 2,CM  ]
+   inc  [ CM,P ]
+   reset [ RM  ]
+   t1  [ N - 2,CM ]
+   t2  [ RM,N ]   
+End
+
+
+Places
+   Marquage : 1
+      p1,p3,p4,q1
+   Marquage : 0
+      p2,p5,q2,q3
+End
+Transitions
+	   d1o1,d1o2,d0o1,d0o2,r,a0i,a1i,tu1,tu2,a0o0,a0o1,a0o2,a1o0,a1o1,a1o2
+End
+Input
+   d1o1 [ p1,p4  ]
+   d1o2 [ p1,p3  ]
+   d0o1 [ p1,p3  ]
+   d0o2 [ p1,p4  ]
+   r    [ p2 ]
+   a0i [ p5,p3,q1  ]
+   a1i [ p5,p4,q1  ]
+
+
+   tu1 [ q2  ]  
+   a0o0 [ q2  ]  
+   a0o1 [ q2  ]  
+   a0o2 [ q2  ]  
+   a1o0 [ q3  ]
+   a1o1 [ q3  ]  
+   a1o2 [ q3  ]  
+   tu2 [ q3  ]  
+   
+End
+
+Output
+   d1o1 [ p2,p3  ]
+   d1o2 [ p5,p3  ]
+   d0o1 [ p4,p2  ]
+   d0o2 [ p4,p5  ]
+   r    [ p5 ]
+   a0i [ p1,p3,q2  ]
+   a1i [ p1,p4,q3  ]
+
+   tu1  [ q1  ] 
+   a0o0 [ q1  ] 
+   a0o1 [ q1  ]  
+   a0o2 [ q1  ]  
+   a1o0 [ q1  ]  
+   a1o1 [ q1  ]  
+   a1o2 [ q1  ]  
+   tu2  [ q1  ]  
+
+End
+
+Places
+
+Marquage : 1
+     p1,p6,q1     
+Marquage : 0
+    p2,p3,p4,p5,p7,p8,p9,q2,q3
+
+End
+Transitions
+	   full,inc,reset,t3,a0o0,a0o1,a0o2,a1o0,a1o1,a1o2,e,s,ok,d0i,d1i,to1,to2,d0o1,d0o2,d1o1,d1o2
+End
+Input
+   full [ p3  ]
+   inc  [ p3 ]
+   reset [ p9  ]
+  
+   a0o0 [ p1 ]
+   a1o0 [ p1 ]
+   e   [ p2 ]
+   s [ p1 ]
+   ok [ p4 ]
+   t3  [ p7 ]  
+   d0i [ p5,p6,q1 ] 
+   d1i [ p5,p8,q1 ] 
+   a0o1 [ p6,p7 ]
+   a0o2 [ p8,p7 ]
+   a1o1 [ p6,p7 ]
+   a1o2 [ p8,p7 ]
+
+   to1 [ q2  ]  
+   d0o1 [ q2  ]  
+   d0o2 [ q2  ]  
+   d1o1 [ q3  ]  
+   d1o2 [ q3  ]  
+   to2 [ q3  ]  
+End
+
+Output
+   full [ p2  ]
+   inc  [ p5 ]
+   reset [ p4  ]   
+   a0o0 [ p1 ]
+   a1o0 [ p1 ]
+   e   [ p1 ]
+   s [ p3 ]
+   ok   [ p1 ]
+   t3  [ p3 ]   
+   d0i [ p7,p6,q2 ]
+   d1i [ p7,p8,q3 ] 
+   a0o1 [ p6,p7 ]
+   a0o2 [ p6,p9 ]
+   a1o1 [ p9,p8 ]
+   a1o2 [ p8,p7 ]
+
+   to1  [ q1  ]  
+   d0o1 [ q1  ]  
+   d0o2 [ q1  ]  
+
+   d1o1 [ q1  ]  
+   d1o2 [ q1  ]  
+   to2  [ q1  ]
+End
+
+
+
+
+Sync
+      full,inc,reset,a0o0,a0o1,a0o2,a1o0,a1o1,a1o2,d1o1,d1o2,d0o1,d0o2
+End

@@ -1,0 +1,171 @@
+Module : 3
+Places
+	Marquage : 1
+   p1,p7,p13,rp1,rp2,rp3;      
+	Marquage : 0
+   p2,p3,p4,p5,p6,p8,p9,p10,p11,p12,p14,p15,p16,p17,p18;
+End
+Transitions
+	   tp1,tp2,tp3,tp4,tp5,tp7,tp8,tp9,tp10,tp11,tp13,tp14,tp15,tp16,tp17,tq2,tq5 ;
+End
+Input
+   tp1 [ p1  ]
+   tp2  [ p2 ]
+   tp3  [ rp1,p3 ]
+   tp4  [ p4,p5 ]
+   tp5  [ p6 ]
+   
+	 tp7 [ p7  ]
+   tp8  [ rp1,p8 ]
+   tp9  [ rp2,p9 ]
+   tp10  [ p10,p11 ]
+   tp11  [ p12 ]
+
+	 tp13 [ p13  ]
+   tp14  [ rp2,p14 ]
+   tp15  [ rp3,p15 ]
+   tp16  [ p16,p17 ]
+   tp17  [ p18 ]
+
+	 tq2   [ rp3 ]
+End
+
+Output
+	 tp1 [ p2,p3 ]
+   tp2  [ p4 ]
+   tp3  [ p5 ]
+   tp4  [ p6 ]
+   tp5  [ p1,rp1 ]
+   
+	 tp7 [ p8,p9 ]
+   tp8  [ p10 ]
+   tp9  [ p11 ]
+   tp10  [ p12 ]
+   tp11  [ p7,rp1,rp2 ]
+
+	 tp13 [ p14,p15 ]
+   tp14  [ p16 ]
+   tp15  [ p17 ]
+   tp16  [ p18 ]
+   tp17  [ p13,rp2,rp3 ]
+
+	 tq5   [ rp3 ]
+
+End
+
+
+Places
+	Marquage : 1
+   q1,q7,q13,rq1,rq2,rq3;      
+	Marquage : 0
+   q2,q3,q4,q5,q6,q8,q9,q10,q11,q12,q14,q15,q16,q17,q18;
+End
+Transitions
+	   tq1,tq2,tq3,tq4,tq5,tq7,tq8,tq9,tq10,tq11,tq13,tq14,tq15,tq16,tq17,tz2,tz5 ;
+End
+Input
+   tq1 [ q1  ]
+   tq2  [ q2 ]
+   tq3  [ rq1,q3 ]
+   tq4  [ q4,q5 ]
+   tq5  [ q6 ]
+   
+	 tq7 [ q7  ]
+   tq8  [ rq1,q8 ]
+   tq9  [ rq2,q9 ]
+   tq10  [ q10,q11 ]
+   tq11  [ q12 ]
+
+	 tq13 [ q13  ]
+   tq14  [ rq2,q14 ]
+   tq15  [ rq3,q15 ]
+   tq16  [ q16,q17 ]
+   tq17  [ q18 ]
+
+	 tz2   [ rq3 ]
+End
+
+Output
+	 tq1 [ q2,q3 ]
+   tq2  [ q4 ]
+   tq3  [ q5 ]
+   tq4  [ q6 ]
+   tq5  [ q1,rq1 ]
+   
+	 tq7 [ q8,q9 ]
+   tq8  [ q10 ]
+   tq9  [ q11 ]
+   tq10  [ q12 ]
+   tq11  [ q7,rq1,rq2 ]
+
+	 tq13 [ q14,q15 ]
+   tq14  [ q16 ]
+   tq15  [ q17 ]
+   tq16  [ q18 ]
+   tq17  [ q13,rq2,rq3 ]
+
+	 tz5   [ rq3 ]
+
+End
+
+Places
+	Marquage : 1
+   z1,z7,z13,rz1,rz2,rz3;      
+	Marquage : 0
+   z2,z3,z4,z5,z6,z8,z9,z10,z11,z12,z14,z15,z16,z17,z18;
+End
+Transitions
+	   tz1,tz2,tz3,tz4,tz5,tz7,tz8,tz9,tz10,tz11,tz13,tz14,tz15,tz16,tz17,tp2,tp5 ;
+End
+Input
+   tz1 [ z1  ]
+   tz2  [ z2 ]
+   tz3  [ rz1,z3 ]
+   tz4  [ z4,z5 ]
+   tz5  [ z6 ]
+   
+	 tz7 [ z7  ]
+   tz8  [ rz1,z8 ]
+   tz9  [ rz2,z9 ]
+   tz10  [ z10,z11 ]
+   tz11  [ z12 ]
+
+	 tz13 [ z13  ]
+   tz14  [ rz2,z14 ]
+   tz15  [ rz3,z15 ]
+   tz16  [ z16,z17 ]
+   tz17  [ z18 ]
+
+	 tp2   [ rz3 ]
+End
+
+Output
+	 tz1 [ z2,z3 ]
+   tz2  [ z4 ]
+   tz3  [ z5 ]
+   tz4  [ z6 ]
+   tz5  [ z1,rz1 ]
+   
+	 tz7 [ z8,z9 ]
+   tz8  [ z10 ]
+   tz9  [ z11 ]
+   tz10  [ z12 ]
+   tz11  [ z7,rz1,rz2 ]
+
+	 tz13 [ z14,z15 ]
+   tz14  [ z16 ]
+   tz15  [ z17 ]
+   tz16  [ z18 ]
+   tz17  [ z13,rz2,rz3 ]
+
+	 tp5   [ rz3 ]
+
+End
+
+
+
+
+
+Sync
+      tp2,tp5,tq2,tq5,tz2,tz5
+End

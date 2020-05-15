@@ -1,0 +1,155 @@
+Module : 4
+Places
+	Marquage : 1
+   p1,r1,q1,r2;      
+	Marquage : 0
+   p2,p3,p4,p5,p6,q2,q3,q4,q5,q6;
+End
+Transitions
+	   tp1,tp2,tp3,tp4,tp5,tq2,tq5,tq1,tq2,tq3,tq4,tz2,tz5 ;
+End
+Input
+   tp1 [ p1  ]
+   tp2  [ p2 ]
+   tp3  [ r1,p3 ]
+   tp4  [ p4,p5 ]
+   tp5  [ p6 ]
+   tq1 [ q1  ]   
+   tq2  [ r1,q2 ]
+   tq3  [ r2,q3 ]
+   tq4  [ q4,q5 ]
+	 tq5  [ q6 ]   
+   tz2  [ r2 ]
+End
+
+Output
+	 tp1 [ p2,p3 ]
+   tp2  [ p4 ]
+   tp3  [ p5 ]
+   tp4  [ p6 ]
+   tp5  [ p1,r1 ]
+   tq1 [ q2,q3 ]
+   tq2  [ q4 ]
+   tq3  [ q5 ]
+   tq4  [ q6 ]
+   tq5  [ q1,r2,r1 ]
+   tz5  [ r2 ]  
+End
+
+
+Places
+	Marquage : 1
+   z1,rz1,w1,rw2;      
+	Marquage : 0
+   z2,z3,z4,z5,z6,w2,w3,w4,w5,w6;
+End
+Transitions
+	   tz1,tz2,tz3,tz4,tz5,tw2,tw5,tw1,tw2,tw3,tw4,tx2,tx5 ;
+End
+Input
+   tz1 [ z1  ]
+   tz2  [ z2 ]
+   tz3  [ rz1,z3 ]
+   tz4  [ z4,z5 ]
+   tz5  [ z6 ]
+   tw1 [ w1  ]   
+   tw2  [ rz1,w2 ]
+   tw3  [ rw2,w3 ]
+   tw4  [ w4,w5 ]
+	 tw5  [ w6 ]   
+   tx2  [ rw2 ]
+End
+
+Output
+	 tz1 [ z2,z3 ]
+   tz2  [ z4 ]
+   tz3  [ z5 ]
+   tz4  [ z6 ]
+   tz5  [ z1,rz1 ]
+   tw1 [ w2,w3 ]
+   tw2  [ w4 ]
+   tw3  [ w5 ]
+   tw4  [ w6 ]
+   tw5  [ w1,rw2,rz1 ]
+   tx5  [ rw2 ]  
+End
+
+
+Places
+	Marquage : 1
+   x1,rx1,h1,rh2;      
+	Marquage : 0
+   x2,x3,x4,x5,x6,h2,h3,h4,h5,h6;
+End
+Transitions
+	   tx1,tx2,tx3,tx4,tx5,th2,th5,th1,th2,th3,th4,ta2,ta5 ;
+End
+Input
+   tx1 [ x1  ]
+   tx2  [ x2 ]
+   tx3  [ rx1,x3 ]
+   tx4  [ x4,x5 ]
+   tx5  [ x6 ]
+   th1 [ h1  ]   
+   th2  [ rx1,h2 ]
+   th3  [ rh2,h3 ]
+   th4  [ h4,h5 ]
+	 th5  [ h6 ]   
+   ta2  [ rh2 ]
+End
+
+Output
+	 tx1 [ x2,x3 ]
+   tx2  [ x4 ]
+   tx3  [ x5 ]
+   tx4  [ x6 ]
+   tx5  [ x1,rx1 ]
+   th1 [ h2,h3 ]
+   th2  [ h4 ]
+   th3  [ h5 ]
+   th4  [ h6 ]
+   th5  [ h1,rh2,rx1 ]
+   ta5  [ rh2 ]  
+End
+
+
+
+Places
+	Marquage : 1
+   a1,ra1,b1,rb2;      
+	Marquage : 0
+   a2,a3,a4,a5,a6,b2,b3,b4,b5,b6;
+End
+Transitions
+	   ta1,ta2,ta3,ta4,ta5,tb2,tb5,tb1,tb2,tb3,tb4,tp2,tp5 ;
+End
+Input
+   ta1 [ a1  ]
+   ta2  [ a2 ]
+   ta3  [ ra1,a3 ]
+   ta4  [ a4,a5 ]
+   ta5  [ a6 ]
+   tb1 [ b1  ]   
+   tb2  [ ra1,b2 ]
+   tb3  [ rb2,b3 ]
+   tb4  [ b4,b5 ]
+	 tb5  [ b6 ]   
+   tp2  [ rb2 ]
+End
+
+Output
+	 ta1 [ a2,a3 ]
+   ta2  [ a4 ]
+   ta3  [ a5 ]
+   ta4  [ a6 ]
+   ta5  [ a1,ra1 ]
+   tb1 [ b2,b3 ]
+   tb2  [ b4 ]
+   tb3  [ b5 ]
+   tb4  [ b6 ]
+   tb5  [ b1,rb2,ra1 ]
+   tp5  [ rb2 ]  
+End
+Sync
+      tp2,tp5,tz2,tz5,tx2,tx5,ta2,ta5
+End

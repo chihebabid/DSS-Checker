@@ -1,0 +1,148 @@
+Module : 4
+Places
+     Marquage : 2
+     N
+     Marquage : 1
+     CM,p1,p6     
+	Marquage : 0
+    RM,P,p2,p3,p4,p5,p7,p8,p9
+
+End
+Transitions
+	   full,inc,reset,t1,t2,timeout,a0o,a1o,e,s,ok,d0i,d1i ;
+End
+Input
+   full [ CM ,P - 2,p3  ]
+   inc  [ N,CM,p3 ]
+   reset [ CM,p9  ]
+   t1  [ N - 2,RM ]
+   t2  [ P,RM ]   
+   a0o [ p1,p6,p7,p8 ]
+   a1o [ p1,p6,p7,p8 ]
+   e   [ p2 ]
+   s [ p1 ]
+   ok [ p4 ]
+   timeout  [ p7 ]  
+   d0i [ p5,p6 ] 
+   d1i [ p5,p8 ] 
+   
+   
+End
+
+Output
+   full [ N - 2,CM,p2  ]
+   inc  [ CM,P,p5 ]
+   reset [ RM,p4  ]
+   t1  [ N - 2,CM ]
+   t2  [ RM,N ]
+   a0o [ p1,p6,p7,p9 ]
+   a1o [ p1,p7,p8,p9 ]
+   e   [ p1 ]
+   s [ p3 ]
+   ok   [ p1 ]
+   timeout  [ p3 ]   
+   d0i [ p7,p6 ]
+   d1i [ p7,p8 ]    
+End
+
+
+Places
+   Marquage : 1
+      p1,p3,p4
+   Marquage : 0
+      p2,p5
+End
+Transitions
+	   d1o,d0o,r,a0i,a1i
+End
+Input
+   d1o [ p1,p3,p4  ]
+  
+   d0o [ p1,p3,p4  ]
+   
+   r    [ p2 ]
+   a0i [ p5,p3  ]
+   a1i [ p5,p4  ]
+   
+End
+
+Output
+   d1o [ p2,p3,p5  ]
+   
+   d0o [ p4,p2,p5  ]
+   
+   r    [ p5 ]
+   a0i [ p1,p3  ]
+   a1i [ p1,p4  ]
+End
+
+
+Places
+	Marquage : 1
+   p1
+	Marquage : 0
+   p2,p3
+End
+Transitions
+	   d0i,d1i,t1,t2,d0o,d1o
+End
+Input
+   d0i [ p1  ]  
+   t1 [ p2  ]  
+   d0o [ p2  ]  
+    
+   d1o [ p3  ]  
+     
+   t2 [ p3  ]  
+   d1i [ p1  ]  
+End
+
+Output
+   d0i [ p2  ]
+   t1  [ p1  ]  
+   d0o [ p1  ]  
+     
+
+   d1o [ p1  ]  
+     
+   t2  [ p1  ]  
+   d1i [ p3  ]  
+End
+
+
+
+
+Places
+	Marquage : 1
+   p1
+	Marquage : 0
+   p2,p3
+End
+Transitions
+	   a0i,a1i,t1,t2,a0o,a1o
+
+End
+Input
+   a0i [ p1  ]  
+   t1 [ p2  ]  
+   a0o [ p2  ]  
+     
+   a1o [ p3  ]
+     
+
+   t2 [ p3  ]  
+   a1i [ p1  ]  
+End
+
+Output
+   a0i [ p2  ]
+   t1  [ p1  ] 
+   a0o [ p1  ] 
+   a1o [ p1  ]  
+   t2  [ p1  ]  
+   a1i [ p3  ]  
+End
+
+Sync
+      d0i,d1i,a0o,a1o,d1o,d0o,a0i,a1i
+End

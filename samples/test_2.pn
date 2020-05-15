@@ -1,0 +1,44 @@
+Module : 2
+Places
+	Marquage : 1;
+  p1,r
+	Marquage : 0;
+   p2,p3,p4
+End
+Transitions
+	   t1,t2,t3,t4,sync1 ;
+End
+Input   	 
+	 t1 [ p1 ]
+   t2 [ p2  ]
+   t3  [ p3 ]
+   t4  [ p4 ]
+   sync1  [ r ]
+  
+End
+Output
+	 t1 [ p2 ]
+   t2 [ p1  ]
+   t3  [ p4 ]
+   t4  [ p3 ]
+   sync1  [ p3 ]
+   
+End
+Places
+	Marquage : 1;
+   q1
+End
+Transitions
+	   sync1 ;
+End
+Input
+   sync1 [ q1  ]
+   
+End
+Output
+   sync1 [ q1  ]
+  
+End
+Sync
+	sync1
+End

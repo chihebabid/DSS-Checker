@@ -1,0 +1,44 @@
+Module : 2
+Places
+	Marquage : 1;
+   a1
+	Marquage : 0;
+   a2,a3,a4,a5,a6
+End
+Transitions
+	   ta1,ta2,ta3,ta4,ta6,Sync ;
+End
+Input
+   ta1 [ a1  ]
+   ta2  [ a2 ]
+   ta3  [ a2 ]
+   ta4  [ a2 ]
+   ta6  [ a6 ]
+   Sync  [ a5 ]
+
+End
+Output
+	 ta1 [ a2  ]
+   ta2  [ a3 ]
+   ta3  [ a4 ]
+   ta4  [ a5 ]
+   Sync  [ a6 ]
+	 ta6    [ a1 ]
+
+End
+Places
+	Marquage : 1;
+   b1
+End
+Transitions
+	   Sync ;
+End
+Input
+   Sync [ b1  ]
+End
+Output
+   Sync  [ b1 ]
+End
+Sync
+	Sync
+End
