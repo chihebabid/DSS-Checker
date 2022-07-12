@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <spot/misc/version.hh>
 #include <spot/twaalgos/dot.hh>
+#include <CLI11.hpp>
 #include <spot/tl/parse.hh>
 #include <spot/tl/print.hh>
 #include <spot/twaalgos/translate.hh>
@@ -19,16 +20,18 @@
 using namespace std;
 
 int main(int argc, char* argv[]) {
+    CLI::App app{"DSS-Checker : Distributed State Space Checker"};
 
-	char file_name[100]; 
+    string file_name = "";
+    app.add_option("--file", file_name, "Petri net model file")
+            ->type_name("Path")
+            ->required()
+            ->check(CLI::ExistingFile);
+    CLI11_PARSE(app, argc, argv);
+
+
 	CConstructPetriFromFile construire;
-	if (argc == 1) {
-		cout << "Name of file is not specified!" << endl;
-		cout << "Please enter a name of file:" << endl;
-		cin>>file_name;
-		construire.setFileName(file_name);
-	}
-	else construire.setFileName(argv[1]);
+	construire.setFileName(file_name);
 
 	CModularPetriNet* petri = construire.getModularPetrinet();
 	cout << "Petri net information loaded successfully...\n";

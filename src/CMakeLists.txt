@@ -119,4 +119,5 @@ target_link_libraries(distributedstatespace
   spot
   ${MPI_LIBRARIES}
   ${OPENSSL_LIBRARIES}
+        cli11
 )
