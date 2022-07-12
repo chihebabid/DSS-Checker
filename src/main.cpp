@@ -27,6 +27,14 @@ int main(int argc, char* argv[]) {
             ->type_name("Path")
             ->required()
             ->check(CLI::ExistingFile);
+
+    bool dot_output {false};
+    app.add_flag("--dot-output", dot_output, "Save the output graph in a dot file")->group("Print");
+
+    bool txt_output {false};
+    app.add_flag("--txt-output", txt_output, "Save the output graph in a formatted text file")->group("Print");
+
+
     CLI11_PARSE(app, argc, argv);
 
 
@@ -83,21 +91,9 @@ int main(int argc, char* argv[]) {
 	duration = (double) (finish - start) / CLOCKS_PER_SEC;
 	cout << duration << " seconds" << endl;
 
-	do {
-		cout << "\n\n=============== MENU ===============\n" << endl;
-		cout << "1. Write dot file" << endl;
-		cout << "2. Write text file" << endl;
-		cout << "Enter your choice :";
-		cin >> choix;
-	} while (choix == 0 || choix > 3);
-	switch (choix) {
-	case 1:
-		petri->writeToFile("fichier.dot");
-		break;
-	case 2:
-		petri->writeTextFile("fichier.txt");
-		break;
-	}
+	if (dot_output) petri->writeToFile("fichier.dot");
+	if (txt_output) petri->writeTextFile("fichier.txt");
+
 	return 0;
     auto d = spot::make_bdd_dict();
 }
