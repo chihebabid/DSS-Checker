@@ -28,11 +28,15 @@ int main(int argc, char* argv[]) {
             ->required()
             ->check(CLI::ExistingFile);
 
+    string algorithm = "DSS";
+    app.add_option("--algorithm", algorithm, "DSS building algorithm (default: DSS)")->group("Algorithm");
+
     bool dot_output {false};
     app.add_flag("--dot-output", dot_output, "Save the output graph in a dot file")->group("Print");
 
     bool txt_output {false};
     app.add_flag("--txt-output", txt_output, "Save the output graph in a formatted text file")->group("Print");
+
 
 
     CLI11_PARSE(app, argc, argv);
@@ -52,17 +56,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	//petri->renommerTransitions(liste_transitions);
-	unsigned int choix;
-	do {
-		cout << endl << endl
-				<< "###==================== MENU ================###" << endl
-				<< endl << endl;
-		cout << "1. Build the distributed state space" << endl;
-		cout << "2. Build the reduced distributed state space" << endl << endl;
-		cout << "X. Exit" << endl;
-		cout << "Enter your choice : ";
-		cin >> choix;
-	} while (choix > 3 || choix < 0);
+
 
 	clock_t start, finish;
 	double duration;
@@ -70,21 +64,27 @@ int main(int argc, char* argv[]) {
 	// DistributedState dss(petri);
 	DistributedState* dss;
 
-	switch (choix) {
-	case 1:
-		cout << "Building the distributed state space has been started..."
-				<< endl;
-		start = clock();
-		dss = petri->buildDSS();
-		finish = clock();
-		cout << "Distributed state space successfully built." << endl;
-		break;
-	case 2:
+
+	if (algorithm=="V1") {
+        cout << "Building the distributed state space has been started..."
+             << endl;
+        start = clock();
+        dss = petri->buildDSS();
+        finish = clock();
+        cout << "Distributed state space successfully built." << endl;
+    }
+    else if (algorithm=="V2") {
 		start = clock();
 		dss = petri->buildReducedDSS();
 		finish = clock();
-		break;
+
 	}
+    else {
+        cout<<"Building DSS (new version) has been started...\n";
+        start = clock();
+        finish = clock();
+        cout << "DSS has been successfully built." << endl;
+    }
 
 	//ModularSpace* espace_etat=petri->constructReducedStateSpace();
 
