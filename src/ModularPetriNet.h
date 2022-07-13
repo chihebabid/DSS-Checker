@@ -19,6 +19,7 @@
 #include "Operations.h"
 #include "DistributedState.h"
 #include "RElement_dss.h"
+#include "BaseBuilder.h"
 #include <vector>
 
 
@@ -38,8 +39,7 @@ using namespace std;
 //#define ListProductFusion std::vector<Element_dss>
 typedef std::vector<Element_dss> ListProductFusion;
 typedef vector<RElement_dss> RListProductFusion;
-class ModularPetriNet
-{
+class ModularPetriNet : public BaseBuilder {
 public:
     string  getProductSCCName(ProductSCC *pss);
 	void setSync(vector<string> liste_code_transitions);
@@ -73,7 +73,6 @@ private:
 	ModularSpace* m_espace;
 	DistributedState* m_dss;
 	vector<Fusion*> getFusionsFranchissables();
-	vector<PetriNet*> m_modules;
 	vector<Fusion*> m_fusions;
 
 };
