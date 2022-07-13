@@ -1,4 +1,4 @@
-// ModularPetriNet.h: interface for the CModularPetriNet class.
+// ModularPetriNet.h: interface for the ModularPetriNet class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -38,7 +38,7 @@ using namespace std;
 //#define ListProductFusion std::vector<Element_dss>
 typedef std::vector<Element_dss> ListProductFusion;
 typedef vector<RElement_dss> RListProductFusion;
-class CModularPetriNet
+class ModularPetriNet
 {
 public:
     string  getProductSCCName(ProductSCC *pss);
@@ -61,8 +61,8 @@ public:
 	inline int getNbModules() {	return m_modules.size(); }
 	void writeToFile(const string filename);
 	void writeTextFile(const string filename);
-	CModularPetriNet();
-	virtual ~CModularPetriNet();
+	ModularPetriNet();
+	virtual ~ModularPetriNet();
 private:
     void extractEnabledFusionReduced(vector<MetaState*>& list_ms,vector<RElement_dss> &list_elt);
 	vector<NodeSGSimplified>* calculerProduitSynchronises(vector<ListMarqLoc> &list);

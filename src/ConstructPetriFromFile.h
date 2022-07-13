@@ -12,7 +12,7 @@
 class CConstructPetriFromFile
 {
 public:
-	CModularPetriNet* getModularPetrinet();
+	ModularPetriNet* getModularPetrinet();
 	void setFileName(const string name);
     string getFileName();
 	CConstructPetriFromFile();

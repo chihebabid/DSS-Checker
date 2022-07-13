@@ -7,7 +7,7 @@
 
 #include "DistributedState.h"
 
-DistributedState::DistributedState(CModularPetriNet *petri)
+DistributedState::DistributedState(ModularPetriNet *petri)
 {
 	m_petri=petri;
 

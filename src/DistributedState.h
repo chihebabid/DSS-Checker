@@ -9,19 +9,19 @@
 #define DISTRIBUTEDSTATE_H_
 #include "MetaState.h"
 #include "MetaGraph.h"
-class CModularPetriNet;
+class ModularPetriNet;
 class DistributedState {
     public:
         void build();
         MetaGraph* getMetaGraph ( const int index );
-        DistributedState ( CModularPetriNet* petri );
+        DistributedState (ModularPetriNet* petri );
         void setNombreModules ( const int n );
         void addMetaState ( MetaState* ms, int module );
         virtual ~DistributedState();
         vector<Marking*>* getLocalStates ( ProductSCC* productscc,const int module );
 
     private:
-        CModularPetriNet* m_petri;
+        ModularPetriNet* m_petri;
         vector<MetaGraph*> ml_metagraph;
 
     };

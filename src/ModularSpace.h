@@ -11,7 +11,7 @@
 #include "Automata.h"
 #include "ModularPetriNet.h"
 #include "NodeSGSimplified.h"
-class CModularPetriNet;
+class ModularPetriNet;
 class Automata;
 class ModularSpace
 {
@@ -24,7 +24,7 @@ public:
 	void setGrapheSync(GrapheSync* graphe);
 	void display(int choix, int i);
 
-	void setParent(CModularPetriNet* petri);
+	void setParent(ModularPetriNet* petri);
 	Automata* getEspaceLocal(const int index);
 	void addGrapheSync(GrapheSync* graphe);
 	void setNbModules(const int n);
@@ -43,7 +43,7 @@ private:
 
 
 
-	CModularPetriNet* m_petri;
+	ModularPetriNet* m_petri;
 	vector<Automata*> m_automates;
 	GrapheSync* m_graphe_sync;
 

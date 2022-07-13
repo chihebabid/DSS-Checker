@@ -28,16 +28,16 @@ void CConstructPetriFromFile::setFileName(const string name)
 string CConstructPetriFromFile::getFileName() {
     return m_nom_fichier;
 }
-CModularPetriNet* CConstructPetriFromFile::getModularPetrinet()
+ModularPetriNet* CConstructPetriFromFile::getModularPetrinet()
 {
-	CModularPetriNet* MPetri=NULL;
+	ModularPetriNet* MPetri=NULL;
 
 	
 	fp=fopen(m_nom_fichier.c_str(),"r");
 	if (fp) {
 		//Cr�er le r�seau de Petri
 		cout<<"Loading modular Petri net from file..."<<endl;
-		MPetri=new CModularPetriNet;
+		MPetri=new ModularPetriNet;
 		//Lecture de nombre de modules
 		unsigned int nb_modules=0;
 		string mot;

@@ -94,7 +94,7 @@ Automata* ModularSpace::getEspaceLocal(const int index)
 
 
 
-void ModularSpace::setParent(CModularPetriNet *petri)
+void ModularSpace::setParent(ModularPetriNet *petri)
 {
 	m_petri=petri;
 }

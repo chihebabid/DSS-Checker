@@ -1,4 +1,4 @@
-// ModularPetriNet.cpp: implementation of the CModularPetriNet class.
+// ModularPetriNet.cpp: implementation of the ModularPetriNet class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -13,14 +13,14 @@ Marking MARQUAGE_VIDE;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-CModularPetriNet::CModularPetriNet() {
+ModularPetriNet::ModularPetriNet() {
 	MARQUAGE_VIDE.setVide(true);
 	m_espace = NULL;
 	m_graphe_sync = NULL;
 	m_dss = NULL;
 }
 
-CModularPetriNet::~CModularPetriNet() {
+ModularPetriNet::~ModularPetriNet() {
 	for (int i = 0; i < m_modules.size(); i++)
 		delete m_modules[i];
 	m_modules.clear();
@@ -29,15 +29,15 @@ CModularPetriNet::~CModularPetriNet() {
 	m_fusions.clear();
 }
 
-PetriNet* CModularPetriNet::getModule(const int index) {
+PetriNet* ModularPetriNet::getModule(const int index) {
 	return m_modules[index];
 }
 
-void CModularPetriNet::addModule(PetriNet* petri) {
+void ModularPetriNet::addModule(PetriNet* petri) {
 	m_modules.push_back(petri);
 }
 
-void CModularPetriNet::addSync(const string transition_name) {
+void ModularPetriNet::addSync(const string transition_name) {
 	PetriNet* petri;
 	Fusion* fusion = new Fusion();
 	fusion->setName(transition_name);
@@ -53,20 +53,20 @@ void CModularPetriNet::addSync(const string transition_name) {
 	m_fusions.push_back(fusion);
 }
 
-void CModularPetriNet::setSync(vector<string> liste_code_transitions) {
+void ModularPetriNet::setSync(vector<string> liste_code_transitions) {
 	for (int i = 0; i < liste_code_transitions.size(); i++)
 		addSync(liste_code_transitions[i]);
 }
 
-int CModularPetriNet::getCountFusions() {
+int ModularPetriNet::getCountFusions() {
 	return m_fusions.size();
 }
 
-Fusion* CModularPetriNet::getFusion(const int index) {
+Fusion* ModularPetriNet::getFusion(const int index) {
 	return m_fusions[index];
 }
 
-vector<Fusion*> CModularPetriNet::getFusionsFranchissables() {
+vector<Fusion*> ModularPetriNet::getFusionsFranchissables() {
 	vector<Fusion*> liste;
 	for (int i = 0; i < m_fusions.size(); i++) {
 		if (m_fusions[i]->isFranchissable())
@@ -75,7 +75,7 @@ vector<Fusion*> CModularPetriNet::getFusionsFranchissables() {
 	return liste;
 }
 
-void CModularPetriNet::printMarquage() {
+void ModularPetriNet::printMarquage() {
 	for (int i = 0; i < getNbModules(); i++) {
 		m_modules[i]->printMarquage();
 	}
@@ -88,7 +88,7 @@ void CModularPetriNet::printMarquage() {
 ////////////////////////////////////////////////////////////////////////////////////
 // Renommer les transitions internes � l'exception de celles pass�es en param�tre //
 ////////////////////////////////////////////////////////////////////////////////////
-void CModularPetriNet::renommerTransitions(vectorString liste_transitions) {
+void ModularPetriNet::renommerTransitions(vectorString liste_transitions) {
 	for (int i = 0; i < m_modules.size(); i++)
 		m_modules.at(i)->renommerTransitions(liste_transitions);
 }
@@ -96,8 +96,8 @@ void CModularPetriNet::renommerTransitions(vectorString liste_transitions) {
 //////////////////////////////////////////
 // R�duire le nom d'un marquage global
 /////////////////////////////////////
-void CModularPetriNet::reduceMarquageName(NodeSG* marquage_global_depart,
-		Fusion *fusion) {
+void ModularPetriNet::reduceMarquageName(NodeSG* marquage_global_depart,
+                                         Fusion *fusion) {
 	for (int i = 0; i < getNbModules(); i++) {
 		if (!fusion->participate(i)) {
 			marquage_global_depart->setVide(i);
@@ -107,13 +107,13 @@ void CModularPetriNet::reduceMarquageName(NodeSG* marquage_global_depart,
 ///////////////////////////////////////////////////////////////////////
 // Retourner le marquage courant � un module
 ///////////////////////////////////////////////////////////////////////
-Marking CModularPetriNet::getMarquageModule(const int index) {
+Marking ModularPetriNet::getMarquageModule(const int index) {
 	return m_modules[index]->getMarquage();
 }
 ///////////////////////////////////////////////////////////////////////////
 // Une nouvelle version de la construction du graphe de synchronisation
 ///////////////////////////////////////////////////////////////////////////
-void CModularPetriNet::constructSync2() {
+void ModularPetriNet::constructSync2() {
 	m_espace->setGrapheSync(m_graphe_sync);
 	// Contient les marquages locaux obtenus � partir des espaces locaux
 	vector<ListMarqLoc*> list_marq_locaux;
@@ -218,7 +218,7 @@ void CModularPetriNet::constructSync2() {
 /////////////////////////////////////////////////////////////
 // Calcul du produit synchronis� d'un ensemble de marq locaux
 //////////////////////////////////////////////////////////////
-vector<NodeSGSimplified>* CModularPetriNet::calculerProduitSynchronises(
+vector<NodeSGSimplified>* ModularPetriNet::calculerProduitSynchronises(
 		vector<ListMarqLoc> &liste) {
 	vector<int> indices;
 	indices.resize(getNbModules());
@@ -259,8 +259,8 @@ vector<NodeSGSimplified>* CModularPetriNet::calculerProduitSynchronises(
 	return myliste;
 }
 
-void CModularPetriNet::extractionFusion(vector<ListMarqLoc*>& liste_,
-		NodeSG* node) {
+void ModularPetriNet::extractionFusion(vector<ListMarqLoc*>& liste_,
+                                       NodeSG* node) {
 
 	vector<int> indices;
 	indices.resize(getNbModules());
@@ -331,7 +331,7 @@ void CModularPetriNet::extractionFusion(vector<ListMarqLoc*>& liste_,
 
 }
 
-ModularSpace* CModularPetriNet::constructReducedStateSpace() {
+ModularSpace* ModularPetriNet::constructReducedStateSpace() {
 	m_graphe_sync = new GrapheSync();
 	m_espace = new ModularSpace();
 	m_espace->setParent(this);
@@ -370,7 +370,7 @@ ModularSpace* CModularPetriNet::constructReducedStateSpace() {
 
 }
 
-DistributedState* CModularPetriNet::buildReducedDSS() {
+DistributedState* ModularPetriNet::buildReducedDSS() {
 	m_dss = new DistributedState(this);
 	m_dss->setNombreModules(getNbModules());
 
@@ -512,7 +512,7 @@ DistributedState* CModularPetriNet::buildReducedDSS() {
 	return m_dss;
 }
 
-DistributedState* CModularPetriNet::buildDSS() {
+DistributedState* ModularPetriNet::buildDSS() {
 	m_dss = new DistributedState(this);
 	m_dss->setNombreModules(getNbModules());
 
@@ -653,8 +653,8 @@ DistributedState* CModularPetriNet::buildDSS() {
 	return m_dss;
 }
 
-void CModularPetriNet::extractEnabledFusionReduced(vector<MetaState*>& list_ms,
-		vector<RElement_dss> &list_elt) {
+void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState*>& list_ms,
+                                                  vector<RElement_dss> &list_elt) {
 	vector<ListLocalStates> states_enabling_fusion;
 
 	for (int index_fusion=0; index_fusion<m_fusions.size(); index_fusion++)
@@ -732,8 +732,8 @@ void CModularPetriNet::extractEnabledFusionReduced(vector<MetaState*>& list_ms,
 
 }
 
-void CModularPetriNet::extractEnabledFusion(ProductSCC* product,
-		vector<Element_dss> &list_elt) {
+void ModularPetriNet::extractEnabledFusion(ProductSCC* product,
+                                           vector<Element_dss> &list_elt) {
 	vector<ListLocalStates> states_enabling_fusion;
 
 	for (int index_fusion=0; index_fusion<m_fusions.size(); index_fusion++)
@@ -810,7 +810,7 @@ void CModularPetriNet::extractEnabledFusion(ProductSCC* product,
 	}
 }
 
-ListGlobalStates CModularPetriNet::computeSychronisedProduct(vector<ListLocalStates> &states_enabling_fusion)
+ListGlobalStates ModularPetriNet::computeSychronisedProduct(vector<ListLocalStates> &states_enabling_fusion)
 {
 	vector<int> indices;
 	indices.resize(getNbModules());
@@ -853,7 +853,7 @@ ListGlobalStates CModularPetriNet::computeSychronisedProduct(vector<ListLocalSta
 	return myliste;
 
 }
-void CModularPetriNet::writeToFile(const string filename) {
+void ModularPetriNet::writeToFile(const string filename) {
 	std::ofstream myfile;
 	myfile.open(filename);
 	myfile << "digraph " << "fichier " << "{" << endl;
@@ -908,7 +908,7 @@ void CModularPetriNet::writeToFile(const string filename) {
 	myfile.close();
 }
 
-string CModularPetriNet::getProductSCCName(ProductSCC *pss) {
+string ModularPetriNet::getProductSCCName(ProductSCC *pss) {
 	string res = "";
 	for (int module = 0; module < getNbModules(); module++) {
 		PetriNet *petri = m_modules.at(module);
@@ -917,7 +917,7 @@ string CModularPetriNet::getProductSCCName(ProductSCC *pss) {
 	return res;
 }
 
-void CModularPetriNet::writeTextFile(const string filename) {
+void ModularPetriNet::writeTextFile(const string filename) {
 	std::ofstream myfile;
 	myfile.open(filename);
     
