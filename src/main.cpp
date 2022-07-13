@@ -80,6 +80,7 @@ int main(int argc, char *argv[]) {
         cout << "Building DSS (new version) has been started...\n";
         DSSBuilder builder(petri);
         start = clock();
+        builder.build();
         finish = clock();
         cout << "DSS has been successfully built." << endl;
     }

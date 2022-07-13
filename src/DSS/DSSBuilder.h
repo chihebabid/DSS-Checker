@@ -12,6 +12,7 @@ public:
     DSSBuilder(ModularPetriNet *ptr);
     void build();
 private:
+    void buildInitialMS();
     ModularPetriNet *mptrMPNet;
     vector<ModuleSS*> mlModuleSS;
 };
