@@ -4,10 +4,14 @@
 
 #ifndef DISTRIBUTEDSTATESPACE_MODULESS_H
 #define DISTRIBUTEDSTATESPACE_MODULESS_H
-
+#include "MetaState.h"
 
 class ModuleSS {
-
+public:
+    MetaState* getInitialMS();
+    bool insertMS(MetaState *ms);
+private:
+    vector<MetaState*> mlMS;
 };
 
 
