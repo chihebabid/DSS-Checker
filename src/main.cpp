@@ -14,6 +14,7 @@
 #include <spot/ta/taproduct.hh>
 #include <spot/twa/twaproduct.hh>
 #include <spot/twaalgos/gtec/gtec.hh>
+#include "DSS/DSSBuilder.h"
 
 
 using namespace std;
@@ -41,7 +42,12 @@ int main(int argc, char *argv[]) {
     CConstructPetriFromFile construire;
     construire.setFileName(file_name);
 
-    ModularPetriNet *petri = construire.getModularPetrinet();
+    ModularPetriNet *petri;
+    DSSBuilder *builder;
+    if (algorithm=="DSS") cout<<"";
+        //builder=construire.getModularPetrinet();
+        else
+        petri= construire.getModularPetrinet();
     cout << "Petri net information loaded successfully...\n";
     cout << "Petri net built from file : " << construire.getFileName() << endl;
 
