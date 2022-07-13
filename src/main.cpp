@@ -39,15 +39,12 @@ int main(int argc, char *argv[]) {
 
     CLI11_PARSE(app, argc, argv);
 
-    CConstructPetriFromFile construire;
+    ConstructPetriFromFile construire;
     construire.setFileName(file_name);
 
     ModularPetriNet *petri;
-    DSSBuilder *builder;
-    if (algorithm=="DSS") cout<<"";
-        //builder=construire.getModularPetrinet();
-        else
-        petri= construire.getModularPetrinet();
+
+    petri= construire.getModularPetrinet();
     cout << "Petri net information loaded successfully...\n";
     cout << "Petri net built from file : " << construire.getFileName() << endl;
 
@@ -81,6 +78,7 @@ int main(int argc, char *argv[]) {
 
     } else {
         cout << "Building DSS (new version) has been started...\n";
+        DSSBuilder builder(petri);
         start = clock();
         finish = clock();
         cout << "DSS has been successfully built." << endl;

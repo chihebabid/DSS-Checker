@@ -1,4 +1,4 @@
-// ConstructPetriFromFile.cpp: implementation of the CConstructPetriFromFile class.
+// ConstructPetriFromFile.cpp: implementation of the ConstructPetriFromFile class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -10,25 +10,25 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CConstructPetriFromFile::CConstructPetriFromFile()
+ConstructPetriFromFile::ConstructPetriFromFile()
 {
 	fp=NULL;
 }
 
-CConstructPetriFromFile::~CConstructPetriFromFile()
+ConstructPetriFromFile::~ConstructPetriFromFile()
 {
 	
 	
 }
 
-void CConstructPetriFromFile::setFileName(const string name)
+void ConstructPetriFromFile::setFileName(const string name)
 {
 	m_nom_fichier=name;
 }
-string CConstructPetriFromFile::getFileName() {
+string ConstructPetriFromFile::getFileName() {
     return m_nom_fichier;
 }
-ModularPetriNet* CConstructPetriFromFile::getModularPetrinet()
+ModularPetriNet* ConstructPetriFromFile::getModularPetrinet()
 {
 	ModularPetriNet* MPetri=NULL;
 
@@ -213,7 +213,7 @@ ModularPetriNet* CConstructPetriFromFile::getModularPetrinet()
 
 
 
-string CConstructPetriFromFile::getNextWord()
+string ConstructPetriFromFile::getNextWord()
 {
 	string separateur=",;(:)";
 	string chaine;

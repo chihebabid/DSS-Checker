@@ -281,7 +281,7 @@ string PetriNet::getMarquageName(Marking marquage)
 	for (int j=0;j<getPlacesCount();j++) {
 		if (marquage.get8BitsValue(j)!=0) {
 			if (marquage.get8BitsValue(j)!=1) {
-				sprintf(chaine,"%d\0",(int)marquage.get8BitsValue(j));
+				sprintf(chaine,"%d",(int)marquage.get8BitsValue(j));
 				resultat+=chaine;
 			}
 			resultat+=getPlace(j).getName();

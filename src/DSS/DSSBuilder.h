@@ -4,12 +4,16 @@
 
 #ifndef DISTRIBUTEDSTATESPACE_DSSBUILDER_H
 #define DISTRIBUTEDSTATESPACE_DSSBUILDER_H
-#include "BaseBuilder.h"
+#include "ModularPetriNet.h"
+#include "ModuleSS.h"
 
-class DSSBuilder : public BaseBuilder {
+class DSSBuilder {
 public:
+    DSSBuilder(ModularPetriNet *ptr);
+    void build();
 private:
-
+    ModularPetriNet *mptrMPNet;
+    vector<ModuleSS*> mlModuleSS;
 };
 
 

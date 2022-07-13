@@ -1,0 +1,14 @@
+//
+// Created by chiheb on 13/07/22.
+//
+
+#ifndef DISTRIBUTEDSTATESPACE_MODULESS_H
+#define DISTRIBUTEDSTATESPACE_MODULESS_H
+
+
+class ModuleSS {
+
+};
+
+
+#endif //DISTRIBUTEDSTATESPACE_MODULESS_H

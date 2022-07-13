@@ -1,4 +1,4 @@
-// ConstructPetriFromFile.h: interface for the CConstructPetriFromFile class.
+// ConstructPetriFromFile.h: interface for the ConstructPetriFromFile class.
 //
 //////////////////////////////////////////////////////////////////////
 
@@ -9,14 +9,14 @@
 #pragma once
 #endif // _MSC_VER > 1000
 #include "ModularPetriNet.h"
-class CConstructPetriFromFile
+class ConstructPetriFromFile
 {
 public:
 	ModularPetriNet* getModularPetrinet();
 	void setFileName(const string name);
     string getFileName();
-	CConstructPetriFromFile();
-	virtual ~CConstructPetriFromFile();
+	ConstructPetriFromFile();
+	virtual ~ConstructPetriFromFile();
 private:
 	string getNextWord();
 	FILE* fp;

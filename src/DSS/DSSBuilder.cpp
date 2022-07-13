@@ -3,3 +3,12 @@
 //
 
 #include "DSSBuilder.h"
+
+DSSBuilder::DSSBuilder(ModularPetriNet *ptr):mptrMPNet(ptr) {}
+
+/*
+ * Build the DSS
+ */
+void DSSBuilder::build() {
+
+}

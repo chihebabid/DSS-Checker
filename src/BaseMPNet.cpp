@@ -2,14 +2,14 @@
 // Created by chiheb on 13/07/22.
 //
 
-#include "BaseBuilder.h"
+#include "BaseMPNet.h"
 
 
-PetriNet* BaseBuilder::getModule(const int index) {
+PetriNet* BaseMPNet::getModule(const int index) {
     return m_modules[index];
 }
 
-BaseBuilder::~BaseBuilder() {
+BaseMPNet::~BaseMPNet() {
     for (const auto & elt : m_modules)
         delete elt;
 }
