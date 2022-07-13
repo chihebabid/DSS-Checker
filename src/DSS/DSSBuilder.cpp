@@ -29,9 +29,10 @@ void DSSBuilder::buildInitialMS() {
     vector<MetaState*> list_metatstates;
     for (int module = 0; module < mptrMPNet->getNbModules(); ++module) {
         ms = new MetaState();
-        /*StateGraph *state_graph = m_modules[module]->getStateGraph(
-                m_modules[module]->getMarquage());
-        state_graph->setID(module);
+
+        StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(
+                mptrMPNet->getModule(module)->getMarquage());
+        /*state_graph->setID(module);
         ms->setStateGraph(state_graph);
         m_dss->addMetaState(ms, module);
         //m_modules[module]->printMetaStateEx(ms);
