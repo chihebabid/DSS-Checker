@@ -7,6 +7,9 @@
 #include "PetriNet.h"
 
 class BaseBuilder {
+public:
+    PetriNet* getModule(const int index);
+    ~BaseBuilder();
 protected:
     vector<PetriNet*> m_modules;
 

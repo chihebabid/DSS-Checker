@@ -15,23 +15,18 @@ Marking MARQUAGE_VIDE;
 //////////////////////////////////////////////////////////////////////
 ModularPetriNet::ModularPetriNet() {
 	MARQUAGE_VIDE.setVide(true);
-	m_espace = NULL;
-	m_graphe_sync = NULL;
-	m_dss = NULL;
+	m_espace = nullptr;
+	m_graphe_sync = nullptr;
+	m_dss = nullptr;
 }
 
 ModularPetriNet::~ModularPetriNet() {
-	for (int i = 0; i < m_modules.size(); i++)
-		delete m_modules[i];
-	m_modules.clear();
 	for (int i = 0; i < m_fusions.size(); i++)
 		delete m_fusions[i];
 	m_fusions.clear();
 }
 
-PetriNet* ModularPetriNet::getModule(const int index) {
-	return m_modules[index];
-}
+
 
 void ModularPetriNet::addModule(PetriNet* petri) {
 	m_modules.push_back(petri);
@@ -323,7 +318,7 @@ void ModularPetriNet::extractionFusion(vector<ListMarqLoc*>& liste_,
 			vector<NodeSGSimplified>* liste_node = calculerProduitSynchronises(
 					liste_marq_locaux);
 			for (unsigned int i = 0; i < liste_node->size(); i++) {
-				node->addArc(liste_node->at(i), fusion, NULL);
+				node->addArc(liste_node->at(i), fusion, nullptr);
 			}
 
 		}

@@ -55,9 +55,7 @@ public:
 	Fusion* getFusion(const int index);
 	int getCountFusions();
 	void addSync(const string transition_name);
-
 	void addModule(PetriNet* petri);
-	PetriNet* getModule(const int index);
 	inline int getNbModules() {	return m_modules.size(); }
 	void writeToFile(const string filename);
 	void writeTextFile(const string filename);
