@@ -32,11 +32,10 @@ void DSSBuilder::buildInitialMS() {
 
         StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(
                 mptrMPNet->getModule(module)->getMarquage());
-        /*state_graph->setID(module);
+        state_graph->setID(module);
         ms->setStateGraph(state_graph);
-        m_dss->addMetaState(ms, module);
-        //m_modules[module]->printMetaStateEx(ms);
-        list_metatstates.push_back(ms);
+        mlModuleSS[module]->insertMS(ms);
+        /*list_metatstates.push_back(ms);
         productscc->addSCC(ms->getInitialSCC());*/
     }
 
