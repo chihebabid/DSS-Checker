@@ -11,12 +11,13 @@
 #endif // _MSC_VER > 1000
 #include <vector>
 #include <iostream>
+#include <bitset>
 
 class Transition;
 class SCC;
 using namespace std;
 typedef unsigned char Octet;
-typedef vector<Octet> VecCar ;
+typedef vector<std::bitset<8>> VecCar ;
 class Marking
 {
 public:

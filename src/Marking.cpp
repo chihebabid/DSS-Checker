@@ -30,7 +30,7 @@ void Marking::add8BitsValue(const Octet val)
 
 Octet Marking::get8BitsValue(const int index)
 {
-	return m_vector[index];
+	return m_vector[index].to_ulong();
 }
 
 Marking::Marking(const Marking &value)

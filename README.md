@@ -15,4 +15,20 @@ Distributed State Space Builder is a distributed verification implementation bas
 - `cmake --build .`
 
 
-## Testing
+## Usage
+
+```./distributedstatespace [OPTIONS]
+
+Options:
+`-h,--help                   Print this help message and exit`
+--file Path:FILE REQUIRED   Petri net model file
+
+
+Algorithm:
+--algorithm TEXT            DSS building algorithm (default: DSS)
+
+
+Print:
+--dot-output                Save the output graph in a dot file
+--txt-output                Save the output graph in a formatted text file
+```
