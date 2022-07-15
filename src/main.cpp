@@ -65,13 +65,14 @@ int main(int argc, char *argv[]) {
 
 
     if (algorithm == "V1") {
-        cout << "Building the distributed state space has been started..."
+        cout << "Building the distributed state space (V1) has been started..."
              << endl;
         start = clock();
         dss = petri->buildDSS();
         finish = clock();
         cout << "Distributed state space successfully built." << endl;
     } else if (algorithm == "V2") {
+        cout << "Building the distributed state space (V2) has been started...\n";
         start = clock();
         dss = petri->buildReducedDSS();
         finish = clock();
