@@ -17,7 +17,8 @@ Distributed State Space Builder is a distributed verification implementation bas
 
 ## Usage
 
-```./distributedstatespace [OPTIONS]
+```
+./distributedstatespace [OPTIONS]
 
 Options:
 `-h,--help                   Print this help message and exit`
