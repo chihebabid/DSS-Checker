@@ -853,7 +853,7 @@ void ModularPetriNet::writeToFile(const string filename) {
 	myfile.open(filename);
 	myfile << "digraph " << "fichier " << "{" << endl;
 	myfile << "compound=true" << endl;
-	/*for (int module = 0; module < getNbModules(); module++) {
+	for (int module = 0; module < getNbModules(); module++) {
 		PetriNet *petri = m_modules.at(module);
 
 		for (int i = 0; i < m_dss->getMetaGraph(module)->getMetaStateCount();
@@ -864,7 +864,7 @@ void ModularPetriNet::writeToFile(const string filename) {
 
 			myfile << "subgraph cluster" << getProductSCCName(pscc) << module
 					<< " {" << endl;
-			for (int jj = 0; jj < ms->getListArcs()->size(); jj++) {
+			/*for (int jj = 0; jj < ms->getListArcs()->size(); jj++) {
 				Marking *source_marq = ms->getListArcs()->at(jj).getSource();
 				Marking *dest_marq =
 						ms->getListArcs()->at(jj).getDestination();
@@ -875,7 +875,7 @@ void ModularPetriNet::writeToFile(const string filename) {
 				myfile << " [label=\""
 						<< ms->getListArcs()->at(jj).getTransition()->getName()
 						<< "\"]" << endl;
-			}
+			}*/
 			myfile << "label=\"" << getProductSCCName(pscc) << "\"" << endl;
 			myfile << "}" << endl;
 
@@ -899,7 +899,7 @@ void ModularPetriNet::writeToFile(const string filename) {
 			}
 		}
 	}
-	myfile << "}" << endl;*/
+	myfile << "}" << endl;
 	myfile.close();
 }
 

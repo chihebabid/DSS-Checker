@@ -11,9 +11,13 @@ public:
     MetaState* getInitialMS();
     bool insertMS(MetaState *ms);
     MetaState *findMetaStateByProductSCC(ProductSCC &productscc);
+    friend ostream& operator<<(ostream& os, const ModuleSS& ss);
+    size_t getMetaStateCount() const;
+    MetaState* getMetaState(const int32_t & pos);
 private:
     vector<MetaState*> mlMetaState;
 };
+
 
 
 #endif //DISTRIBUTEDSTATESPACE_MODULESS_H

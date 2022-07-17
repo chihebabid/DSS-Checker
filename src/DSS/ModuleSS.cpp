@@ -22,3 +22,19 @@ MetaState *ModuleSS::findMetaStateByProductSCC(ProductSCC &productscc) {
     }
     return nullptr;
 }
+
+size_t ModuleSS::getMetaStateCount() const {
+    return mlMetaState.size();
+}
+
+MetaState* ModuleSS::getMetaState(const int32_t & pos) {
+    return mlMetaState[pos];
+}
+ostream& operator<<(ostream& os, const ModuleSS& ss)
+{
+    //os << dt.mo << '/' << dt.da << '/' << dt.yr;
+    for (const auto & elt : ss.mlMetaState) {
+
+    }
+    return os;
+}
