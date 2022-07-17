@@ -10,8 +10,9 @@ class ModuleSS {
 public:
     MetaState* getInitialMS();
     bool insertMS(MetaState *ms);
+    MetaState *findMetaStateByProductSCC(ProductSCC &productscc);
 private:
-    vector<MetaState*> mlMS;
+    vector<MetaState*> mlMetaState;
 };
 
 

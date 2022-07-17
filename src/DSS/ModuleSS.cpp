@@ -5,13 +5,20 @@
 #include "ModuleSS.h"
 
 MetaState* ModuleSS::getInitialMS() {
-    return mlMS[0];
+    return mlMetaState[0];
 }
 /*
  * Try to insert a new MetaState
  * @return : false if it is already exists
  */
 bool ModuleSS::insertMS(MetaState *ms) {
-    mlMS.push_back(ms);
+    mlMetaState.push_back(ms);
     return true;
+}
+
+MetaState *ModuleSS::findMetaStateByProductSCC(ProductSCC &productscc) {
+    for (const auto & elt: mlMetaState) {
+        if (*(elt->getSCCProductName()) == productscc) return elt;
+    }
+    return nullptr;
 }

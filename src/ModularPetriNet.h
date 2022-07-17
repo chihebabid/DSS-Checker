@@ -61,8 +61,9 @@ public:
 	void writeTextFile(const string filename);
 	ModularPetriNet();
 	virtual ~ModularPetriNet();
-private:
     void extractEnabledFusionReduced(vector<MetaState*>& list_ms,vector<RElement_dss> &list_elt);
+private:
+
 	vector<NodeSGSimplified>* calculerProduitSynchronises(vector<ListMarqLoc> &list);
 	void constructSync2();
 	void reduceMarquageName(NodeSG* node,Fusion *fusion);
