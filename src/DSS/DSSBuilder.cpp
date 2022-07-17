@@ -161,6 +161,18 @@ void DSSBuilder::writeToFile(const string &filename) {
             ProductSCC *pscc = ms->getSCCProductName();
             myfile << "subgraph cluster" << getProductSCCName(pscc) << module
                    << " {" << endl;
+            /*********************************/
+            StateGraph *ss=ms->getStateGraph();
+            for (int jj=0;jj<ss->getCountArcs();++jj) {
+                Marking *source=ss->getListMarquages()->at(jj);
+                auto sourceName=petri->getMarquageName(*source);
+                myfile<<sourceName;
+                auto lsucc=source->getListSucc();
+                for (const auto & elt : *lsucc) {
+
+                }
+            }
+            /***********************************/
             /*for (int jj = 0; jj < ms->getListArcs()->size(); jj++) {
                 Marking *source_marq = ms->getListArcs()->at(jj).getSource();
                 Marking *dest_marq =

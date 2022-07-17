@@ -21,6 +21,10 @@ void MetaState::setStateGraph(StateGraph* aut){
 	m_graph=aut;
 }
 
+StateGraph* MetaState::getStateGraph() {
+    return m_graph;
+}
+
 void MetaState::setId(unsigned int id) {
 	m_id=id;
 }

@@ -84,6 +84,7 @@ int main(int argc, char *argv[]) {
         builder.build();
         finish = clock();
         cout << "DSS has been successfully built." << endl;
+        if (dot_output) builder.writeToFile("fichier.dot");
     }
 
     //ModularSpace* espace_etat=petri->constructReducedStateSpace();
@@ -91,7 +92,8 @@ int main(int argc, char *argv[]) {
     duration = (double) (finish - start) / CLOCKS_PER_SEC;
     cout << duration << " seconds" << endl;
 
-    if (dot_output) petri->writeToFile("fichier.dot");
+    if (dot_output && algorithm!="DSS") petri->writeToFile("fichier.dot");
+
     if (txt_output) petri->writeTextFile("fichier.txt");
 
     return 0;

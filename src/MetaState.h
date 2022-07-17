@@ -17,6 +17,7 @@ public:
 	MetaState();
 	vector<ArcSync*> getSucc();
 	void setStateGraph(StateGraph* aut);
+    StateGraph* getStateGraph();
 	void setId(unsigned int id);
 	vector<Marking*>*  getListMarq();
 	//vector<InternalArc>* getListArcs();
