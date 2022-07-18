@@ -163,13 +163,17 @@ void DSSBuilder::writeToFile(const string &filename) {
                    << " {" << endl;
             /*********************************/
             StateGraph *ss=ms->getStateGraph();
-            for (int jj=0;jj<ss->getCountArcs();++jj) {
+            for (int jj=0;jj<ss->getListMarquages()->size();++jj) {
                 Marking *source=ss->getListMarquages()->at(jj);
                 auto sourceName=petri->getMarquageName(*source);
-                myfile<<sourceName;
+
                 auto lsucc=source->getListSucc();
                 for (const auto & elt : *lsucc) {
-
+                    myfile<<sourceName;
+                    //string tName=elt.first->getName();
+                    myfile<<" -> ";
+                    auto destName=petri->getMarquageName(*elt.second);
+                    myfile<<destName<<" ;"<<endl;
                 }
             }
             /***********************************/
