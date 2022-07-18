@@ -168,6 +168,10 @@ void DSSBuilder::writeToFile(const string &filename) {
                 auto sourceName=petri->getMarquageName(*source);
 
                 auto lsucc=source->getListSucc();
+                if (lsucc->size()==0) {
+                    myfile<<sourceName<<" ;"<<endl;
+                }
+                else
                 for (const auto & elt : *lsucc) {
                     myfile<<sourceName;
                     //string tName=elt.first->getName();
