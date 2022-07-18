@@ -193,12 +193,12 @@ void DSSBuilder::writeToFile(const string &filename) {
                         << ms->getListArcs()->at(jj).getTransition()->getName()
                         << "\"]" << endl;
             }*/
-            myfile << "label=\"" << getProductSCCName(pscc) << "\"" << endl;
+            myfile << "label=\"" << getProductSCCName(pscc)<<module << "\"" << endl;
             myfile << "}" << endl;
 
             for (int k = 0; k < ms->getSucc().size(); k++) {
-                myfile << petri->getSCCName(pscc->getSCC(module))
-                       << getProductSCCName(pscc) << module << " -> ";
+                //myfile << petri->getSCCName(pscc->getSCC(module))
+                 myfile<< getProductSCCName(pscc) << module << " -> ";
                 ArcSync *arc = ms->getSucc().at(k);
                 MetaState *ms_dest = arc->getMetaStateDest();
                 myfile
