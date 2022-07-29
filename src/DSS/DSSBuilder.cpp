@@ -198,14 +198,17 @@ void DSSBuilder::writeToFile(const string &filename) {
 
             for (int k = 0; k < ms->getSucc().size(); k++) {
                 //myfile << petri->getSCCName(pscc->getSCC(module))
-                 myfile<< getProductSCCName(pscc) << module << " -> ";
+
+                // myfile<< getProductSCCName(pscc) << module << " -> ";
+                 //myfile<<ms->
                 ArcSync *arc = ms->getSucc().at(k);
+               // myfile<<getProductSCCName(arc->getStartProduct())->getSCC(module)<<" -> ";
+                myfile<<petri->getSCCName(ms->getSCCProductName()->getSCC(module))<<" -> ";
                 MetaState *ms_dest = arc->getMetaStateDest();
                 myfile
                         << petri->getSCCName(
                                 ms_dest->getSCCProductName()->getSCC(module))
-                        << getProductSCCName(ms_dest->getSCCProductName())
-                        << module;
+                        ;
                 myfile << " [ltail=cluster" << getProductSCCName(pscc) << module
                        << ",lhead=cluster"
                        << getProductSCCName(ms_dest->getSCCProductName())
