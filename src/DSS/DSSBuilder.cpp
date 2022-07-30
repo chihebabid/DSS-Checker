@@ -166,7 +166,8 @@ void DSSBuilder::writeToFile(const string &filename) {
             for (int jj = 0; jj < ss->getListMarquages()->size(); ++jj) {
                 Marking *source = ss->getListMarquages()->at(jj);
                 auto sourceName = petri->getMarquageName(*source);
-                myfile<<sourceName;
+                myfile<<sourceName<<getProductSCCName(pscc);
+                myfile<<" [label=\""<<sourceName<<"\"] ";
                 myfile<<";\n";
             }
 
@@ -176,11 +177,11 @@ void DSSBuilder::writeToFile(const string &filename) {
                 auto lsucc = source->getListSucc();
                 if (lsucc->size() != 0) {
                     for (const auto &elt: *lsucc) {
-                        myfile << sourceName;
+                        myfile << sourceName<<getProductSCCName(pscc);
                         string tName = elt.first->getName();
                         myfile << " -> ";
                         auto destName = petri->getMarquageName(*elt.second);
-                        myfile << destName;
+                        myfile << destName<<getProductSCCName(pscc);
                         myfile << "[label=\"" << tName << "\"]" << " ;" << endl;
                     }
                 }
@@ -196,11 +197,11 @@ void DSSBuilder::writeToFile(const string &filename) {
                 //myfile<<ms->
                 ArcSync *arc = ms->getSucc().at(k);
                 // myfile<<getProductSCCName(arc->getStartProduct())->getSCC(module)<<" -> ";
-                myfile << petri->getSCCName(ms->getSCCProductName()->getSCC(module)) << " -> ";
+                myfile << petri->getSCCName(ms->getSCCProductName()->getSCC(module)) <<getProductSCCName(pscc)<< " -> ";
                 MetaState *ms_dest = arc->getMetaStateDest();
                 myfile
                         << petri->getSCCName(
-                                ms_dest->getSCCProductName()->getSCC(module));
+                                ms_dest->getSCCProductName()->getSCC(module))<<getProductSCCName(ms_dest->getSCCProductName());
                 /*myfile << " [ltail=cluster" << getProductSCCName(pscc) << module
                        << ",lhead=cluster"
                        << getProductSCCName(ms_dest->getSCCProductName())
@@ -209,7 +210,7 @@ void DSSBuilder::writeToFile(const string &filename) {
                 myfile << " ["
                        << "lhead=cluster"
                        << getProductSCCName(ms_dest->getSCCProductName())
-                       << module << "]" << endl;
+                       << module << ",color=red,shape=curve,label=\""<<arc->getFusion()->getName()<<"\"]" << endl;
                 //myfile<<arc->getFusion()->getName()<<"]";
                 //myfile<<endl;
 
