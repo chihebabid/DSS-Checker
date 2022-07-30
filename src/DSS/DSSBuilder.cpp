@@ -174,10 +174,11 @@ void DSSBuilder::writeToFile(const string &filename) {
                 else
                 for (const auto & elt : *lsucc) {
                     myfile<<sourceName;
-                    //string tName=elt.first->getName();
+                    string tName=elt.first->getName();
                     myfile<<" -> ";
                     auto destName=petri->getMarquageName(*elt.second);
-                    myfile<<destName<<" ;"<<endl;
+                    myfile<<destName;
+                    myfile<<"[label=\""<<tName<<"\"]"<<" ;"<<endl;
                 }
             }
             /***********************************/
