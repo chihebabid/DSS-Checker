@@ -162,56 +162,52 @@ void DSSBuilder::writeToFile(const string &filename) {
             myfile << "subgraph cluster" << getProductSCCName(pscc) << module
                    << " {" << endl;
             /*********************************/
-            StateGraph *ss=ms->getStateGraph();
-            for (int jj=0;jj<ss->getListMarquages()->size();++jj) {
-                Marking *source=ss->getListMarquages()->at(jj);
-                auto sourceName=petri->getMarquageName(*source);
+            StateGraph *ss = ms->getStateGraph();
+            for (int jj = 0; jj < ss->getListMarquages()->size(); ++jj) {
+                Marking *source = ss->getListMarquages()->at(jj);
+                auto sourceName = petri->getMarquageName(*source);
+                myfile<<sourceName;
+                myfile<<";\n";
+            }
 
-                auto lsucc=source->getListSucc();
-                if (lsucc->size()==0) {
-                    myfile<<sourceName<<" ;"<<endl;
-                }
-                else
-                for (const auto & elt : *lsucc) {
-                    myfile<<sourceName;
-                    string tName=elt.first->getName();
-                    myfile<<" -> ";
-                    auto destName=petri->getMarquageName(*elt.second);
-                    myfile<<destName;
-                    myfile<<"[label=\""<<tName<<"\"]"<<" ;"<<endl;
+            for (int jj = 0; jj < ss->getListMarquages()->size(); ++jj) {
+                Marking *source = ss->getListMarquages()->at(jj);
+                auto sourceName = petri->getMarquageName(*source);
+                auto lsucc = source->getListSucc();
+                if (lsucc->size() != 0) {
+                    for (const auto &elt: *lsucc) {
+                        myfile << sourceName;
+                        string tName = elt.first->getName();
+                        myfile << " -> ";
+                        auto destName = petri->getMarquageName(*elt.second);
+                        myfile << destName;
+                        myfile << "[label=\"" << tName << "\"]" << " ;" << endl;
+                    }
                 }
             }
-            /***********************************/
-            /*for (int jj = 0; jj < ms->getListArcs()->size(); jj++) {
-                Marking *source_marq = ms->getListArcs()->at(jj).getSource();
-                Marking *dest_marq =
-                        ms->getListArcs()->at(jj).getDestination();
-                myfile << petri->getMarquageName(*source_marq)
-                        << getProductSCCName(pscc) << module << " -> ";
-                myfile << petri->getMarquageName(*dest_marq)
-                        << getProductSCCName(pscc) << module;
-                myfile << " [label=\""
-                        << ms->getListArcs()->at(jj).getTransition()->getName()
-                        << "\"]" << endl;
-            }*/
-            myfile << "label=\"" << getProductSCCName(pscc)<<module << "\"" << endl;
+
+            myfile << "label=\"" << getProductSCCName(pscc) << module << "\"" << endl;
             myfile << "}" << endl;
 
             for (int k = 0; k < ms->getSucc().size(); k++) {
                 //myfile << petri->getSCCName(pscc->getSCC(module))
 
                 // myfile<< getProductSCCName(pscc) << module << " -> ";
-                 //myfile<<ms->
+                //myfile<<ms->
                 ArcSync *arc = ms->getSucc().at(k);
-               // myfile<<getProductSCCName(arc->getStartProduct())->getSCC(module)<<" -> ";
-                myfile<<petri->getSCCName(ms->getSCCProductName()->getSCC(module))<<" -> ";
+                // myfile<<getProductSCCName(arc->getStartProduct())->getSCC(module)<<" -> ";
+                myfile << petri->getSCCName(ms->getSCCProductName()->getSCC(module)) << " -> ";
                 MetaState *ms_dest = arc->getMetaStateDest();
                 myfile
                         << petri->getSCCName(
-                                ms_dest->getSCCProductName()->getSCC(module))
-                        ;
-                myfile << " [ltail=cluster" << getProductSCCName(pscc) << module
+                                ms_dest->getSCCProductName()->getSCC(module));
+                /*myfile << " [ltail=cluster" << getProductSCCName(pscc) << module
                        << ",lhead=cluster"
+                       << getProductSCCName(ms_dest->getSCCProductName())
+                       << module << "]" << endl;*/
+
+                myfile << " ["
+                       << "lhead=cluster"
                        << getProductSCCName(ms_dest->getSCCProductName())
                        << module << "]" << endl;
                 //myfile<<arc->getFusion()->getName()<<"]";
