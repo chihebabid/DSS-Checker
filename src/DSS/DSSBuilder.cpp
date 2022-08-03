@@ -229,3 +229,7 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
     }
     return res;
 }
+
+bool reduce(MetaState ms) {
+    return true;
+}
