@@ -54,14 +54,10 @@ void DSSBuilder::buildInitialMS() {
     while (!stack_fusion.empty()) {
         list_fusions = stack_fusion.back();
         stack_fusion.pop_back();
-        for (int i = 0; i < list_fusions.size(); i++) {
-            RElement_dss elt = list_fusions.at(i);
-            for (int index_global_state = 0;
-                 index_global_state < elt.m_gs->size();
-                 index_global_state++) {
-                vector<Marking *> *global_state = elt.m_gs->at(
-                        index_global_state);
-                for (int module = 0; module < mptrMPNet->getNbModules(); module++) {
+        for (const auto &elt: list_fusions) {
+            for (int index_global_state = 0; index_global_state < elt.m_gs->size(); index_global_state++) {
+                vector<Marking *> *global_state = elt.m_gs->at(index_global_state);
+                for (int module = 0; module < mptrMPNet->getNbModules(); ++module) {
                     mptrMPNet->getModule(module)->setMarquage(global_state->at(module));
                 }
                 Fusion *fusion = elt.m_fusion;
@@ -77,20 +73,14 @@ void DSSBuilder::buildInitialMS() {
                 for (int module = 0; module < mptrMPNet->getNbModules(); module++) {
                     if (fusion->participate(module)) {
                         dest_ms = new MetaState();
-
-                        StateGraph *state_graph =
-                                mptrMPNet->getModule(module)->getStateGraph(
-                                        mptrMPNet->getModule(module)->getMarquage());
+                        StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(
+                                mptrMPNet->getModule(module)->getMarquage());
                         state_graph->setID(module);
-
                         dest_ms->setStateGraph(state_graph);
-
                         dest_list_metatstates[module] = dest_ms;
                         dest_productscc->addSCC(dest_ms->getInitialSCC());
                     } else
-                        dest_productscc->addSCC(
-                                elt.getMetaState(module)->getSCCProductName()->getSCC(
-                                        module));
+                        dest_productscc->addSCC(elt.getMetaState(module)->getSCCProductName()->getSCC(module));
 
                 }
 
@@ -129,12 +119,9 @@ void DSSBuilder::buildInitialMS() {
                             arc_sync->setData(startProduct, fusion, ms_dest);
                             source_ms->addSyncArc(arc_sync);
                             list_dest_metatstates.push_back(ms_dest);
-
                         }
-
                     } else
-                        list_dest_metatstates.push_back(
-                                elt.getMetaState(module));
+                        list_dest_metatstates.push_back(elt.getMetaState(module));
 
                 }
 
@@ -145,6 +132,8 @@ void DSSBuilder::buildInitialMS() {
                 }
             }
         }
+        //
+
     }
 }
 
@@ -166,9 +155,9 @@ void DSSBuilder::writeToFile(const string &filename) {
             for (int jj = 0; jj < ss->getListMarquages()->size(); ++jj) {
                 Marking *source = ss->getListMarquages()->at(jj);
                 auto sourceName = petri->getMarquageName(*source);
-                myfile<<sourceName<<getProductSCCName(pscc);
-                myfile<<" [label=\""<<sourceName<<"\"] ";
-                myfile<<";\n";
+                myfile << sourceName << getProductSCCName(pscc);
+                myfile << " [label=\"" << sourceName << "\"] ";
+                myfile << ";\n";
             }
 
             for (int jj = 0; jj < ss->getListMarquages()->size(); ++jj) {
@@ -177,11 +166,11 @@ void DSSBuilder::writeToFile(const string &filename) {
                 auto lsucc = source->getListSucc();
                 if (lsucc->size() != 0) {
                     for (const auto &elt: *lsucc) {
-                        myfile << sourceName<<getProductSCCName(pscc);
+                        myfile << sourceName << getProductSCCName(pscc);
                         string tName = elt.first->getName();
                         myfile << " -> ";
                         auto destName = petri->getMarquageName(*elt.second);
-                        myfile << destName<<getProductSCCName(pscc);
+                        myfile << destName << getProductSCCName(pscc);
                         myfile << "[label=\"" << tName << "\"]" << " ;" << endl;
                     }
                 }
@@ -197,11 +186,13 @@ void DSSBuilder::writeToFile(const string &filename) {
                 //myfile<<ms->
                 ArcSync *arc = ms->getSucc().at(k);
                 // myfile<<getProductSCCName(arc->getStartProduct())->getSCC(module)<<" -> ";
-                myfile << petri->getSCCName(ms->getSCCProductName()->getSCC(module)) <<getProductSCCName(pscc)<< " -> ";
+                myfile << petri->getSCCName(ms->getSCCProductName()->getSCC(module)) << getProductSCCName(pscc)
+                       << " -> ";
                 MetaState *ms_dest = arc->getMetaStateDest();
                 myfile
                         << petri->getSCCName(
-                                ms_dest->getSCCProductName()->getSCC(module))<<getProductSCCName(ms_dest->getSCCProductName());
+                                ms_dest->getSCCProductName()->getSCC(module))
+                        << getProductSCCName(ms_dest->getSCCProductName());
                 /*myfile << " [ltail=cluster" << getProductSCCName(pscc) << module
                        << ",lhead=cluster"
                        << getProductSCCName(ms_dest->getSCCProductName())
@@ -210,7 +201,7 @@ void DSSBuilder::writeToFile(const string &filename) {
                 myfile << " ["
                        << "lhead=cluster"
                        << getProductSCCName(ms_dest->getSCCProductName())
-                       << module << ",color=red,shape=curve,label=\""<<arc->getFusion()->getName()<<"\"]" << endl;
+                       << module << ",color=red,shape=curve,label=\"" << arc->getFusion()->getName() << "\"]" << endl;
                 //myfile<<arc->getFusion()->getName()<<"]";
                 //myfile<<endl;
 
@@ -230,19 +221,20 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
     return res;
 }
 
-bool DSSBuilder::reduce(MetaState* ms,const int &module) {
-    bool reduced=false;
-    for(const auto & elt : mlModuleSS[module]->getLMetaState()) {
-        if (*elt==*ms) {
+bool DSSBuilder::reduce(MetaState *ms, const int &module) {
+    bool reduced = false;
+    for (const auto &elt: mlModuleSS[module]->getLMetaState()) {
+        if (*elt == *ms) {
             //Compare out edges
-            auto lEdges1=ms->getSucc();
-            auto lEdges2=elt->getSucc();
-            if (lEdges1.size()==lEdges2.size()) {
-                for (const auto &edge1 : lEdges1) {
-                    auto compare=[&edge1](ArcSync *arc) {
-                        return edge1->getFusion()==arc->getFusion() && edge1->getMetaStateDest()==arc->getMetaStateDest();
+            auto lEdges1 = ms->getSucc();
+            auto lEdges2 = elt->getSucc();
+            if (lEdges1.size() == lEdges2.size()) {
+                for (const auto &edge1: lEdges1) {
+                    auto compare = [&edge1](ArcSync *arc) {
+                        return edge1->getFusion() == arc->getFusion() &&
+                               edge1->getMetaStateDest() == arc->getMetaStateDest();
                     };
-                    std::find_if(lEdges2.begin(),lEdges2.end(),compare);
+                    std::find_if(lEdges2.begin(), lEdges2.end(), compare);
                 }
                 return true;
             }

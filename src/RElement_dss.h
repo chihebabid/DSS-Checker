@@ -19,7 +19,7 @@ public:
         this->ml_metastates=elt.ml_metastates;
         return *this;
     }
-    MetaState * getMetaState(int i);
+    MetaState * getMetaState(int i) const;
     void addMetaState(MetaState *ms);
     void setListMetaStates(vector<MetaState*>& l_metastates);
 private:

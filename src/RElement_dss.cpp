@@ -10,7 +10,7 @@ RElement_dss::~RElement_dss()
     //dtor
 }
 
-MetaState * RElement_dss::getMetaState(int i) {
+MetaState * RElement_dss::getMetaState(int i) const {
     return ml_metastates.at(i);
 }
 
