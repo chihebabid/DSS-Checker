@@ -30,6 +30,14 @@ size_t ModuleSS::getMetaStateCount() const {
 MetaState* ModuleSS::getMetaState(const int32_t & pos) {
     return mlMetaState[pos];
 }
+/*
+ * Return Metastates list
+ */
+vector<MetaState*> &ModuleSS::getLMetaState() {
+    return mlMetaState;
+}
+
+
 ostream& operator<<(ostream& os, const ModuleSS& ss)
 {
     //os << dt.mo << '/' << dt.da << '/' << dt.yr;

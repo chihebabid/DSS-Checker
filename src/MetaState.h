@@ -29,6 +29,7 @@ public:
     void setSCCProductName(ProductSCC* name);
     void addSyncArc(ArcSync *sync_arc);
     uint32_t getArcCount();
+    bool operator==(const MetaState &ms);
 private:
 	StateGraph* m_graph;
 	ProductSCC* m_name;

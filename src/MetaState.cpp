@@ -69,3 +69,7 @@ vector<ArcSync*> MetaState::getSucc() {
 uint32_t MetaState::getArcCount() {
     m_graph->getCountArcs();
 }
+
+bool MetaState::operator==(const MetaState &ms) {
+    return true;
+}

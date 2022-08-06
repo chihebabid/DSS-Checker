@@ -14,6 +14,7 @@ public:
     friend ostream& operator<<(ostream& os, const ModuleSS& ss);
     size_t getMetaStateCount() const;
     MetaState* getMetaState(const int32_t & pos);
+    vector<MetaState*> &getLMetaState();
 private:
     vector<MetaState*> mlMetaState;
 };

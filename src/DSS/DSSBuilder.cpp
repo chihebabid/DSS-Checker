@@ -230,6 +230,13 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
     return res;
 }
 
-bool reduce(MetaState ms) {
+bool DSSBuilder::reduce(MetaState* ms,const int &module) {
+    bool reduced=false;
+    for(const auto & elt : mlModuleSS[module]->getLMetaState()) {
+        if (*elt==*ms) {
+            reduced= true;
+            break;
+        }
+    }
     return true;
 }
