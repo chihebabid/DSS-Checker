@@ -234,9 +234,19 @@ bool DSSBuilder::reduce(MetaState* ms,const int &module) {
     bool reduced=false;
     for(const auto & elt : mlModuleSS[module]->getLMetaState()) {
         if (*elt==*ms) {
-            reduced= true;
-            break;
+            //Compare out edges
+            auto lEdges1=ms->getSucc();
+            auto lEdges2=elt->getSucc();
+            if (lEdges1.size()==lEdges2.size()) {
+                for (const auto &edge1 : lEdges1) {
+                    auto compare=[](ArcSync *arc) {
+                        return true;
+                    };
+                    std::find_if(lEdges2.begin(),lEdges2.end(),compare);
+                }
+                return true;
+            }
         }
     }
-    return true;
+    return false;
 }
