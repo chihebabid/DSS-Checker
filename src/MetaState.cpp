@@ -71,5 +71,16 @@ uint32_t MetaState::getArcCount() {
 }
 
 bool MetaState::operator==(const MetaState &ms) {
+    if (ms.m_graph->getListMarquages()->size()!=m_graph->getListMarquages()->size()) return false;
+    for (const auto & elt1 : *ms.m_graph->getListMarquages()) {
+        bool found=false;
+        for (const auto & elt2 : *m_graph->getListMarquages()) {
+            if (*elt1==*elt2) {
+                found=true;
+                break;
+            }
+        }
+        if (!found) return false;
+    }
     return true;
-}
+O}
