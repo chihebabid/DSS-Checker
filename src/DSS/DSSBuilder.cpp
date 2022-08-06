@@ -239,8 +239,8 @@ bool DSSBuilder::reduce(MetaState* ms,const int &module) {
             auto lEdges2=elt->getSucc();
             if (lEdges1.size()==lEdges2.size()) {
                 for (const auto &edge1 : lEdges1) {
-                    auto compare=[](ArcSync *arc) {
-                        return true;
+                    auto compare=[&edge1](ArcSync *arc) {
+                        return edge1->getFusion()==arc->getFusion() && edge1->getMetaStateDest()==arc->getMetaStateDest();
                     };
                     std::find_if(lEdges2.begin(),lEdges2.end(),compare);
                 }
