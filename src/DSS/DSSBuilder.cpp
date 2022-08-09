@@ -65,7 +65,6 @@ void DSSBuilder::buildInitialMS() {
 
                 // Build obtained destination Meta-states and check whether they exist or not
                 MetaState *dest_ms;
-                // Build initial meta-states
                 //cout << "Build destination meta-states" << endl;
                 ProductSCC *dest_productscc = new ProductSCC();
                 vector<MetaState *> dest_list_metatstates;
