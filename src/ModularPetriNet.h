@@ -62,6 +62,7 @@ public:
 	ModularPetriNet();
 	virtual ~ModularPetriNet();
     void extractEnabledFusionReduced(vector<MetaState*>& list_ms,vector<RElement_dss> &list_elt);
+    void extractEnabledFusionV2(vector<MetaState *> &list_ms,vector<RElement_dss> &list_elt);
 private:
 
 	vector<NodeSGSimplified>* calculerProduitSynchronises(vector<ListMarqLoc> &list);

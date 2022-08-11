@@ -708,6 +708,64 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
     }
 
 }
+/*
+ * @brief Determine enabled fusion transitions
+ */
+
+void ModularPetriNet::extractEnabledFusionV2(vector<MetaState *> &list_ms,vector<RElement_dss> &list_elt) {
+    vector<ListLocalStates> states_enabling_fusion;
+    for (const auto & fusion : m_fusions) {
+        /************************************************/
+        /**Check whether a fusion set is enabled or not**/
+        /************************************************/
+        bool canBeActive = true;
+        for (int j = 0; j < getNbModules() && canBeActive; j++) {
+            if (fusion->participate(j) && fusion->participatePartially(j)) {
+                canBeActive = false;
+                ListLocalStates list_states = list_ms.at(j)->getListMarq(); //  m_dss->getLocalStates(product,j);
+                for (int index = 0; index < list_states->size() && !canBeActive; index++) {
+                    m_modules.at(j)->setMarquage(list_states->at(index));
+                    if (fusion->isFranchissableLocal(j)) {
+                        canBeActive = true;
+                    }
+
+                }
+            }
+        }
+
+        if (canBeActive) {
+            //////////////////////////////////////////////////////////////////////////
+            // Déterminer tous les marquages locaux activant la fusion de transitions
+            //////////////////////////////////////////////////////////////////////////
+            states_enabling_fusion.resize(getNbModules());
+            for (int j = 0; j < getNbModules(); j++) {
+                ListLocalStates list_states = list_ms.at(j)->getListMarq();
+                // states_enabling_fusion.at(j)= NULL;
+                states_enabling_fusion.at(j) = new vector<Marking *>();
+                if (fusion->participate(j)) {
+                    for (int index = 0; index < list_states->size(); index++) {
+                        m_modules.at(j)->setMarquage(list_states->at(index));
+                        if (fusion->isFranchissableLocal(j)) {
+                            states_enabling_fusion.at(j)->push_back(list_states->at(index));
+                        }
+
+                    }
+
+                } else if (!fusion->participate(j)) {
+                    states_enabling_fusion.at(j)->push_back(list_states->at(0));
+                }
+
+            }
+            ListGlobalStates list_globalstates = computeSychronisedProduct(states_enabling_fusion);
+            RElement_dss elt;
+            elt.m_gs = list_globalstates;
+            elt.m_fusion = fusion;
+            elt.setListMetaStates(list_ms);
+            list_elt.push_back(elt);
+        }
+    }
+
+}
 
 void ModularPetriNet::extractEnabledFusion(ProductSCC *product,
                                            vector<Element_dss> &list_elt) {
