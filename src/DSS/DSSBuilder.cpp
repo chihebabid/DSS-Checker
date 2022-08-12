@@ -34,7 +34,6 @@ void DSSBuilder::buildInitialMS() {
     vector<MetaState *> list_metatstates;
     for (int module = 0; module < mptrMPNet->getNbModules(); ++module) {
         ms = new MetaState();
-
         StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(
                 mptrMPNet->getModule(module)->getMarquage());
         state_graph->setID(module);
@@ -44,9 +43,8 @@ void DSSBuilder::buildInitialMS() {
         productscc->addSCC(ms->getInitialSCC());
     }
     // Setting name for meta-states
-    for (int i = 0; i < mptrMPNet->getNbModules(); ++i) {
-        list_metatstates.at(i)->setSCCProductName(productscc);
-    }
+    for (const auto lm : list_metatstates )
+        lm->setSCCProductName(productscc);
 
     vector<RElement_dss> list_fusions;
     mptrMPNet->extractEnabledFusionReduced(list_metatstates, list_fusions);
@@ -75,13 +73,13 @@ void DSSBuilder::buildInitialMS() {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
-                        dest_ms = new MetaState();
-                        StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(
-                                mptrMPNet->getModule(module)->getMarquage());
-                        state_graph->setID(module);
-                        dest_ms->setStateGraph(state_graph);
-                        dest_list_metatstates[module] = dest_ms;
-                        dest_productscc->addSCC(dest_ms->getInitialSCC());
+                    dest_ms = new MetaState();
+                    StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(
+                            mptrMPNet->getModule(module)->getMarquage());
+                    state_graph->setID(module);
+                    dest_ms->setStateGraph(state_graph);
+                    dest_list_metatstates[module] = dest_ms;
+                    dest_productscc->addSCC(dest_ms->getInitialSCC());
 #ifdef REDUCTION
                     } else dest_productscc->addSCC(elt.getMetaState(module)->getSCCProductName()->getSCC(module));
 #endif
@@ -102,29 +100,28 @@ void DSSBuilder::buildInitialMS() {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
-                        if (!mlModuleSS[module]->findMetaStateByProductSCC(
-                                *dest_productscc)) {
-                            ArcSync *arc_sync = new ArcSync();
-                            MetaState *source_ms = elt.getMetaState(module);
-                            arc_sync->setData(startProduct, fusion,
-                                              dest_list_metatstates.at(module));
-                            source_ms->addSyncArc(arc_sync);
-                            //dest_list_metatstates.at(module)->addSyncArc(arc_sync);
-                            mlModuleSS[module]->insertMS(dest_list_metatstates.at(module));
+                    if (!mlModuleSS[module]->findMetaStateByProductSCC(*dest_productscc)) {
+                        ArcSync *arc_sync = new ArcSync();
+                        MetaState *source_ms = elt.getMetaState(module);
+                        arc_sync->setData(startProduct, fusion, dest_list_metatstates.at(module));
+                        source_ms->addSyncArc(arc_sync);
+                        //dest_list_metatstates.at(module)->addSyncArc(arc_sync);
+                        mlModuleSS[module]->insertMS(dest_list_metatstates.at(module));
 
-                            //m_modules[module]->printMetaStateEx(
-                            //		dest_list_metatstates.at(module));
-                            dest_list_metatstates.at(module)->setSCCProductName(dest_productscc);
-                            list_dest_metatstates.push_back(dest_list_metatstates.at(module));
-                        } else {
-                            exist = true;
-                            ArcSync *arc_sync = new ArcSync();
-                            MetaState *source_ms = elt.getMetaState(module);
-                            MetaState *ms_dest = mlModuleSS[module]->findMetaStateByProductSCC(*dest_productscc);
-                            arc_sync->setData(startProduct, fusion, ms_dest);
-                            source_ms->addSyncArc(arc_sync);
-                            list_dest_metatstates.push_back(ms_dest);
-                        }
+                        //m_modules[module]->printMetaStateEx(
+                        //		dest_list_metatstates.at(module));
+                        dest_list_metatstates.at(module)->setSCCProductName(dest_productscc);
+                        list_dest_metatstates.push_back(dest_list_metatstates.at(module));
+                    } else {
+                        exist = true;
+                        auto *arc_sync = new ArcSync();
+                        MetaState *source_ms = elt.getMetaState(module);
+                        MetaState *ms_dest = mlModuleSS[module]->findMetaStateByProductSCC(*dest_productscc);
+                        arc_sync->setData(startProduct, fusion, ms_dest);
+                        source_ms->addSyncArc(arc_sync);
+                        list_dest_metatstates.push_back(ms_dest);
+                    }
+
 #ifdef REDUCTION
                     } else list_dest_metatstates.push_back(elt.getMetaState(module));
 #endif
@@ -138,7 +135,13 @@ void DSSBuilder::buildInitialMS() {
                 }
             }
         }
-        //
+        // Reducing
+        for (const auto &elt: list_fusions) {
+            for (auto module=0;module<mptrMPNet->getNbModules();++module) {
+                auto *ms = elt.getMetaState(module);
+                if (reduce(ms,module)) cout<<"Meta state can be reduced\n";
+            }
+        }
 
     }
 }
@@ -158,14 +161,14 @@ void DSSBuilder::writeToFile(const string &filename) {
                    << " {" << endl;
             /*********************************/
             StateGraph *ss = ms->getStateGraph();
-            for (const auto &source : *ss->getListMarquages()) {
+            for (const auto &source: *ss->getListMarquages()) {
                 auto sourceName = petri->getMarquageName(*source);
                 myfile << sourceName << getProductSCCName(pscc);
                 myfile << " [label=\"" << sourceName << "\"] ";
                 myfile << ";\n";
             }
 
-            for (const auto &source : *(ss->getListMarquages())) {
+            for (const auto &source: *(ss->getListMarquages())) {
                 auto sourceName = petri->getMarquageName(*source);
                 auto lsucc = source->getListSucc();
                 if (!lsucc->empty()) {
@@ -234,7 +237,7 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
 bool DSSBuilder::reduce(MetaState *ms, const int &module) {
     bool reduced = false;
     for (const auto &elt: mlModuleSS[module]->getLMetaState()) {
-        if (*elt == *ms) {
+        if (elt != ms && *elt == *ms) {
             //Compare out edges
             auto lEdges1 = ms->getSucc();
             auto lEdges2 = elt->getSucc();
