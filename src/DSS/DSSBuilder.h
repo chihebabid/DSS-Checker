@@ -15,7 +15,7 @@ public:
     void writeToFile(const string& filename);
 private:
     string getProductSCCName(ProductSCC *pss);
-    bool reduce(MetaState *ms,const int &module);
+    MetaState* reduce(MetaState *ms,const int &module);
     void buildInitialMS();
     ModularPetriNet *mptrMPNet;
     vector<ModuleSS*> mlModuleSS;

@@ -234,8 +234,8 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
  * @param module Module index
  * @return true if *ms can be fusedm else false
  */
-bool DSSBuilder::reduce(MetaState *ms, const int &module) {
-    bool reduced = false;
+MetaState* DSSBuilder::reduce(MetaState *ms, const int &module) {
+    MetaState* foundMS = nullptr;
     for (const auto &elt: mlModuleSS[module]->getLMetaState()) {
         if (elt != ms && *elt == *ms) {
             //Compare out edges
@@ -249,9 +249,9 @@ bool DSSBuilder::reduce(MetaState *ms, const int &module) {
                     };
                     std::find_if(lEdges2.begin(), lEdges2.end(), compare);
                 }
-                return true;
+                return foundMS;
             }
         }
     }
-    return false;
+    return nullptr;
 }
