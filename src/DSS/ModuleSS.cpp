@@ -31,12 +31,27 @@ MetaState* ModuleSS::getMetaState(const int32_t & pos) {
     return mlMetaState[pos];
 }
 /*
- * Return Metastates list
+ * @brief Return Metastates list
  */
 vector<MetaState*> &ModuleSS::getLMetaState() {
     return mlMetaState;
 }
 
+/*
+ * @brief Remove a metastate
+ */
+void ModuleSS::removeMetaState(MetaState *ms) {
+    for (auto &edge: ms->getSucc()) {
+        delete edge;
+    }
+    std::remove(mlMetaState.begin(), mlMetaState.end(),ms);
+    auto compare = [&ms](ArcSync *arc) {
+        return ms == arc->getMetaStateDest();
+    };
+    for(const auto & elt : mlMetaState) {
+        std::remove_if(elt->getSucc().begin(),elt->getSucc().end(),compare);
+    }
+}
 
 ostream& operator<<(ostream& os, const ModuleSS& ss)
 {
@@ -46,3 +61,4 @@ ostream& operator<<(ostream& os, const ModuleSS& ss)
     }
     return os;
 }
+

@@ -4,6 +4,7 @@
 
 #ifndef DISTRIBUTEDSTATESPACE_MODULESS_H
 #define DISTRIBUTEDSTATESPACE_MODULESS_H
+#include "ArcSync.h"
 #include "MetaState.h"
 
 class ModuleSS {
@@ -15,6 +16,7 @@ public:
     size_t getMetaStateCount() const;
     MetaState* getMetaState(const int32_t & pos);
     vector<MetaState*> &getLMetaState();
+    void removeMetaState(MetaState *ms);
 private:
     vector<MetaState*> mlMetaState;
 };
