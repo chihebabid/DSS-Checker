@@ -34,8 +34,7 @@ void DSSBuilder::buildInitialMS() {
     vector<MetaState *> list_metatstates;
     for (int module = 0; module < mptrMPNet->getNbModules(); ++module) {
         ms = new MetaState();
-        StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(
-                mptrMPNet->getModule(module)->getMarquage());
+        StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(mptrMPNet->getModule(module)->getMarquage());
         state_graph->setID(module);
         ms->setStateGraph(state_graph);
         mlModuleSS[module]->insertMS(ms);
@@ -43,7 +42,7 @@ void DSSBuilder::buildInitialMS() {
         productscc->addSCC(ms->getInitialSCC());
     }
     // Setting name for meta-states
-    for (const auto lm : list_metatstates )
+    for (const auto lm: list_metatstates)
         lm->setSCCProductName(productscc);
 
     vector<RElement_dss> list_fusions;
@@ -137,12 +136,15 @@ void DSSBuilder::buildInitialMS() {
         }
         // Reducing
         for (const auto &elt: list_fusions) {
-            for (auto module=0;module<mptrMPNet->getNbModules();++module) {
+            for (auto module = 0; module < mptrMPNet->getNbModules(); ++module) {
                 auto *ms = elt.getMetaState(module);
-                if (reduce(ms,module)) cout<<"Meta state can be reduced\n";
+                auto ptrMS=reduce(ms, module);
+                if (ptrMS) {
+                    // Redirect edges to ptrMS
+
+                }
             }
         }
-
     }
 }
 
@@ -234,7 +236,7 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
  * @param module Module index
  * @return true if *ms can be fusedm else false
  */
-MetaState* DSSBuilder::reduce(MetaState *ms, const int &module) {
+MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
 
     for (const auto &elt: mlModuleSS[module]->getLMetaState()) {
         if (elt != ms && *elt == *ms) {
@@ -244,11 +246,10 @@ MetaState* DSSBuilder::reduce(MetaState *ms, const int &module) {
             if (lEdges1.size() == lEdges2.size()) {
                 for (const auto &edge1: lEdges1) {
                     auto compare = [&edge1](ArcSync *arc) {
-                        return edge1->getFusion() == arc->getFusion() &&
-                               edge1->getMetaStateDest() == arc->getMetaStateDest();
+                        return edge1->getFusion() == arc->getFusion() &&  edge1->getMetaStateDest() == arc->getMetaStateDest();
                     };
-                    auto res=std::find_if(lEdges2.begin(), lEdges2.end(), compare);
-                    if (res==lEdges2.end()) return nullptr;
+                    auto res = std::find_if(lEdges2.begin(), lEdges2.end(), compare);
+                    if (res == lEdges2.end()) return nullptr;
                 }
                 return elt;
             }
