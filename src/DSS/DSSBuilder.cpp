@@ -235,7 +235,7 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
  * @return true if *ms can be fusedm else false
  */
 MetaState* DSSBuilder::reduce(MetaState *ms, const int &module) {
-    MetaState* foundMS = nullptr;
+
     for (const auto &elt: mlModuleSS[module]->getLMetaState()) {
         if (elt != ms && *elt == *ms) {
             //Compare out edges
@@ -247,9 +247,10 @@ MetaState* DSSBuilder::reduce(MetaState *ms, const int &module) {
                         return edge1->getFusion() == arc->getFusion() &&
                                edge1->getMetaStateDest() == arc->getMetaStateDest();
                     };
-                    std::find_if(lEdges2.begin(), lEdges2.end(), compare);
+                    auto res=std::find_if(lEdges2.begin(), lEdges2.end(), compare);
+                    if (res==lEdges2.end()) return nullptr;
                 }
-                return foundMS;
+                return elt;
             }
         }
     }
