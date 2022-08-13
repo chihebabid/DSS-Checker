@@ -49,7 +49,11 @@ void ModuleSS::removeMetaState(MetaState *ms) {
         return ms == arc->getMetaStateDest();
     };
     for(const auto & elt : mlMetaState) {
-        std::remove_if(elt->getSucc().begin(),elt->getSucc().end(),compare);
+        auto ptr=std::find_if(elt->getSucc().begin(),elt->getSucc().end(),compare);
+        if (ptr!=elt->getSucc().end()) {
+            delete (*ptr);
+            elt->getSucc().erase(ptr);
+        }
     }
 }
 
