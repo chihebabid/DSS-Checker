@@ -141,7 +141,8 @@ void DSSBuilder::buildInitialMS() {
                 auto ptrMS=reduce(ms, module);
                 if (ptrMS) {
                     // Redirect edges to ptrMS
-
+                    // Remove ptrMS
+                    mlModuleSS[module]->removeMetaState(ptrMS);
                 }
             }
         }
@@ -243,15 +244,19 @@ MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
             //Compare out edges
             auto lEdges1 = ms->getSucc();
             auto lEdges2 = elt->getSucc();
-            if (lEdges1.size() == lEdges2.size()) {
+            if (lEdges1.size() == lEdges2.size()) { // Check that all edges are the same
+                bool areSame=true;
                 for (const auto &edge1: lEdges1) {
                     auto compare = [&edge1](ArcSync *arc) {
                         return edge1->getFusion() == arc->getFusion() &&  edge1->getMetaStateDest() == arc->getMetaStateDest();
                     };
                     auto res = std::find_if(lEdges2.begin(), lEdges2.end(), compare);
-                    if (res == lEdges2.end()) return nullptr;
+                    if (res == lEdges2.end()) {
+                        areSame= false;
+                        break;
+                    }
                 }
-                return elt;
+                if (areSame) return elt;
             }
         }
     }
