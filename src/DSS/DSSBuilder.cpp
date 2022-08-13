@@ -195,31 +195,22 @@ void DSSBuilder::writeToFile(const string &filename) {
             myfile << "label=\"" << getProductSCCName(pscc) << module << "\"" << endl;
             myfile << "}" << endl;
 
-            for (int k = 0; k < ms->getSucc().size(); k++) {
-                //myfile << petri->getSCCName(pscc->getSCC(module))
-
-                // myfile<< getProductSCCName(pscc) << module << " -> ";
-                //myfile<<ms->
+            for (int k = 0; k < ms->getSucc().size(); k++) { // Build output edges of Metastate ms
                 ArcSync *arc = ms->getSucc().at(k);
                 // myfile<<getProductSCCName(arc->getStartProduct())->getSCC(module)<<" -> ";
                 myfile << petri->getSCCName(ms->getSCCProductName()->getSCC(module)) << getProductSCCName(pscc)
                        << " -> ";
                 MetaState *ms_dest = arc->getMetaStateDest();
                 myfile
-                        << petri->getSCCName(
-                                ms_dest->getSCCProductName()->getSCC(module))
+                        << petri->getSCCName(ms_dest->getSCCProductName()->getSCC(module))
                         << getProductSCCName(ms_dest->getSCCProductName());
-                /*myfile << " [ltail=cluster" << getProductSCCName(pscc) << module
-                       << ",lhead=cluster"
-                       << getProductSCCName(ms_dest->getSCCProductName())
-                       << module << "]" << endl;*/
-
                 myfile << " ["
                        << "lhead=cluster"
                        << getProductSCCName(ms_dest->getSCCProductName())
-                       << module << ",color=red,shape=curve,label=\"" << arc->getFusion()->getName() << "\"]" << endl;
-                //myfile<<arc->getFusion()->getName()<<"]";
-                //myfile<<endl;
+                       << module ;
+                myfile<<",ltail=cluster"<<getProductSCCName(pscc)<<module;
+                myfile<< ",color=red,shape=curve,label=\"(" <<getProductSCCName(arc->getStartProduct())<<","<< arc->getFusion()->getName() << ")Impro\"]" << endl;
+
 
             }
         }
