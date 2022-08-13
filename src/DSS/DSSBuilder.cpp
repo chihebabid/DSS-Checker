@@ -141,6 +141,11 @@ void DSSBuilder::buildInitialMS() {
                 auto ptrMS=reduce(ms, module);
                 if (ptrMS) {
                     // Redirect edges to ptrMS
+                    for (const auto &m : mlModuleSS[module]->getLMetaState()) {
+                        for (const auto& edge : m->getSucc()) {
+                            if (edge->getMetaStateDest() == ptrMS) edge->setDestination(ms);
+                        }
+                    }
                     // Remove ptrMS
                     mlModuleSS[module]->removeMetaState(ptrMS);
                 }
