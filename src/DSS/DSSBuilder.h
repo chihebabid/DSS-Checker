@@ -13,6 +13,7 @@ public:
     DSSBuilder(ModularPetriNet *ptr);
     void build();
     void writeToFile(const string& filename);
+    void outputTXT();
 private:
     string getProductSCCName(ProductSCC *pss);
     MetaState* reduce(MetaState *ms,const int &module);

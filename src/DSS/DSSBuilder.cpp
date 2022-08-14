@@ -259,3 +259,20 @@ MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
     }
     return nullptr;
 }
+
+void DSSBuilder::outputTXT() {
+    uint32_t sumMS=0,sumStates=0,sumSCC=0,sumLocalEdges=0,sumSyncEdges=0;
+    for (const auto &module : mlModuleSS) {
+        sumMS+=module->getMetaStateCount();
+        cout<<"Module : "<<module->getMetaStateCount()<<endl;
+        for(const auto& ms:module->getLMetaState()) {
+            sumStates+=ms->getListMarq()->size();
+            sumSCC+=ms->getListSCCs()->size();
+        }
+    }
+    cout<<"#MetaStates: "<<sumMS<<endl;
+    cout<<"#States: "<<sumStates<<endl;
+    cout<<"#SCCs: "<<sumSCC<<endl;
+    cout<<"#Local edges: "<<endl;
+    cout<<"#Sync edges:"<<endl;
+}

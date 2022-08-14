@@ -85,6 +85,7 @@ int main(int argc, char *argv[]) {
         finish = clock();
         cout << "DSS has been successfully built." << endl;
         if (dot_output) builder.writeToFile(file_name+".dot");
+        if (txt_output) builder.outputTXT();
     }
 
     //ModularSpace* espace_etat=petri->constructReducedStateSpace();
@@ -94,7 +95,7 @@ int main(int argc, char *argv[]) {
 
     if (dot_output && algorithm!="DSS") petri->writeToFile(file_name+".dot");
 
-    if (txt_output) petri->writeTextFile(file_name+".txt");
+    if (txt_output && algorithm!="DSS") petri->writeTextFile(file_name+".txt");
 
     return 0;
     auto d = spot::make_bdd_dict();
