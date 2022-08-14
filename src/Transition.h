@@ -19,7 +19,7 @@ class Transition : public Node
 {
 public:
 	inline int getPlacesEntreesCount(){
-	return m_places_entrees.size();
+	return mlOutputPlaces.size();
 }
 
 	int getPetri();
@@ -41,8 +41,8 @@ public:
 			m_places_sorties.at(i)->addTokens(m_poids_sorties.at(i));
 		}
 		//Supprimer les jetons � partir de places d'entr�es
-		for (unsigned int i=0;i<m_places_entrees.size();i++) {
-			m_places_entrees.at(i)->subTokens(m_poids_entrees.at(i));
+		for (unsigned int i=0; i < mlOutputPlaces.size(); i++) {
+			mlOutputPlaces.at(i)->subTokens(m_poids_entrees.at(i));
 
 		}
 	}
@@ -53,7 +53,7 @@ private:
 	int m_petri_num;
 	int m_code;
 	bool m_sync;
-	vector<Place*> m_places_entrees;
+	vector<Place*> mlOutputPlaces;
 	vector<Place*> m_places_sorties;
 	vector<int> m_poids_entrees;
 	vector<int> m_poids_sorties;

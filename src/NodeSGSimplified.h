@@ -24,7 +24,6 @@ public:
 	NodeSGSimplified();
 	virtual ~NodeSGSimplified();
 	vector<Marking> m_list;
-
 protected:
 
 };

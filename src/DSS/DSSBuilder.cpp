@@ -10,7 +10,7 @@
 //#define REDUCTION
 
 DSSBuilder::DSSBuilder(ModularPetriNet *ptr) : mptrMPNet(ptr) {
-    for (uint32_t i = 0; i < mptrMPNet->getNbModules(); i++) {
+    for (uint32_t i = 0; i < mptrMPNet->getModulesCount(); i++) {
         auto elt = new ModuleSS();
         mlModuleSS.push_back(elt);
     }
@@ -32,7 +32,7 @@ void DSSBuilder::buildInitialMS() {
     cout << "Build initial meta-states" << endl;
     auto *productscc = new ProductSCC();
     vector<MetaState *> list_metatstates;
-    for (int module = 0; module < mptrMPNet->getNbModules(); ++module) {
+    for (int module = 0; module < mptrMPNet->getModulesCount(); ++module) {
         ms = new MetaState();
         StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(mptrMPNet->getModule(module)->getMarquage());
         state_graph->setID(module);
@@ -56,7 +56,7 @@ void DSSBuilder::buildInitialMS() {
         for (const auto &elt: list_fusions) {
             for (int index_global_state = 0; index_global_state < elt.m_gs->size(); index_global_state++) {
                 vector<Marking *> *global_state = elt.m_gs->at(index_global_state);
-                for (int module = 0; module < mptrMPNet->getNbModules(); ++module) {
+                for (int module = 0; module < mptrMPNet->getModulesCount(); ++module) {
                     mptrMPNet->getModule(module)->setMarquage(global_state->at(module));
                 }
                 Fusion *fusion = elt.m_fusion;
@@ -67,8 +67,8 @@ void DSSBuilder::buildInitialMS() {
                 //cout << "Build destination meta-states" << endl;
                 auto *dest_productscc = new ProductSCC();
                 vector<MetaState *> dest_list_metatstates;
-                dest_list_metatstates.resize(mptrMPNet->getNbModules());
-                for (int module = 0; module < mptrMPNet->getNbModules(); module++) {
+                dest_list_metatstates.resize(mptrMPNet->getModulesCount());
+                for (int module = 0; module < mptrMPNet->getModulesCount(); module++) {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
@@ -95,7 +95,7 @@ void DSSBuilder::buildInitialMS() {
 
                 vector<MetaState *> list_dest_metatstates;
                 bool exist = false;
-                for (int module = 0; module < mptrMPNet->getNbModules(); module++) {
+                for (int module = 0; module < mptrMPNet->getModulesCount(); module++) {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
@@ -136,14 +136,14 @@ void DSSBuilder::buildInitialMS() {
         }
         // Reducing
         for (const auto &elt: list_fusions) {
-            for (auto module = 0; module < mptrMPNet->getNbModules(); ++module) {
+            for (auto module = 0; module < mptrMPNet->getModulesCount(); ++module) {
                 auto *ms = elt.getMetaState(module);
-                auto ptrMS=reduce(ms, module);
+                auto ptrMS = reduce(ms, module);
                 if (ptrMS) {
                     // Redirect edges to ptrMS
                     // A comment
-                    for (const auto &m : mlModuleSS[module]->getLMetaState()) {
-                        for (const auto& edge : m->getSucc()) {
+                    for (const auto &m: mlModuleSS[module]->getLMetaState()) {
+                        for (const auto &edge: m->getSucc()) {
                             if (edge->getMetaStateDest() == ptrMS) edge->setDestination(ms);
                         }
                     }
@@ -161,7 +161,7 @@ void DSSBuilder::writeToFile(const string &filename) {
     myfile.open(filename);
     myfile << "digraph " << "fichier " << "{" << endl;
     myfile << "compound=true" << endl;
-    for (int module = 0; module < mptrMPNet->getNbModules(); ++module) {
+    for (int module = 0; module < mptrMPNet->getModulesCount(); ++module) {
         PetriNet *petri = mptrMPNet->getModule(module);
         for (int i = 0; i < mlModuleSS[module]->getMetaStateCount(); i++) {
             MetaState *ms = mlModuleSS[module]->getMetaState(i);
@@ -195,9 +195,7 @@ void DSSBuilder::writeToFile(const string &filename) {
             myfile << "label=\"" << getProductSCCName(pscc) << module << "\"" << endl;
             myfile << "}" << endl;
 
-            for (int k = 0; k < ms->getSucc().size(); k++) { // Build output edges of Metastate ms
-                ArcSync *arc = ms->getSucc().at(k);
-                // myfile<<getProductSCCName(arc->getStartProduct())->getSCC(module)<<" -> ";
+            for (const auto& arc : ms->getSucc()) { // Build output edges of Metastate ms
                 myfile << petri->getSCCName(ms->getSCCProductName()->getSCC(module)) << getProductSCCName(pscc)
                        << " -> ";
                 MetaState *ms_dest = arc->getMetaStateDest();
@@ -207,11 +205,9 @@ void DSSBuilder::writeToFile(const string &filename) {
                 myfile << " ["
                        << "lhead=cluster"
                        << getProductSCCName(ms_dest->getSCCProductName())
-                       << module ;
-                myfile<<",ltail=cluster"<<getProductSCCName(pscc)<<module;
-                myfile<< ",color=red,shape=curve,label=\"(" <<getProductSCCName(arc->getStartProduct())<<","<< arc->getFusion()->getName() << ")Impro\"]" << endl;
-
-
+                       << module;
+                myfile << ",ltail=cluster" << getProductSCCName(pscc) << module;
+                myfile << ",color=red,shape=curve,label=\"(" << getProductSCCName(arc->getStartProduct()) << "," << arc->getFusion()->getName() << ")Impro\"]" << endl;
             }
         }
     }
@@ -221,7 +217,7 @@ void DSSBuilder::writeToFile(const string &filename) {
 
 string DSSBuilder::getProductSCCName(ProductSCC *pss) {
     string res;
-    for (int module = 0; module < mptrMPNet->getNbModules(); ++module) {
+    for (int module = 0; module < mptrMPNet->getModulesCount(); ++module) {
         PetriNet *petri = mptrMPNet->getModule(module);
         res += petri->getSCCName(pss->getSCC(module));
     }
@@ -235,21 +231,20 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
  * @return true if *ms can be fusedm else false
  */
 MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
-
     for (const auto &elt: mlModuleSS[module]->getLMetaState()) {
         if (elt != ms && *elt == *ms) {
             //Compare out edges
             auto lEdges1 = ms->getSucc();
             auto lEdges2 = elt->getSucc();
             if (lEdges1.size() == lEdges2.size()) { // Check that all edges are the same
-                bool areSame=true;
+                bool areSame = true;
                 for (const auto &edge1: lEdges1) {
                     auto compare = [&edge1](ArcSync *arc) {
-                        return edge1->getFusion() == arc->getFusion() &&  edge1->getMetaStateDest() == arc->getMetaStateDest();
+                        return edge1->getFusion() == arc->getFusion() && edge1->getMetaStateDest() == arc->getMetaStateDest();
                     };
                     auto res = std::find_if(lEdges2.begin(), lEdges2.end(), compare);
                     if (res == lEdges2.end()) {
-                        areSame= false;
+                        areSame = false;
                         break;
                     }
                 }
@@ -261,20 +256,19 @@ MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
 }
 
 void DSSBuilder::outputTXT() {
-    uint32_t sumMS=0,sumStates=0,sumSCC=0,sumLocalEdges=0,sumSyncEdges=0;
-    for (const auto &module : mlModuleSS) {
-        sumMS+=module->getMetaStateCount();
-        cout<<"Module : "<<module->getMetaStateCount()<<endl;
-        for(const auto& ms:module->getLMetaState()) {
-            sumStates+=ms->getListMarq()->size();
-            sumSCC+=ms->getListSCCs()->size();
-            sumLocalEdges+=ms->getStateGraph()->getCountArcs();
-            sumSyncEdges+=ms->getSucc().size();
+    uint32_t sumMS = 0, sumStates = 0, sumSCC = 0, sumLocalEdges = 0, sumSyncEdges = 0;
+    for (const auto &module: mlModuleSS) {
+        sumMS += module->getMetaStateCount();
+        for (const auto &ms: module->getLMetaState()) {
+            sumStates += ms->getListMarq()->size();
+            sumSCC += ms->getListSCCs()->size();
+            sumLocalEdges += ms->getStateGraph()->getCountArcs();
+            sumSyncEdges += ms->getSucc().size();
         }
     }
-    cout<<"#MetaStates: "<<sumMS<<endl;
-    cout<<"#States: "<<sumStates<<endl;
-    cout<<"#SCCs: "<<sumSCC<<endl;
-    cout<<"#Local edges: "<<sumLocalEdges<<endl;
-    cout<<"#Sync edges:"<<sumSyncEdges<<endl;
+    cout << "#MetaStates: " << sumMS << endl;
+    cout << "#States: " << sumStates << endl;
+    cout << "#SCCs: " << sumSCC << endl;
+    cout << "#Local edges: " << sumLocalEdges << endl;
+    cout << "#Sync edges:" << sumSyncEdges << endl;
 }

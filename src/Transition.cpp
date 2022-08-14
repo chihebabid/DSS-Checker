@@ -12,7 +12,7 @@
 Transition::Transition()
 {
 	m_sync=false;
-	m_places_entrees.clear();
+	mlOutputPlaces.clear();
 	m_places_sorties.clear();
 	m_poids_entrees.clear();
 	m_poids_sorties.clear();
@@ -25,8 +25,8 @@ Transition::~Transition()
 
 bool Transition::isFranchissableLocal()
 {
-	for (int i=0;i<m_places_entrees.size();i++)		{		
-		if (m_places_entrees[i]->getTokens()<m_poids_entrees.at(i)) return false;
+	for (int i=0; i < mlOutputPlaces.size(); i++)		{
+		if (mlOutputPlaces[i]->getTokens() < m_poids_entrees.at(i)) return false;
 		
 	}
 	return true;			
@@ -37,7 +37,7 @@ bool Transition::isFranchissableLocal()
 
 void Transition::addPlaceEntree(Place *place,int poids)
 {
-	m_places_entrees.push_back(place);
+	mlOutputPlaces.push_back(place);
 	m_poids_entrees.push_back(poids);
 
 }

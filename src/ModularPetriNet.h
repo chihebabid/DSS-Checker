@@ -56,7 +56,7 @@ public:
 	int getCountFusions();
 	void addSync(const string transition_name);
 	void addModule(PetriNet* petri);
-	inline int getNbModules() {	return m_modules.size(); }
+	inline int getModulesCount() {	return m_modules.size(); }
 	void writeToFile(const string filename);
 	void writeTextFile(const string filename);
 	ModularPetriNet();

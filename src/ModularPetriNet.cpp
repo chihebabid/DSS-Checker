@@ -71,7 +71,7 @@ vector<Fusion *> ModularPetriNet::getFusionsFranchissables() {
 }
 
 void ModularPetriNet::printMarquage() {
-    for (int i = 0; i < getNbModules(); i++) {
+    for (int i = 0; i < getModulesCount(); i++) {
         m_modules[i]->printMarquage();
     }
 }
@@ -93,7 +93,7 @@ void ModularPetriNet::renommerTransitions(vectorString liste_transitions) {
 /////////////////////////////////////
 void ModularPetriNet::reduceMarquageName(NodeSG *marquage_global_depart,
                                          Fusion *fusion) {
-    for (int i = 0; i < getNbModules(); i++) {
+    for (int i = 0; i < getModulesCount(); i++) {
         if (!fusion->participate(i)) {
             marquage_global_depart->setVide(i);
         }
@@ -117,10 +117,10 @@ void ModularPetriNet::constructSync2() {
 
     // Initialiser le premier noeud du SG
     NodeSG *noeudSG_start = new NodeSG();
-    list_marq_locaux.resize(getNbModules());
+    list_marq_locaux.resize(getModulesCount());
 
     // Parcourir les espaces d'�tats locaux
-    for (int module = 0; module < getNbModules(); module++) {
+    for (int module = 0; module < getModulesCount(); module++) {
         ListMarquage *noeud_equiv = NULL;
         list_marq_locaux[module] = m_modules[module]->getListMarquageAccFrom(
                 m_modules[module]->getMarquage(),
@@ -144,7 +144,7 @@ void ModularPetriNet::constructSync2() {
         /////////////////////////////////////
 
         for (int index = 0; index < noeud->getCountArcs(); index++) {
-            for (int module = 0; module < getNbModules(); module++) {
+            for (int module = 0; module < getModulesCount(); module++) {
                 Marking source =
                         *(*noeud->getArc(index)->getMarquageSource()).getMarquage(
                                 module);
@@ -154,7 +154,7 @@ void ModularPetriNet::constructSync2() {
             fusion->tirer();
 
             NodeSG *noeudSG_arrivee = new NodeSG();
-            for (int module = 0; module < getNbModules(); module++) {
+            for (int module = 0; module < getModulesCount(); module++) {
                 Marking m = m_modules.at(module)->getMarquage();
                 noeudSG_arrivee->addMarquage(m, NULL);
             }
@@ -165,7 +165,7 @@ void ModularPetriNet::constructSync2() {
 
                 //noeudSG_arrivee->m_list.clear();
                 //noeudSG_arrivee->m_equiv.clear();
-                for (int module = 0; module < getNbModules(); module++) {
+                for (int module = 0; module < getModulesCount(); module++) {
                     ListMarquage *noeud_equiv = NULL;
                     if (fusion->participate(module)
                         || !(list_marq_locaux[module]->at(0)
@@ -192,7 +192,7 @@ void ModularPetriNet::constructSync2() {
                 delete noeudSG_arrivee;
             ArcSG *arc_sg = noeud->getArc(index);
             arc_sg->setDestination(node_arrive_nvo);
-            for (int module = 0; module < getNbModules(); module++) {
+            for (int module = 0; module < getModulesCount(); module++) {
                 ListMarquage *noeud_local =
                         m_espace->getEspaceLocal(module)->getFirstNodeContainMarquage(
                                 noeud->getArc(index)->getMarquageSource()->getMarquage(
@@ -218,7 +218,7 @@ void ModularPetriNet::constructSync2() {
 vector<NodeSGSimplified> *ModularPetriNet::calculerProduitSynchronises(
         vector<ListMarqLoc> &liste) {
     vector<int> indices;
-    indices.resize(getNbModules());
+    indices.resize(getModulesCount());
     fill(indices.begin(), indices.end(), 0);
 
     vector<NodeSGSimplified> *myliste = new vector<NodeSGSimplified>();
@@ -260,7 +260,7 @@ void ModularPetriNet::extractionFusion(vector<ListMarqLoc *> &liste_,
                                        NodeSG *node) {
 
     vector<int> indices;
-    indices.resize(getNbModules());
+    indices.resize(getModulesCount());
 
     fill(indices.begin(), indices.end(), 0);
 
@@ -271,7 +271,7 @@ void ModularPetriNet::extractionFusion(vector<ListMarqLoc *> &liste_,
         /****************************************************************/
         Fusion *fusion = m_fusions.at(index_fusion);
         bool canBeActive = true;
-        for (int j = 0; j < getNbModules() && canBeActive; j++) {
+        for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {
                 canBeActive = false;
                 for (int index = 0;
@@ -290,8 +290,8 @@ void ModularPetriNet::extractionFusion(vector<ListMarqLoc *> &liste_,
             // D�terminer tous les marquages locaux activant la fusion de transitions
             //////////////////////////////////////////////////////////////////////////
             vector<ListMarqLoc> liste_marq_locaux;
-            liste_marq_locaux.resize(getNbModules());
-            for (int j = 0; j < getNbModules(); j++) {
+            liste_marq_locaux.resize(getModulesCount());
+            for (int j = 0; j < getModulesCount(); j++) {
                 //liste_marq_locaux[j]=new ListMarqLoc();
                 if (fusion->participate(j)) {
                     for (int index = 0; index < liste_.at(j)->size(); index++) {
@@ -332,9 +332,9 @@ ModularSpace *ModularPetriNet::constructReducedStateSpace() {
     m_graphe_sync = new GrapheSync();
     m_espace = new ModularSpace();
     m_espace->setParent(this);
-    m_espace->setNbModules(getNbModules());
+    m_espace->setNbModules(getModulesCount());
     // Cr�ation des espaces d'�tats locaux
-    for (int index_module = 0; index_module < getNbModules(); index_module++) {
+    for (int index_module = 0; index_module < getModulesCount(); index_module++) {
         Automata *automata = new Automata();
         automata->setParent(m_espace, index_module);
         m_espace->insertGraphe(index_module, automata);
@@ -345,7 +345,7 @@ ModularSpace *ModularPetriNet::constructReducedStateSpace() {
 
     // 2�me �tape : Ach�vement de la construction des graphes locaux
     vector<Marking> list_marquages;
-    for (int index_module = 0; index_module < getNbModules(); index_module++) {
+    for (int index_module = 0; index_module < getModulesCount(); index_module++) {
 
         for (int i = 0; i < m_graphe_sync->getNodesCount(); i++) {
             NodeSG *node = m_graphe_sync->getNode(i);
@@ -369,14 +369,14 @@ ModularSpace *ModularPetriNet::constructReducedStateSpace() {
 
 DistributedState *ModularPetriNet::buildReducedDSS() {
     m_dss = new DistributedState(this);
-    m_dss->setNombreModules(getNbModules());
+    m_dss->setNombreModules(getModulesCount());
 
     MetaState *ms;
     // Build initial meta-states
     cout << "Build initial meta-states" << endl;
     ProductSCC *productscc = new ProductSCC();
     vector<MetaState *> list_metatstates;
-    for (int module = 0; module < getNbModules(); module++) {
+    for (int module = 0; module < getModulesCount(); module++) {
         ms = new MetaState();
         StateGraph *state_graph = m_modules[module]->getStateGraph(
                 m_modules[module]->getMarquage());
@@ -389,7 +389,7 @@ DistributedState *ModularPetriNet::buildReducedDSS() {
     }
 
     // Setting name for meta-states
-    for (int i = 0; i < getNbModules(); i++) {
+    for (int i = 0; i < getModulesCount(); i++) {
         list_metatstates.at(i)->setSCCProductName(productscc);
     }
     vector<RElement_dss> list_fusions;
@@ -408,7 +408,7 @@ DistributedState *ModularPetriNet::buildReducedDSS() {
                  index_global_state++) {
                 vector<Marking *> *global_state = elt.m_gs->at(
                         index_global_state);
-                for (int module = 0; module < getNbModules(); module++) {
+                for (int module = 0; module < getModulesCount(); module++) {
                     m_modules[module]->setMarquage(global_state->at(module));
                 }
                 Fusion *fusion = elt.m_fusion;
@@ -420,8 +420,8 @@ DistributedState *ModularPetriNet::buildReducedDSS() {
                 //cout << "Build destination meta-states" << endl;
                 ProductSCC *dest_productscc = new ProductSCC();
                 vector<MetaState *> dest_list_metatstates;
-                dest_list_metatstates.resize(getNbModules());
-                for (int module = 0; module < getNbModules(); module++) {
+                dest_list_metatstates.resize(getModulesCount());
+                for (int module = 0; module < getModulesCount(); module++) {
                     if (fusion->participate(module)) {
                         dest_ms = new MetaState();
 
@@ -453,7 +453,7 @@ DistributedState *ModularPetriNet::buildReducedDSS() {
 
                 vector<MetaState *> list_dest_metatstates;
                 bool exist = false;
-                for (int module = 0; module < getNbModules(); module++) {
+                for (int module = 0; module < getModulesCount(); module++) {
                     if (fusion->participate(module)) {
                         if (!m_dss->getMetaGraph(module)->findMetaStateByProductSCC(
                                 dest_productscc)) {
@@ -511,14 +511,14 @@ DistributedState *ModularPetriNet::buildReducedDSS() {
 
 DistributedState *ModularPetriNet::buildDSS() {
     m_dss = new DistributedState(this);
-    m_dss->setNombreModules(getNbModules());
+    m_dss->setNombreModules(getModulesCount());
 
     MetaState *ms;
     // Build initial meta-states
     //cout << "Build initial meta-states" << endl;
     ProductSCC *productscc = new ProductSCC();
     vector<MetaState *> list_metatstates;
-    for (int module = 0; module < getNbModules(); module++) {
+    for (int module = 0; module < getModulesCount(); module++) {
         ms = new MetaState();
         StateGraph *state_graph = m_modules[module]->getStateGraph(
                 m_modules[module]->getMarquage());
@@ -532,7 +532,7 @@ DistributedState *ModularPetriNet::buildDSS() {
     }
 
     // Setting name for meta-states
-    for (int i = 0; i < getNbModules(); i++) {
+    for (int i = 0; i < getModulesCount(); i++) {
         list_metatstates.at(i)->setSCCProductName(productscc);
     }
     ListProductFusion list_fusions;
@@ -551,7 +551,7 @@ DistributedState *ModularPetriNet::buildDSS() {
                  index_global_state++) {
                 vector<Marking *> *global_state = elt.m_gs->at(
                         index_global_state);
-                for (int module = 0; module < getNbModules(); module++) {
+                for (int module = 0; module < getModulesCount(); module++) {
                     m_modules[module]->setMarquage(global_state->at(module));
                 }
                 Fusion *fusion = elt.m_fusion;
@@ -563,7 +563,7 @@ DistributedState *ModularPetriNet::buildDSS() {
                 //cout << "Build destination meta-states" << endl;
                 ProductSCC *dest_productscc = new ProductSCC();
                 vector<MetaState *> dest_list_metatstates;
-                for (int module = 0; module < getNbModules(); module++) {
+                for (int module = 0; module < getModulesCount(); module++) {
                     dest_ms = new MetaState();
 
                     StateGraph *state_graph = m_modules[module]->getStateGraph(
@@ -582,7 +582,7 @@ DistributedState *ModularPetriNet::buildDSS() {
                 if (!m_dss->getMetaGraph(0)->findMetaStateByProductSCC(
                         dest_productscc)) {
                     // Insert metastate into DSS
-                    for (int module = 0; module < getNbModules(); module++) {
+                    for (int module = 0; module < getModulesCount(); module++) {
                         ArcSync *arc_sync = new ArcSync();
                         MetaState *source_ms =
                                 m_dss->getMetaGraph(module)->findMetaStateByProductSCC(
@@ -608,7 +608,7 @@ DistributedState *ModularPetriNet::buildDSS() {
                     }
 
                     // Setting name for meta-states
-                    for (int i = 0; i < getNbModules(); i++) {
+                    for (int i = 0; i < getModulesCount(); i++) {
                         dest_list_metatstates.at(i)->setSCCProductName(
                                 dest_productscc);
                     }
@@ -616,7 +616,7 @@ DistributedState *ModularPetriNet::buildDSS() {
                     extractEnabledFusion(dest_productscc, new_list_fusions);
                     stack_fusion.push_back(new_list_fusions);
                 } else {
-                    for (int module = 0; module < getNbModules(); module++) {
+                    for (int module = 0; module < getModulesCount(); module++) {
                         ArcSync *arc_sync = new ArcSync();
                         MetaState *source_ms =
                                 m_dss->getMetaGraph(module)->findMetaStateByProductSCC(
@@ -660,7 +660,7 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
         /************************************************/
         Fusion *fusion = m_fusions.at(index_fusion);
         bool canBeActive = true;
-        for (int j = 0; j < getNbModules() && canBeActive; j++) {
+        for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {
                 canBeActive = false;
                 ListLocalStates list_states = list_ms.at(j)->getListMarq(); //  m_dss->getLocalStates(product,j);
@@ -679,8 +679,8 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
             // Déterminer tous les marquages locaux activant la fusion de transitions
             //////////////////////////////////////////////////////////////////////////
 
-            states_enabling_fusion.resize(getNbModules());
-            for (int j = 0; j < getNbModules(); j++) {
+            states_enabling_fusion.resize(getModulesCount());
+            for (int j = 0; j < getModulesCount(); j++) {
                 ListLocalStates list_states = list_ms.at(j)->getListMarq();
                 // states_enabling_fusion.at(j)= NULL;
                 states_enabling_fusion.at(j) = new vector<Marking *>();
@@ -719,7 +719,7 @@ void ModularPetriNet::extractEnabledFusionV2(vector<MetaState *> &list_ms,vector
         /**Check whether a fusion set is enabled or not**/
         /************************************************/
         bool canBeActive = true;
-        for (int j = 0; j < getNbModules() && canBeActive; j++) {
+        for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {
                 canBeActive = false;
                 ListLocalStates list_states = list_ms.at(j)->getListMarq(); //  m_dss->getLocalStates(product,j);
@@ -737,8 +737,8 @@ void ModularPetriNet::extractEnabledFusionV2(vector<MetaState *> &list_ms,vector
             //////////////////////////////////////////////////////////////////////////
             // Déterminer tous les marquages locaux activant la fusion de transitions
             //////////////////////////////////////////////////////////////////////////
-            states_enabling_fusion.resize(getNbModules());
-            for (int j = 0; j < getNbModules(); j++) {
+            states_enabling_fusion.resize(getModulesCount());
+            for (int j = 0; j < getModulesCount(); j++) {
                 ListLocalStates list_states = list_ms.at(j)->getListMarq();
                 // states_enabling_fusion.at(j)= NULL;
                 states_enabling_fusion.at(j) = new vector<Marking *>();
@@ -777,7 +777,7 @@ void ModularPetriNet::extractEnabledFusion(ProductSCC *product,
         /************************************************/
         Fusion *fusion = m_fusions.at(index_fusion);
         bool canBeActive = true;
-        for (int j = 0; j < getNbModules() && canBeActive; j++) {
+        for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {
                 canBeActive = false;
                 ListLocalStates list_states = m_dss->getLocalStates(product, j);
@@ -796,8 +796,8 @@ void ModularPetriNet::extractEnabledFusion(ProductSCC *product,
             // D�terminer tous les marquages locaux activant la fusion de transitions
             //////////////////////////////////////////////////////////////////////////
 
-            states_enabling_fusion.resize(getNbModules());
-            for (int j = 0; j < getNbModules(); j++) {
+            states_enabling_fusion.resize(getModulesCount());
+            for (int j = 0; j < getModulesCount(); j++) {
                 ListLocalStates list_states = m_dss->getLocalStates(product, j);
                 // states_enabling_fusion.at(j)= NULL;
                 states_enabling_fusion.at(j) = new vector<Marking *>();
@@ -835,7 +835,7 @@ void ModularPetriNet::extractEnabledFusion(ProductSCC *product,
 
 ListGlobalStates ModularPetriNet::computeSychronisedProduct(vector<ListLocalStates> &states_enabling_fusion) {
     vector<int> indices;
-    indices.resize(getNbModules());
+    indices.resize(getModulesCount());
     fill(indices.begin(), indices.end(), 0);
 
     ListGlobalStates myliste = new vector<ListLocalStates>();
@@ -876,7 +876,7 @@ void ModularPetriNet::writeToFile(const string filename) {
     myfile.open(filename);
     myfile << "digraph " << "fichier " << "{" << endl;
     myfile << "compound=true" << endl;
-    for (int module = 0; module < getNbModules(); module++) {
+    for (int module = 0; module < getModulesCount(); module++) {
         PetriNet *petri = m_modules.at(module);
 
         for (int i = 0; i < m_dss->getMetaGraph(module)->getMetaStateCount();
@@ -928,7 +928,7 @@ void ModularPetriNet::writeToFile(const string filename) {
 
 string ModularPetriNet::getProductSCCName(ProductSCC *pss) {
     string res = "";
-    for (int module = 0; module < getNbModules(); module++) {
+    for (int module = 0; module < getModulesCount(); module++) {
         PetriNet *petri = m_modules.at(module);
         res += petri->getSCCName(pss->getSCC(module));
     }
@@ -939,7 +939,7 @@ void ModularPetriNet::writeTextFile(const string filename) {
     std::ofstream myfile;
     myfile.open(filename);
 
-    for (int module = 0; module < getNbModules(); module++) {
+    for (int module = 0; module < getModulesCount(); module++) {
         myfile << "******** Module " << module << " ********" << endl;
         myfile << "#Meta-states : "
                << m_dss->getMetaGraph(module)->getMetaStateCount() << endl;
