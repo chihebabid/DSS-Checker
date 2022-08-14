@@ -268,11 +268,13 @@ void DSSBuilder::outputTXT() {
         for(const auto& ms:module->getLMetaState()) {
             sumStates+=ms->getListMarq()->size();
             sumSCC+=ms->getListSCCs()->size();
+            sumLocalEdges+=ms->getStateGraph()->getCountArcs();
+            sumSyncEdges+=ms->getSucc().size();
         }
     }
     cout<<"#MetaStates: "<<sumMS<<endl;
     cout<<"#States: "<<sumStates<<endl;
     cout<<"#SCCs: "<<sumSCC<<endl;
-    cout<<"#Local edges: "<<endl;
-    cout<<"#Sync edges:"<<endl;
+    cout<<"#Local edges: "<<sumLocalEdges<<endl;
+    cout<<"#Sync edges:"<<sumSyncEdges<<endl;
 }
