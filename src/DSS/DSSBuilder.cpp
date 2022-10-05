@@ -137,14 +137,14 @@ void DSSBuilder::buildInitialMS() {
         // Reducing
         for (const auto &elt: list_fusions) {
             for (auto module = 0; module < mptrMPNet->getModulesCount(); ++module) {
-                auto *ms = elt.getMetaState(module);
-                auto ptrMS = reduce(ms, module);
+                auto *_ms = elt.getMetaState(module);
+                auto ptrMS = reduce(_ms, module);
                 if (ptrMS) {
                     // Redirect edges to ptrMS
                     // A comment
                     for (const auto &m: mlModuleSS[module]->getLMetaState()) {
                         for (const auto &edge: m->getSucc()) {
-                            if (edge->getMetaStateDest() == ptrMS) edge->setDestination(ms);
+                            if (edge->getMetaStateDest() == ptrMS) edge->setDestination(_ms);
                         }
                     }
                     // Remove ptrMS
