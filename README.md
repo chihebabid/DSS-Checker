@@ -6,9 +6,7 @@ Distributed State Space Builder is a distributed verification implementation bas
 
 - `git clone --recursive https://github.com/chihebabid/DSS-Checker.git`
 
-- `mkdir build`
-
-- `cd build`
+- `cd DSS-Checker ; mkdir build ; cd build`
 
 - `cmake ..`
 
