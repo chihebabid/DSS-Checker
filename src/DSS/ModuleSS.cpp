@@ -43,19 +43,27 @@ vector<MetaState *> &ModuleSS::getLMetaState() {
  * @brief Remove a metastate
  */
 void ModuleSS::removeMetaState(MetaState *ms) {
-    for (auto &edge: ms->getSucc()) {
+    for (auto edge: ms->getSucc()) {
         delete edge;
     }
-    std::remove(mlMetaState.begin(), mlMetaState.end(), ms);
-    mlMetaState.pop_back();
-    auto compare = [&ms](ArcSync *arc) {
+
+    auto ptrMl=std::remove(mlMetaState.begin(), mlMetaState.end(), ms);
+    mlMetaState.erase(ptrMl,mlMetaState.end());
+
+    auto compare = [&ms]( ArcSync* arc) -> bool {
         return ms == arc->getMetaStateDest();
     };
-    for (const auto &elt: mlMetaState) {
-        auto ptr = std::find_if(elt->getSucc().begin(), elt->getSucc().end(), compare);
-        if (ptr != elt->getSucc().end()) {
-            delete (*ptr);
-            elt->getSucc().erase(ptr);
+
+    for (const auto elt: mlMetaState) {
+        if (!elt->getSucc().empty()) {
+            auto ptr = std::find_if(begin(elt->getSucc()), end(elt->getSucc()), compare);
+            if (ptr!=elt->getSucc().end()) {
+                //cout<<"erassed\n";
+                //cout<<"size before : "<<elt->getSucc().size()<<endl;
+                elt->getSucc().erase(ptr);
+                //cout<<"size after : "<<elt->getSucc().size()<<endl;
+                delete (*ptr);
+            }
         }
     }
 }

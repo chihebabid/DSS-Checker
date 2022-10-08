@@ -207,7 +207,7 @@ void DSSBuilder::writeToFile(const string &filename) {
                        << getProductSCCName(ms_dest->getSCCProductName())
                        << module;
                 myfile << ",ltail=cluster" << getProductSCCName(pscc) << module;
-                myfile << ",color=red,shape=curve,label=\"(" << getProductSCCName(arc->getStartProduct()) << "," << arc->getFusion()->getName() << ")Impro\"]" << endl;
+                myfile << ",color=red,shape=curve,label=\"(" << getProductSCCName(arc->getStartProduct()) << "," << arc->getFusion()->getName() << ")\"]" << endl;
             }
         }
     }

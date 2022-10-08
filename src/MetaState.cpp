@@ -60,11 +60,11 @@ void MetaState::setSCCProductName(ProductSCC* name) {
 
 
 void MetaState::addSyncArc(ArcSync *sync_arc) {
-    m_arcs.push_back(sync_arc);
+    mArcs.push_back(sync_arc);
 }
 
-vector<ArcSync*> MetaState::getSucc() {
-    return m_arcs;
+vector<ArcSync*>& MetaState::getSucc() {
+    return mArcs;
 }
 uint32_t MetaState::getArcCount() {
     m_graph->getCountArcs();

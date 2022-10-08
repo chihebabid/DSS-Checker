@@ -46,7 +46,7 @@ Marking* StateGraph::addMarquage(Marking *m)
 
 /*void StateGraph::addArc(InternalArc *arc)
 {
-    m_arcs.push_back(*arc);
+    mArcs.push_back(*arc);
 }*/
 
 void StateGraph::setID(int module)
@@ -62,7 +62,7 @@ vector<Marking*>* StateGraph::getListMarquages()
 
 /*vector<InternalArc>* StateGraph::getListArcs()
 {
-    return &m_arcs;
+    return &mArcs;
 }*/
 
 vector<SCC*>* StateGraph::getListSCCs()

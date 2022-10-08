@@ -15,7 +15,7 @@ class ArcSync;
 class MetaState {
 public:
 	MetaState();
-	vector<ArcSync*> getSucc();
+	vector<ArcSync*>& getSucc();
 	void setStateGraph(StateGraph* aut);
     StateGraph* getStateGraph();
 	void setId(unsigned int id);
@@ -33,7 +33,7 @@ public:
 private:
 	StateGraph* m_graph;
 	ProductSCC* m_name;
-	vector<ArcSync*> m_arcs;
+	vector<ArcSync*> mArcs;
 	unsigned int m_id;
 };
 
