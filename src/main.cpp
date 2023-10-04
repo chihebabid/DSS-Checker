@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
     app.add_flag("--txt-output", txt_output, "Save the output graph in a formatted text file")->group("Print");
 
 
-    string property_file = "bonjour";
+    string property_file = "";
     app.add_option("--mc", property_file, "LTL property file")
             ->type_name("Path")
             ->check(CLI::ExistingFile);
