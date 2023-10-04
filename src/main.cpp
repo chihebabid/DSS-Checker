@@ -18,6 +18,99 @@
 
 
 using namespace std;
+struct Formula {
+    spot::formula f;
+    set<string> propositions;
+};
+
+/**
+ * Parse a file  containing a LTL formula and return its negation
+ *
+ * @param fileName Path to LTL formula
+ * @return Formula
+ */
+Formula negateFormula(const string &fileName) {
+    string input;
+    set<string> transitionSet;
+    ifstream file(fileName);
+
+    cout << "______________________________________" << endl;
+    cout << "Fetching formula ... " << endl;
+
+    if (!file.is_open()) {
+        cout << "Cannot open formula file" << endl;
+        exit(0);
+    }
+
+    getline(file, input);
+    cout << "        Loaded formula: " << input << endl;
+    file.close();
+
+    spot::parsed_formula pf = spot::parse_infix_psl(input);
+    if (pf.format_errors(std::cerr))
+        exit(0);
+
+    spot::formula fo = pf.f;
+    if (!fo.is_ltl_formula()) {
+        std::cerr << "Only LTL formulas are supported.\n";
+        exit(0);
+    }
+
+    spot::atomic_prop_set *p_list = spot::atomic_prop_collect(fo, nullptr);
+    for (const auto &i: *p_list) {
+        transitionSet.insert(i.ap_name());
+    }
+    cout << "Formula in SPIN format: ";
+    print_spin_ltl(std::cout, fo) << endl;
+
+    cout << "Building negation of the formula ... ";
+    spot::formula not_f = spot::formula::Not(pf.f);
+    cout << "done\n"
+         << endl;
+
+    return {not_f, transitionSet};
+}
+
+/**
+* Save a graph in a dot file
+*
+* @param graph Graph to be saved
+* @param filename Output filename
+* @param options Options to customized the print
+*/
+void saveGraph(spot::twa_graph_ptr &graph, const string &filename, const char *options = nullptr) {
+    fstream file;
+    file.open(filename.c_str(), fstream::out);
+    spot::print_dot(file, graph, options);
+    file.close();
+}
+
+
+/**
+ * Convert a formula into an automaton
+ *
+ * @param f  Formula to be converted
+ * @param bdd  BDD structure
+ * @param save_dot Save the automaton of the negated formula in a dot file
+ * @return spot::twa_graph_ptr
+ */
+spot::twa_graph_ptr formula2Automaton(const spot::formula &f, spot::bdd_dict_ptr bdd, bool save_dot = false) {
+    cout << "\nBuilding automata for not(formula)\n";
+    spot::translator tmp = spot::translator(bdd);
+    tmp.set_type(spot::postprocessor::BA);
+    spot::twa_graph_ptr af = tmp.run(f);
+//    spot::twa_graph_ptr af = spot::translator(bdd).run(f);
+    cout << "Formula automata built." << endl;
+
+    // save the generated automaton in a dot file
+    if (save_dot) {
+        saveGraph(af, "negated_formula.dot");
+    }
+
+    return af;
+}
+
+
 
 int main(int argc, char *argv[]) {
     CLI::App app{"DSS-Checker : Distributed State Space Checker"};
@@ -94,7 +187,12 @@ int main(int argc, char *argv[]) {
         if (txt_output) builder.outputTXT();
     }
     if (property_file != "") {
-        cout << "Property file is specified\n";
+        bool dot_formula = false;
+        // build automata of the negation of the formula
+        Formula negate_formula = negateFormula(property_file);
+        auto d = spot::make_bdd_dict();
+        spot::twa_graph_ptr af = formula2Automaton(negate_formula.f, d, dot_formula);
+
     }
     //ModularSpace* espace_etat=petri->constructReducedStateSpace();
 
@@ -102,10 +200,8 @@ int main(int argc, char *argv[]) {
     cout << duration << " seconds" << endl;
 
     if (dot_output && algorithm != "DSS") petri->writeToFile(file_name + ".dot");
-
     if (txt_output && algorithm != "DSS") petri->writeTextFile(file_name + ".txt");
 
     return 0;
     auto d = spot::make_bdd_dict();
 }
-
