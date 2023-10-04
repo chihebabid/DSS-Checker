@@ -5,11 +5,11 @@
 #include "BaseMPNet.h"
 
 
-PetriNet* BaseMPNet::getModule(const int index) {
+PetriNet *BaseMPNet::getModule(const int index) {
     return m_modules[index];
 }
 
 BaseMPNet::~BaseMPNet() {
-    for (const auto & elt : m_modules)
+    for (const auto &elt: m_modules)
         delete elt;
 }

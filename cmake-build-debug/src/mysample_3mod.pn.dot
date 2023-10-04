@@ -1,0 +1,49 @@
+digraph fichier {
+compound=true
+subgraph clustera1_b1_c1_0 {
+a1_a1_b1_c1_ [label="a1_"] ;
+label="a1_b1_c1_0"
+}
+a1_a1_b1_c1_ -> a3_a3_b4_c1_ [lhead=clustera3_b4_c1_0,ltail=clustera1_b1_c1_0,color=red,shape=curve,label="(a1_b1_c1_,sync1)Impro"]
+subgraph clustera3_b4_c1_0 {
+a2_a3_b4_c1_ [label="a2_"] ;
+a3_a3_b4_c1_ [label="a3_"] ;
+a2_a3_b4_c1_ -> a3_a3_b4_c1_[label="ta1"] ;
+a3_a3_b4_c1_ -> a2_a3_b4_c1_[label="ta2"] ;
+label="a3_b4_c1_0"
+}
+a3_a3_b4_c1_ -> a3_a3_b4_c1_ [lhead=clustera3_b4_c1_0,ltail=clustera3_b4_c1_0,color=red,shape=curve,label="(a3_b3_c2_,sync2)Impro"]
+subgraph clustera1_b1_c1_1 {
+b1_a1_b1_c1_ [label="b1_"] ;
+b2_a1_b1_c1_ [label="b2_"] ;
+b1_a1_b1_c1_ -> b2_a1_b1_c1_[label="tb1"] ;
+label="a1_b1_c1_1"
+}
+b1_a1_b1_c1_ -> b3_a3_b3_c1_ [lhead=clustera3_b3_c1_1,ltail=clustera1_b1_c1_1,color=red,shape=curve,label="(a1_b1_c1_,sync1)Impro"]
+subgraph clustera3_b3_c1_1 {
+b3_a3_b3_c1_ [label="b3_"] ;
+label="a3_b3_c1_1"
+}
+b3_a3_b3_c1_ -> b4_a3_b4_c1_ [lhead=clustera3_b4_c1_1,ltail=clustera3_b3_c1_1,color=red,shape=curve,label="(a3_b3_c2_,sync2)Impro"]
+subgraph clustera3_b4_c1_1 {
+b4_a3_b4_c1_ [label="b4_"] ;
+b3_a3_b4_c1_ [label="b3_"] ;
+b4_a3_b4_c1_ -> b3_a3_b4_c1_[label="tb2"] ;
+label="a3_b4_c1_1"
+}
+b4_a3_b4_c1_ -> b4_a3_b4_c1_ [lhead=clustera3_b4_c1_1,ltail=clustera3_b4_c1_1,color=red,shape=curve,label="(a3_b3_c2_,sync2)Impro"]
+subgraph clustera1_b1_c1_2 {
+c1_a1_b1_c1_ [label="c1_"] ;
+c2_a1_b1_c1_ [label="c2_"] ;
+c1_a1_b1_c1_ -> c2_a1_b1_c1_[label="tc"] ;
+label="a1_b1_c1_2"
+}
+c1_a1_b1_c1_ -> c1_a3_b4_c1_ [lhead=clustera3_b4_c1_2,ltail=clustera1_b1_c1_2,color=red,shape=curve,label="(a1_b1_c1_,sync1)Impro"]
+subgraph clustera3_b4_c1_2 {
+c1_a3_b4_c1_ [label="c1_"] ;
+c2_a3_b4_c1_ [label="c2_"] ;
+c1_a3_b4_c1_ -> c2_a3_b4_c1_[label="tc"] ;
+label="a3_b4_c1_2"
+}
+c1_a3_b4_c1_ -> c1_a3_b4_c1_ [lhead=clustera3_b4_c1_2,ltail=clustera3_b4_c1_2,color=red,shape=curve,label="(a3_b3_c2_,sync2)Impro"]
+}

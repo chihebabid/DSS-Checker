@@ -24,8 +24,10 @@
  */
 class IntCycleElement {
     virtual long isCycle(Marking *marq);
-	PilePhase1();
-	virtual ~PilePhase1();
-    };
+
+    PilePhase1();
+
+    virtual ~PilePhase1();
+};
 
 #endif // INTCYCLEELEMENT_H

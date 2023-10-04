@@ -8,17 +8,22 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
 #include "IntNode.h"
 
 
-class Node : public IntNode  {
+class Node : public IntNode {
 public:
-	void setName(const string name);
-	string getName() const;
-	Node();
-	virtual ~Node();
+    void setName(const string name);
+
+    string getName() const;
+
+    Node();
+
+    virtual ~Node();
+
 protected:
-	string m_name;
+    string m_name;
 };
 
 #endif // !defined(AFX_NODE1_H__1392115E_4EE1_4060_BB6E_945CC41A21DD__INCLUDED_)

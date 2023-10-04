@@ -9,18 +9,15 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-Element::Element()
-{
+Element::Element() {
 
 }
 
-Element::~Element()
-{
+Element::~Element() {
 
 }
 
-Element::Element(const Element &elt)
-{
-	liste_transitions=elt.liste_transitions;
-	marquage=elt.marquage;
+Element::Element(const Element &elt) {
+    liste_transitions = elt.liste_transitions;
+    marquage = elt.marquage;
 }

@@ -14,7 +14,7 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */     
+ */
 
 #ifndef KRIPKESTATE_H
 #define KRIPKESTATE_H
@@ -23,24 +23,24 @@
  * @todo write docs
  */
 class KripkeState {
-    public:
-        /**
-         * Default constructor
-         */
-        KripkeState();
+public:
+    /**
+     * Default constructor
+     */
+    KripkeState();
 
-        /**
-         * Copy constructor
-         *
-         * @param other TODO
-         */
-        KripkeState ( const KripkeState& other );
+    /**
+     * Copy constructor
+     *
+     * @param other TODO
+     */
+    KripkeState(const KripkeState &other);
 
-        /**
-         * Destructor
-         */
-        ~KripkeState();
+    /**
+     * Destructor
+     */
+    ~KripkeState();
 
-    };
+};
 
 #endif // KRIPKESTATE_H

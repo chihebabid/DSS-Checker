@@ -37,6 +37,12 @@ int main(int argc, char *argv[]) {
     bool txt_output{false};
     app.add_flag("--txt-output", txt_output, "Save the output graph in a formatted text file")->group("Print");
 
+
+    string property_file = "";
+    app.add_option("--mc", property_file, "LTL property file")
+            ->type_name("Path")
+            ->check(CLI::ExistingFile);
+
     CLI11_PARSE(app, argc, argv);
 
     ConstructPetriFromFile construire;
@@ -44,7 +50,7 @@ int main(int argc, char *argv[]) {
 
     ModularPetriNet *petri;
 
-    petri= construire.getModularPetrinet();
+    petri = construire.getModularPetrinet();
     cout << "Petri net information loaded successfully...\n";
     cout << "Petri net built from file : " << construire.getFileName() << endl;
 
@@ -84,18 +90,20 @@ int main(int argc, char *argv[]) {
         builder.build();
         finish = clock();
         cout << "DSS has been successfully built." << endl;
-        if (dot_output) builder.writeToFile(file_name+".dot");
+        if (dot_output) builder.writeToFile(file_name + ".dot");
         if (txt_output) builder.outputTXT();
     }
-
+    if (property_file != "") {
+        cout << "Property file is specified\n";
+    }
     //ModularSpace* espace_etat=petri->constructReducedStateSpace();
 
     duration = (double) (finish - start) / CLOCKS_PER_SEC;
     cout << duration << " seconds" << endl;
 
-    if (dot_output && algorithm!="DSS") petri->writeToFile(file_name+".dot");
+    if (dot_output && algorithm != "DSS") petri->writeToFile(file_name + ".dot");
 
-    if (txt_output && algorithm!="DSS") petri->writeTextFile(file_name+".txt");
+    if (txt_output && algorithm != "DSS") petri->writeTextFile(file_name + ".txt");
 
     return 0;
     auto d = spot::make_bdd_dict();

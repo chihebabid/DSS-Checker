@@ -47,17 +47,17 @@ void ModuleSS::removeMetaState(MetaState *ms) {
         delete edge;
     }
 
-    auto ptrMl=std::remove(mlMetaState.begin(), mlMetaState.end(), ms);
-    mlMetaState.erase(ptrMl,mlMetaState.end());
+    auto ptrMl = std::remove(mlMetaState.begin(), mlMetaState.end(), ms);
+    mlMetaState.erase(ptrMl, mlMetaState.end());
 
-    auto compare = [&ms]( ArcSync* arc) -> bool {
+    auto compare = [&ms](ArcSync *arc) -> bool {
         return ms == arc->getMetaStateDest();
     };
 
     for (const auto elt: mlMetaState) {
         if (!elt->getSucc().empty()) {
             auto ptr = std::find_if(begin(elt->getSucc()), end(elt->getSucc()), compare);
-            if (ptr!=elt->getSucc().end()) {
+            if (ptr != elt->getSucc().end()) {
                 //cout<<"erassed\n";
                 //cout<<"size before : "<<elt->getSucc().size()<<endl;
                 elt->getSucc().erase(ptr);

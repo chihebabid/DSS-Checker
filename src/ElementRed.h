@@ -8,25 +8,34 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
 #include <vector>
 #include "Fils.h"
 #include "ListMarquage.h"
+
 using namespace std;
-class ElementRed
-{
+
+class ElementRed {
 public:
 
-	void addFils(vector<Fils>& liste_fils);
-	ElementRed(const ElementRed &elt);
-	ElementRed& operator =(const ElementRed &elt);
-	bool isExist(Marking * marq);
-	ListMarquage* groupe;
-	vector<Fils> liste_fils;
-	bool etat;
-	ElementRed();
-	virtual ~ElementRed();
+    void addFils(vector<Fils> &liste_fils);
+
+    ElementRed(const ElementRed &elt);
+
+    ElementRed &operator=(const ElementRed &elt);
+
+    bool isExist(Marking *marq);
+
+    ListMarquage *groupe;
+    vector<Fils> liste_fils;
+    bool etat;
+
+    ElementRed();
+
+    virtual ~ElementRed();
+
 private :
-	int test;
+    int test;
 };
 
 #endif // !defined(AFX_ELEMENTRED_H__19D9D8D8_D797_4058_820B_43E8E344F5F4__INCLUDED_)

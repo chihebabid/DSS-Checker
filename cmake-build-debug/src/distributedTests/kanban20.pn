@@ -1,0 +1,108 @@
+Module : 4
+Places
+	Marquage : 20;
+   P1
+	Marquage : 0;
+   Pm1,Pout1,Pback1
+End
+Transitions
+	  tout1,tok1,tredo1,tback1,tsynch1_23 ;
+End
+Input
+   tout1 [ Pout1 ]
+   tok1 [ Pm1 ]
+   tredo1 [ Pm1 ]
+   tback1 [ Pback1 ]
+   tsynch1_23 [ P1 ]
+End
+Output
+   tout1 [ P1 ]
+   tok1 [ Pout1 ]
+   tredo1 [ Pback1 ]
+   tback1 [ Pm1 ]
+   tsynch1_23 [ Pm1 ]
+   
+
+End
+Places
+Marquage : 20;
+   P2 
+	Marquage : 0;
+   Pm2,Pout2,Pback2
+End
+Transitions
+	  tok2,tredo2,tback2,tsynch1_23,tsynch4_23 ;
+End
+Input
+   
+   tok2 [ Pm2 ]
+   tredo2 [ Pm2 ]
+   tback2 [ Pback2 ]
+   tsynch1_23 [ Pout2 ]
+   tsynch4_23 [ P2 ]
+End
+Output
+   
+   tok2 [ Pout2 ]
+   tredo2 [ Pback2 ]
+   tback2 [ Pm2 ]
+   tsynch1_23 [ P2 ]
+   tsynch4_23 [ Pm2 ]
+End
+Places
+Marquage : 20;
+   P3 
+	Marquage : 0;
+  Pm3,Pout3,Pback3
+End
+Transitions
+	   tok3,tredo3,tback3,tsynch1_23,tsynch4_23;
+End
+Input
+   tok3 [ Pm3 ]
+   tredo3 [ Pm3 ]
+   tback3 [ Pback3 ]
+   tsynch1_23 [ Pout3 ]
+   tsynch4_23 [ P3 ]
+   
+
+End
+Output
+   tok3 [ Pout3 ]
+   tredo3 [ Pback3 ]
+   tback3 [ Pm3 ]
+   tsynch1_23 [ P3 ]
+   tsynch4_23 [ Pm3 ]
+   
+End
+Places
+	Marquage : 20;
+   P4 
+	Marquage : 0;
+   Pm4,Pout4,Pback4
+End
+Transitions
+	   tin4,tok4,tredo4,tback4,tsynch4_23;
+End
+Input
+   tin4 [ P4 ]
+   tok4 [ Pm4 ]
+   tredo4 [ Pm4 ]
+   tback4 [ Pback4 ]
+   tsynch4_23 [ Pout4 ]
+
+   
+
+End
+Output
+   tin4 [ Pm4 ]
+   tok4 [ Pout4 ]
+   tredo4 [ Pback4 ]
+   tback4 [ Pm4 ]
+   tsynch4_23 [ P4 ]
+ 
+
+End
+Sync
+	tsynch4_23,tsynch1_23
+End

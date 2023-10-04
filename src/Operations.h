@@ -8,19 +8,27 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
 #include <vector>
 #include "ArcSG.h"
+
 using namespace std;
-class Operations
-{
+
+class Operations {
 public:
-	static bool findArc(vector<ArcSG*>* liste,ArcSG* arc);
-	static void reduceArcs(vector<ArcSG*>** list_arcs);
-	static bool verifier(vector<Transition*>& liste,string transition);
-	static bool find(vector<string> liste,string value);
-	static bool find(vector<Marking> list,Marking  *marq);
-	Operations();
-	virtual ~Operations();
+    static bool findArc(vector<ArcSG *> *liste, ArcSG *arc);
+
+    static void reduceArcs(vector<ArcSG *> **list_arcs);
+
+    static bool verifier(vector<Transition *> &liste, string transition);
+
+    static bool find(vector<string> liste, string value);
+
+    static bool find(vector<Marking> list, Marking *marq);
+
+    Operations();
+
+    virtual ~Operations();
 
 };
 

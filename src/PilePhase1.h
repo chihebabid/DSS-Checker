@@ -8,15 +8,20 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
 #include "ElementPhase1.h"
+
 using std::vector;
-class PilePhase1
-{
+
+class PilePhase1 {
 public:
-	long isCycle(Marking *marq);
-	PilePhase1();
-	virtual ~PilePhase1();
-	vector<ElementPhase1> m_liste;
+    long isCycle(Marking *marq);
+
+    PilePhase1();
+
+    virtual ~PilePhase1();
+
+    vector<ElementPhase1> m_liste;
 
 };
 

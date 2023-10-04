@@ -4,6 +4,7 @@
 
 #ifndef DISTRIBUTEDSTATESPACE_DSSBUILDER_H
 #define DISTRIBUTEDSTATESPACE_DSSBUILDER_H
+
 #include "ModularPetriNet.h"
 #include "ModuleSS.h"
 #include <string>
@@ -11,15 +12,22 @@
 class DSSBuilder {
 public:
     DSSBuilder(ModularPetriNet *ptr);
+
     void build();
-    void writeToFile(const string& filename);
+
+    void writeToFile(const string &filename);
+
     void outputTXT();
+
 private:
     string getProductSCCName(ProductSCC *pss);
-    MetaState* reduce(MetaState *ms,const int &module);
+
+    MetaState *reduce(MetaState *ms, const int &module);
+
     void buildInitialMS();
+
     ModularPetriNet *mptrMPNet;
-    vector<ModuleSS*> mlModuleSS;
+    vector<ModuleSS *> mlModuleSS;
 };
 
 

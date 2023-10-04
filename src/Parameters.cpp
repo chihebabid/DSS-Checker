@@ -9,12 +9,10 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-Parameters::Parameters()
-{
-	
+Parameters::Parameters() {
+
 }
 
-Parameters::~Parameters()
-{
+Parameters::~Parameters() {
 
 }

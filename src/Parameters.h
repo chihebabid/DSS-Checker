@@ -9,12 +9,12 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-class Parameters  
-{
+class Parameters {
 public:
 
-	Parameters();
-	virtual ~Parameters();
+    Parameters();
+
+    virtual ~Parameters();
 
 };
 

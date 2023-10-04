@@ -3,16 +3,18 @@
 
 #include "Marking.h"
 #include "Transition.h"
-class PElement
-{
-    public:
-        PElement();
-        virtual ~PElement();
-        Marking* marquage;
-        vector<Transition*> liste_transitions;
-    protected:
 
-    private:
+class PElement {
+public:
+    PElement();
+
+    virtual ~PElement();
+
+    Marking *marquage;
+    vector<Transition *> liste_transitions;
+protected:
+
+private:
 };
 
 #endif // PELEMENT_H

@@ -1,0 +1,66 @@
+Module : 2
+Places
+	Marquage : 1;
+   Idle0,Fork0 
+	Marquage : 0;
+   WaitLeft0,HasLeft0,WaitRight0,HasRight0,IsEating0
+End
+Transitions
+	   GoEat0,GoLeft0,GoRight0,Eat0,Release0,Release1,GoLeft1;
+End
+Input
+   GoEat0 [ Idle0 ]
+   GoLeft0  [ WaitLeft0 ]
+   GoRight0 [ WaitRight0 ]
+   GoRight0 [ Fork0 ]
+   Eat0 [ HasLeft0 ]
+   Eat0 [ HasRight0 ]
+   Release0 [ IsEating0 ]
+   GoLeft1 [ Fork0 ]
+   
+
+End
+Output
+   GoEat0 [ WaitLeft0 ]
+   GoEat0 [ WaitRight0 ]
+   GoLeft0  [ HasLeft0 ]
+   GoRight0  [ HasRight0 ]
+   Eat0 [ IsEating0 ]
+   Release0 [ Idle0 ]
+   Release0 [ Fork0 ]
+   Release1 [ HasLeft0 ]
+
+End
+Places
+Marquage : 1;
+   Idle1,Fork1 
+	Marquage : 0;
+   WaitLeft1,HasLeft1,WaitRight1,HasRight1,IsEating1
+End
+Transitions
+	   GoEat1,GoLeft1,GoRight1,Eat1,Release1,Release0,GoLeft0;
+End
+Input
+   GoEat1 [ Idle1 ]
+   GoLeft1  [ WaitLeft1 ]
+   GoRight1 [ WaitRight1 ]
+   Eat1 [ HasRight1 ]
+   Eat1 [ HasLeft1 ]
+   Release1 [ IsEating1 ]
+   GoLeft0  [ Fork1 ]
+
+End
+Output
+   GoEat1 [ WaitLeft1 ]
+   GoEat1 [ WaitRight1 ]
+   GoLeft1  [ HasLeft1 ]
+   GoRight1  [ HasRight1 ]
+   Eat1 [ IsEating1 ]
+   Release1 [ Idle1 ]
+   Release1 [ Fork1 ]
+   Release0 [ Fork1 ]
+   
+End
+Sync
+	GoLeft0,Release0,GoLeft1,Release1
+End

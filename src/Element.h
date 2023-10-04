@@ -8,16 +8,20 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
+
 #include "Marking.h"
 #include "Transition.h"
-class Element
-{
+
+class Element {
 public:
-	Element(const Element &elt);
-	Marking marquage;
-	vector<Transition*> liste_transitions;
-	Element();
-	virtual ~Element();
+    Element(const Element &elt);
+
+    Marking marquage;
+    vector<Transition *> liste_transitions;
+
+    Element();
+
+    virtual ~Element();
 
 };
 

@@ -17,14 +17,13 @@
  */
 
 #include "CycleElement.h"
-template <classname T>
-CycleElement::CycleElement()
-{
+
+template<classname T>
+CycleElement::CycleElement() {
 
 }
 
-template <classname T>
-CycleElement::~CycleElement()
-{
+template<classname T>
+CycleElement::~CycleElement() {
 
 }

@@ -708,13 +708,14 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
     }
 
 }
+
 /*
  * @brief Determine enabled fusion transitions
  */
 
-void ModularPetriNet::extractEnabledFusionV2(vector<MetaState *> &list_ms,vector<RElement_dss> &list_elt) {
+void ModularPetriNet::extractEnabledFusionV2(vector<MetaState *> &list_ms, vector<RElement_dss> &list_elt) {
     vector<ListLocalStates> states_enabling_fusion;
-    for (const auto & fusion : m_fusions) {
+    for (const auto &fusion: m_fusions) {
         /************************************************/
         /**Check whether a fusion set is enabled or not**/
         /************************************************/

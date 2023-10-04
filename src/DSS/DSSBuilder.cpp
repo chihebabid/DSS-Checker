@@ -195,7 +195,7 @@ void DSSBuilder::writeToFile(const string &filename) {
             myfile << "label=\"" << getProductSCCName(pscc) << module << "\"" << endl;
             myfile << "}" << endl;
 
-            for (const auto& arc : ms->getSucc()) { // Build output edges of Metastate ms
+            for (const auto &arc: ms->getSucc()) { // Build output edges of Metastate ms
                 myfile << petri->getSCCName(ms->getSCCProductName()->getSCC(module)) << getProductSCCName(pscc)
                        << " -> ";
                 MetaState *ms_dest = arc->getMetaStateDest();

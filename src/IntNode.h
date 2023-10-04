@@ -11,13 +11,16 @@
 
 #include <vector>
 #include <iostream>
+
 using namespace std;
-class IntNode
-{
+
+class IntNode {
 public:
-	virtual vector<IntNode> getNext();
-	IntNode();
-	virtual ~IntNode();
+    virtual vector<IntNode> getNext();
+
+    IntNode();
+
+    virtual ~IntNode();
 
 };
 

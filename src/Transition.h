@@ -12,51 +12,61 @@
 
 #include "Node.h"
 #include "Place.h"
-#include "PetriNet.h"	// Added by ClassView
+#include "PetriNet.h"    // Added by ClassView
 
 
-class Transition : public Node
-{
+class Transition : public Node {
 public:
-	inline int getPlacesEntreesCount(){
-	return mlOutputPlaces.size();
-}
+    inline int getPlacesEntreesCount() {
+        return mlOutputPlaces.size();
+    }
 
-	int getPetri();
-	void setPetri(const int petri);
-	int getCode();
-	void setCode(const int code);
-	bool isFranchissable();
-	void setSync(const bool enable);
-	inline bool isSync()
-	{
-		return m_sync;
-	}
-	void addPlaceSortie(Place* place,int poids);
-	void addPlaceEntree(Place* place,int poids);
-	inline void tirer()
-	{
-		// Ajouter les jetons aux places de sorties
-		for (unsigned int i=0;i<m_places_sorties.size();i++) {
-			m_places_sorties.at(i)->addTokens(m_poids_sorties.at(i));
-		}
-		//Supprimer les jetons � partir de places d'entr�es
-		for (unsigned int i=0; i < mlOutputPlaces.size(); i++) {
-			mlOutputPlaces.at(i)->subTokens(m_poids_entrees.at(i));
+    int getPetri();
 
-		}
-	}
-	bool isFranchissableLocal();
-	Transition();
-	virtual ~Transition();
+    void setPetri(const int petri);
+
+    int getCode();
+
+    void setCode(const int code);
+
+    bool isFranchissable();
+
+    void setSync(const bool enable);
+
+    inline bool isSync() {
+        return m_sync;
+    }
+
+    void addPlaceSortie(Place *place, int poids);
+
+    void addPlaceEntree(Place *place, int poids);
+
+    inline void tirer() {
+        // Ajouter les jetons aux places de sorties
+        for (unsigned int i = 0; i < m_places_sorties.size(); i++) {
+            m_places_sorties.at(i)->addTokens(m_poids_sorties.at(i));
+        }
+        //Supprimer les jetons � partir de places d'entr�es
+        for (unsigned int i = 0; i < mlOutputPlaces.size(); i++) {
+            mlOutputPlaces.at(i)->subTokens(m_poids_entrees.at(i));
+
+        }
+    }
+
+    bool isFranchissableLocal();
+
+    Transition();
+
+    virtual ~Transition();
+
 private:
-	int m_petri_num;
-	int m_code;
-	bool m_sync;
-	vector<Place*> mlOutputPlaces;
-	vector<Place*> m_places_sorties;
-	vector<int> m_poids_entrees;
-	vector<int> m_poids_sorties;
+    int m_petri_num;
+    int m_code;
+    bool m_sync;
+    vector<Place *> mlOutputPlaces;
+    vector<Place *> m_places_sorties;
+    vector<int> m_poids_entrees;
+    vector<int> m_poids_sorties;
 
 
 };

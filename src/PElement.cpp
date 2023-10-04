@@ -1,12 +1,10 @@
 //#include "../StdAfx.h"
 #include "PElement.h"
 
-PElement::PElement()
-{
+PElement::PElement() {
     //ctor
 }
 
-PElement::~PElement()
-{
+PElement::~PElement() {
     //dtor
 }

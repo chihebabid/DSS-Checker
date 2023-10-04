@@ -9,17 +9,15 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-IntNode::IntNode()
-{
+IntNode::IntNode() {
 
 }
 
-IntNode::~IntNode()
-{
+IntNode::~IntNode() {
 
 }
 
 
-vector <IntNode> IntNode::getNext() {
-	return getNext();
+vector<IntNode> IntNode::getNext() {
+    return getNext();
 }

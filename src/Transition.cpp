@@ -9,83 +9,69 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-Transition::Transition()
-{
-	m_sync=false;
-	mlOutputPlaces.clear();
-	m_places_sorties.clear();
-	m_poids_entrees.clear();
-	m_poids_sorties.clear();
+Transition::Transition() {
+    m_sync = false;
+    mlOutputPlaces.clear();
+    m_places_sorties.clear();
+    m_poids_entrees.clear();
+    m_poids_sorties.clear();
 }
 
-Transition::~Transition()
-{
-
-}
-
-bool Transition::isFranchissableLocal()
-{
-	for (int i=0; i < mlOutputPlaces.size(); i++)		{
-		if (mlOutputPlaces[i]->getTokens() < m_poids_entrees.at(i)) return false;
-		
-	}
-	return true;			
-}
-
-
-
-
-void Transition::addPlaceEntree(Place *place,int poids)
-{
-	mlOutputPlaces.push_back(place);
-	m_poids_entrees.push_back(poids);
+Transition::~Transition() {
 
 }
 
-void Transition::addPlaceSortie(Place *place,int poids)
-{
-	m_places_sorties.push_back(place);
-	m_poids_sorties.push_back(poids);
+bool Transition::isFranchissableLocal() {
+    for (int i = 0; i < mlOutputPlaces.size(); i++) {
+        if (mlOutputPlaces[i]->getTokens() < m_poids_entrees.at(i)) return false;
+
+    }
+    return true;
+}
+
+
+void Transition::addPlaceEntree(Place *place, int poids) {
+    mlOutputPlaces.push_back(place);
+    m_poids_entrees.push_back(poids);
+
+}
+
+void Transition::addPlaceSortie(Place *place, int poids) {
+    m_places_sorties.push_back(place);
+    m_poids_sorties.push_back(poids);
 
 }
 
 
-
-
-void Transition::setSync(const bool enable)
-{
-	m_sync=enable;
+void Transition::setSync(const bool enable) {
+    m_sync = enable;
 }
 
-bool Transition::isFranchissable()
-{
-	if (isSync()) return false;
-	return isFranchissableLocal();
+bool Transition::isFranchissable() {
+    if (isSync()) return false;
+    return isFranchissableLocal();
 }
 
 ////////////////////////////////////
 // Fixer le code d'une transition //
 ////////////////////////////////////
-void Transition::setCode(const int code)
-{
-	m_code=code;
+void Transition::setCode(const int code) {
+    m_code = code;
 }
+
 ///////////////////////////////////////
 // Renvoyer le code d'une transition //
 ///////////////////////////////////////
-int Transition::getCode()
-{
-	return m_code;
+int Transition::getCode() {
+    return m_code;
 }
 
-void Transition::setPetri(const int  petri)
-{
-	m_petri_num=petri;
+void Transition::setPetri(const int petri) {
+    m_petri_num = petri;
 }
 
-int Transition::getPetri()
-{
-	return m_petri_num;
+int Transition::getPetri() {
+    return m_petri_num;
 }
 
 

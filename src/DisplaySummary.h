@@ -8,17 +8,21 @@
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
-#include "ModularPetriNet.h"
-class DisplaySummary
-{
-public:
-	void display();
 
-	void setPetr(CModularPetriNet* petri);
-	DisplaySummary();
-	virtual ~DisplaySummary();
+#include "ModularPetriNet.h"
+
+class DisplaySummary {
+public:
+    void display();
+
+    void setPetr(CModularPetriNet *petri);
+
+    DisplaySummary();
+
+    virtual ~DisplaySummary();
+
 private :
-	CModularPetriNet* m_petri;
+    CModularPetriNet *m_petri;
 
 };
 

@@ -1,0 +1,85 @@
+Loading modular Petri net from file...
+This modular Petri net consists of 3 modules
+Displaying informations related to the modular Petri net
+Module n�1
+Added place: Idle0
+Added place: Fork0
+Added place: WaitLeft0
+Added place: HasLeft0
+Added place: WaitRight0
+Added place: HasRight0
+Added place: IsEating0
+Transition: GoEat0 has as place inputs Idle0<
+Transition: GoLeft0 has as place inputs WaitLeft0<
+Transition: GoRight0 has as place inputs WaitRight0<
+Transition: GoRight0 has as place inputs Fork0<
+Transition: Eat0 has as place inputs HasLeft0<
+Transition: Eat0 has as place inputs HasRight0<
+Transition: Release0 has as place inputs IsEating0<
+Transition: GoLeft1 has as place inputs Fork0<
+
+Transition: GoEat0 has as output places >WaitLeft0
+Transition: GoEat0 has as output places >WaitRight0
+Transition: GoLeft0 has as output places >HasLeft0
+Transition: GoRight0 has as output places >HasRight0
+Transition: Eat0 has as output places >IsEating0
+Transition: Release0 has as output places >Idle0
+Transition: Release1 has as output places >Fork0
+
+Module n�2
+Added place: Idle1
+Added place: Fork1
+Added place: WaitLeft1
+Added place: HasLeft1
+Added place: WaitRight1
+Added place: HasRight1
+Added place: IsEating1
+Transition: GoEat1 has as place inputs Idle1<
+Transition: GoLeft1 has as place inputs WaitLeft1<
+Transition: GoRight1 has as place inputs WaitRight1<
+Transition: Eat1 has as place inputs HasRight1<
+Transition: Eat1 has as place inputs HasLeft1<
+Transition: Release1 has as place inputs IsEating1<
+Transition: GoLeft2 has as place inputs Fork1<
+
+Transition: GoEat1 has as output places >WaitLeft1
+Transition: GoEat1 has as output places >WaitRight1
+Transition: GoLeft1 has as output places >HasLeft1
+Transition: GoRight1 has as output places >HasRight1
+Transition: Eat1 has as output places >IsEating1
+Transition: Release1 has as output places >Idle1
+Transition: Release1 has as output places >Fork1
+Transition: Release2 has as output places >Fork1
+
+Module n�3
+Added place: Idle2
+Added place: Fork2
+Added place: WaitLeft2
+Added place: HasLeft2
+Added place: WaitRight2
+Added place: HasRight2
+Added place: IsEating2
+Transition: GoEat2 has as place inputs Idle2<
+Transition: GoLeft2 has as place inputs WaitLeft2<
+Transition: GoRight1 has as place inputs WaitRight1<
+Erreur d'ajout d'une relation!
+
+Transition: Eat2 has as place inputs HasRight2<
+Transition: Eat2 has as place inputs HasLeft2<
+Transition: Release2 has as place inputs IsEating2<
+Transition: GoLeft0 has as place inputs Fork2<
+
+Transition: GoEat2 has as output places >WaitLeft2
+Transition: GoEat2 has as output places >WaitRight2
+Transition: GoLeft2 has as output places >HasLeft2
+Transition: GoRight2 has as output places >HasRight2
+Transition: Eat2 has as output places >IsEating2
+Transition: Release2 has as output places >Idle2
+Transition: Release2 has as output places >Fork2
+Transition: Release0 has as output places >Fork2
+
+Determining synchronised transitions...
+GoLeft0 Release0 GoLeft1 Release1 GoLeft2 Release2 Petri net information loaded successfully...
+Petri net built from file : philo3.pn
+Building DSS (new version) has been started...
+Build initial meta-states

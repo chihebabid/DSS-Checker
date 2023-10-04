@@ -18,17 +18,14 @@
 
 #include "KripkeState.h"
 
-KripkeState::KripkeState()
-{
+KripkeState::KripkeState() {
 
 }
 
-KripkeState::KripkeState ( const KripkeState& other )
-{
+KripkeState::KripkeState(const KripkeState &other) {
 
 }
 
-KripkeState::~KripkeState()
-{
+KripkeState::~KripkeState() {
 
 }

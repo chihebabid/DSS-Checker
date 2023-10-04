@@ -11,18 +11,24 @@
 
 #include "PetriNet.h"
 #include "Arc.h"
-class Graphe
-{
+
+class Graphe {
 public:
-	Graphe();
-	vector<Marking>* getListMarq();
-	void addMarquage(Marking *m);
-	void addArc(Arc *arc);
-	bool existMarquage(Marking* mar);
-	virtual ~Graphe();
+    Graphe();
+
+    vector<Marking> *getListMarq();
+
+    void addMarquage(Marking *m);
+
+    void addArc(Arc *arc);
+
+    bool existMarquage(Marking *mar);
+
+    virtual ~Graphe();
+
 private:
-	vector<Marking>* m_nodes;
-	vector<Arc>* m_arcs;
+    vector<Marking> *m_nodes;
+    vector<Arc> *m_arcs;
 
 };
 
