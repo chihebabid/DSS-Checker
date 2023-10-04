@@ -88,3 +88,5 @@ dkms.conf
 
 # Cmake
 cmake-build-debug/
+*.log
+
