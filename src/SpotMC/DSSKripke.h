@@ -12,7 +12,6 @@ class DSSKripke : public spot::kripke {
 public:
     DSSKripke ( const spot::bdd_dict_ptr& dict_ptr, MetaGraph *metagraph);
     spot::state* get_init_state() const;
-
 };
 
 

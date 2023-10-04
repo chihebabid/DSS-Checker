@@ -2,7 +2,7 @@
 #include "SCC.h"
 
 SCC::SCC() {
-    //ctor
+    mId=mCounter++;
 }
 
 SCC::~SCC() {
@@ -40,3 +40,12 @@ void SCC::addState(Marking *m) {
 vector<Marking *> *SCC::getListStates() {
     return &m_list;
 }
+
+uint32_t SCC::getId() const {
+    return mId;
+}
+
+
+uint32_t SCC::mCounter {0};
+
+

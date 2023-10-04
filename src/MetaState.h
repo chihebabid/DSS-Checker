@@ -19,7 +19,6 @@ class ArcSync;
 class MetaState {
 public:
     MetaState();
-
     vector<ArcSync *> &getSucc();
 
     void setStateGraph(StateGraph *aut);

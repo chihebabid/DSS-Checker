@@ -27,7 +27,7 @@ public:
 
     size_t hash() const override
     {
-        return m_scc->getCount();
+        return m_scc->getId(); // TODO: Add meta state Id ???
     }
 
     int compare(const spot::state* other) const override

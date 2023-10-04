@@ -7,23 +7,20 @@
 class SCC {
 public:
     SCC();
-
     virtual ~SCC();
-
     Marking *existState(Marking *m);
-
     long getCount();
-
     void addState(Marking *m);
-
     vector<Marking *> *getListStates();
-
     bool isEqual(const SCC &scc);
 
-protected:
+
+    uint32_t getId() const;
 
 private:
     vector<Marking *> m_list;
+    static uint32_t mCounter;
+    uint32_t mId;
 };
 
 #endif // SCC_H
