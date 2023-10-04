@@ -1,1 +1,0 @@
-cmd='./configure;--disable-doxygen;--disable-python;--enable-silent-rules;--silent;--prefix=<INSTALL_DIR>'
