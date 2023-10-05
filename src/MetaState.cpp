@@ -9,7 +9,7 @@
 
 MetaState::MetaState() {
     m_graph = NULL;
-    m_id = 0;
+    m_id = m_Counter++;
 }
 
 MetaState::~MetaState() {
@@ -25,9 +25,7 @@ StateGraph *MetaState::getStateGraph() {
     return m_graph;
 }
 
-void MetaState::setId(unsigned int id) {
-    m_id = id;
-}
+
 
 vector<Marking *> *MetaState::getListMarq() {
     return m_graph->getListMarquages();
@@ -85,3 +83,9 @@ bool MetaState::operator==(const MetaState &ms) {
     }
     return true;
 }
+
+uint32_t MetaState::getId() const {
+    return m_id;
+}
+
+uint32_t MetaState::m_Counter {0};

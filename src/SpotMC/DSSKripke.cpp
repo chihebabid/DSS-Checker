@@ -13,5 +13,5 @@ DSSKripke::DSSKripke(const spot::bdd_dict_ptr &dict_ptr,MetaGraph *metagraph): s
 
 spot::state* DSSKripke::get_init_state() const {
     //cout<<"Initial state given...\n";
-    return new DSSState(m_metagraph->getMetaState(0)->getInitialSCC());
+    return new DSSState(m_metagraph->getMetaState(0)->getInitialSCC(),m_metagraph->getMetaState(0));
 }
