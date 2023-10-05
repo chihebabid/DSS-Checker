@@ -40,9 +40,6 @@ public:
         else
             return h > oh;
     }
-
-
-
 };
 
 
