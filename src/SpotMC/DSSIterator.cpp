@@ -4,11 +4,31 @@
 
 #include "DSSIterator.h"
 
+DSSIterator::DSSIterator ( SCC* scc,MetaState *ms, bdd cnd ) :m_scc ( scc ), kripke_succ_iterator ( cnd )
+{
+    StateGraph *graph=ms->getStateGraph();
+    // Add local successors
+    for (const auto &source: *(scc->getListStates())) {
+        //auto sourceName = petri->getMarquageName(*source);
+        auto lsucc = source->getListSucc();
+        if (!lsucc->empty()) {
+            for (const auto &elt: *lsucc) {
+                Transition *t=elt.first;
+                Marking *m=elt.second;
+
+                auto dest_scc=ms->findSCC(m);
+
+
+            }
+        }
+    }
+}
+
 
 bool DSSIterator::first()
 {
     m_current_edge=0;
-    return m_edge_count!=0;              // There exists a successor.
+    return m_lsucc.size()!=0;              // There exists a successor.
 }
 
 bool DSSIterator::next()
@@ -26,3 +46,17 @@ DSSState* DSSIterator::dst() const
 {
     return new DSSState(std::get<0>(m_lsucc[m_current_edge]),std::get<1>(m_lsucc[m_current_edge]));
 }
+
+bdd DSSIterator::cond()  const
+{
+
+    if (std::get<2>(m_lsucc[m_current_edge])==NULL ) {
+        return bddtrue;
+    }
+    spot::formula f=spot::formula::ap (std::get<2>(m_lsucc[m_current_edge])->getName());
+    spot::bdd_dict *p=m_dict_ptr->get();
+    bdd   result=bdd_ithvar ( ( p->var_map.find ( f ) )->second );
+    return result & spot::kripke_succ_iterator::cond();
+}
+
+spot::bdd_dict_ptr* DSSIterator::m_dict_ptr;
