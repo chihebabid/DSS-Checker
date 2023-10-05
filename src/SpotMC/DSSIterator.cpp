@@ -15,10 +15,8 @@ DSSIterator::DSSIterator ( SCC* scc,MetaState *ms, bdd cnd ) :m_scc ( scc ), kri
             for (const auto &elt: *lsucc) {
                 Transition *t=elt.first;
                 Marking *m=elt.second;
-
                 auto dest_scc=ms->findSCC(m);
-
-
+                m_lsucc.push_back({dest_scc,ms,t});
             }
         }
     }
