@@ -15,6 +15,7 @@
 #include <spot/twa/twaproduct.hh>
 #include <spot/twaalgos/gtec/gtec.hh>
 #include "DSS/DSSBuilder.h"
+#include "SpotMC/DSSKripke.h"
 
 
 using namespace std;
@@ -187,11 +188,20 @@ int main(int argc, char *argv[]) {
         if (txt_output) builder.outputTXT();
     }
     if (property_file != "") {
-        bool dot_formula = false;
+        bool dot_formula {false};
         // build automata of the negation of the formula
-        Formula negate_formula = negateFormula(property_file);
-        auto d = spot::make_bdd_dict();
-        spot::twa_graph_ptr af = formula2Automaton(negate_formula.f, d, dot_formula);
+        Formula negate_formula {negateFormula(property_file)};
+        auto my_bdd_dict {spot::make_bdd_dict()};
+        spot::twa_graph_ptr af {formula2Automaton(negate_formula.f, my_bdd_dict, dot_formula)};
+
+        // build a twa graph of the SOG
+        cout << "\nTranslating SOG to SPOT ..." << endl;
+        /*spot::twa_graph_ptr k = spot::make_twa_graph(
+                std::make_shared<DSSKripke>(my_bdd_dict, DR.getGraph(), Rnewnet.getListTransitionAP(), Rnewnet.getListPlaceAP()),
+                spot::twa::prop_set::all(), true);
+              // computes the explicit synchronization product
+        auto run = k->intersecting_run(af);*/
+
 
     }
     //ModularSpace* espace_etat=petri->constructReducedStateSpace();
@@ -203,5 +213,4 @@ int main(int argc, char *argv[]) {
     if (txt_output && algorithm != "DSS") petri->writeTextFile(file_name + ".txt");
 
     return 0;
-    auto d = spot::make_bdd_dict();
 }

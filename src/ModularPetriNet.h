@@ -9,7 +9,8 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-
+#include <vector>
+#include <set>
 #include "Element_dss.h"
 #include "ModularSpace.h"
 #include "PetriNet.h"
@@ -19,10 +20,6 @@
 #include "Operations.h"
 #include "DistributedState.h"
 #include "RElement_dss.h"
-#include "BaseMPNet.h"
-#include <vector>
-
-
 
 /*class SCC;-
 class ProductSCC;*/
@@ -44,7 +41,7 @@ using namespace std;
 typedef std::vector<Element_dss> ListProductFusion;
 typedef vector<RElement_dss> RListProductFusion;
 
-class ModularPetriNet : public BaseMPNet {
+class ModularPetriNet  {
 public:
     string getProductSCCName(ProductSCC *pss);
 
@@ -87,7 +84,8 @@ public:
     void extractEnabledFusionReduced(vector<MetaState *> &list_ms, vector<RElement_dss> &list_elt);
 
     void extractEnabledFusionV2(vector<MetaState *> &list_ms, vector<RElement_dss> &list_elt);
-
+    size_t getModule(const std::set<string> &list_transitions);
+    PetriNet *getModule(const int index);
 private:
 
     vector<NodeSGSimplified> *calculerProduitSynchronises(vector<ListMarqLoc> &list);
@@ -97,16 +95,12 @@ private:
     void reduceMarquageName(NodeSG *node, Fusion *fusion);
 
     GrapheSync *m_graphe_sync;
-
     void printMarquage();
-
+    vector<PetriNet *> m_modules;
     ModularSpace *m_espace;
     DistributedState *m_dss;
-
     vector<Fusion *> getFusionsFranchissables();
-
     vector<Fusion *> m_fusions;
-
 };
 
 #endif // !defined(AFX_MODULARPETRINET_H__D284E8F0_4D61_4B06_B64D_CD07F031C825__INCLUDED_)

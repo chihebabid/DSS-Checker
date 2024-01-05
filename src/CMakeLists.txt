@@ -107,7 +107,7 @@ add_executable(distributedstatespace main.cpp
         ElementPhase1.h
         PElement.cpp
         PElement.h
-        BaseMPNet.cpp BaseMPNet.h DSS/DSSBuilder.cpp DSS/DSSBuilder.h DSS/ModuleSS.cpp DSS/ModuleSS.h
+        DSS/DSSBuilder.cpp DSS/DSSBuilder.h DSS/ModuleSS.cpp DSS/ModuleSS.h
         SpotMC/DSSKripke.cpp
         SpotMC/DSSKripke.h
         SpotMC/DSSIterator.cpp

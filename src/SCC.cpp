@@ -1,22 +1,16 @@
 #include <iostream>
+#include <algorithm>
 #include "SCC.h"
 
 SCC::SCC() {
     mId=mCounter++;
 }
 
-SCC::~SCC() {
-    //dtor
-}
+
 
 Marking *SCC::existState(Marking *m) {
-    Marking *found = NULL;
-    int i = 0;
-    while (!found && i < m_list.size()) {
-        if (*m == *m_list.at(i)) found = m_list.at(i);
-        i++;
-    }
-    return found;
+    auto it {std::find_if(m_list.begin(), m_list.end(),[m](Marking *elt){return *m==*elt;})};
+    return it==m_list.end() ? nullptr : *it;
 }
 
 // Compare whether two SCCs are equal

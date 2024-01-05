@@ -597,23 +597,6 @@ bool PetriNet::aciveFusion(Marking *marq) {
     return false;
 }
 
-////////////////////////////////////////////////////
-// Renvoyer la liste des fils  d'un ensemble de marquages
-////////////////////////////////////////////////////
-vector<Fils> PetriNet::getListFils(ListMarquage *groupe) {
-    vector<Transition *> liste_transitions;
-    vector<Fils> result;
-    for (int i = 0; i < groupe->getCount(); i++) {
-        setMarquage(groupe->getMarquage(i));
-        liste_transitions = getListeTransitionsFranchissables();
-        for (int t = 0; t < liste_transitions.size(); t++) {
-            setMarquage(groupe->getMarquage(i));
-            tirer(*liste_transitions.at(t));
-            update(result, getMarquage(), *liste_transitions.at(t));
-        }
-    }
-    return result;
-}
 
 ////////////////////////////////////////////////////
 // Renvoyer la liste des fils d'un marquage donn�

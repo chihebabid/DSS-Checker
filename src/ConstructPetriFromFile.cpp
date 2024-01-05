@@ -28,7 +28,7 @@ string ConstructPetriFromFile::getFileName() {
 }
 
 ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
-    ModularPetriNet *MPetri = NULL;
+    ModularPetriNet *MPetri {nullptr};
 
 
     fp = fopen(m_nom_fichier.c_str(), "r");

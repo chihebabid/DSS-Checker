@@ -7,7 +7,7 @@
 class SCC {
 public:
     SCC();
-    virtual ~SCC();
+    virtual ~SCC()=default;
     Marking *existState(Marking *m);
     long getCount();
     void addState(Marking *m);

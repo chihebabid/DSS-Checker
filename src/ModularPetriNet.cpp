@@ -2,12 +2,13 @@
 //
 //////////////////////////////////////////////////////////////////////
 
-//#include "StdAfx.h"
+#include <fstream>
+#include <set>
 #include "Element_dss.h"
 #include "ModularPetriNet.h"
 #include "time.h"
 #include "ArcSync.h"
-#include <fstream>
+
 
 Marking MARQUAGE_VIDE;
 
@@ -24,7 +25,9 @@ ModularPetriNet::ModularPetriNet() {
 ModularPetriNet::~ModularPetriNet() {
     for (int i = 0; i < m_fusions.size(); i++)
         delete m_fusions[i];
-    m_fusions.clear();
+
+    for (const auto &elt: m_modules)
+        delete elt;
 }
 
 
@@ -36,10 +39,9 @@ void ModularPetriNet::addSync(const string transition_name) {
     PetriNet *petri;
     Fusion *fusion = new Fusion();
     fusion->setName(transition_name);
-    for (int i = 0; i < m_modules.size(); i++) {
-        petri = m_modules[i];
+    for (const auto & petri : m_modules) {
         Transition *transition = petri->getTransitionAdresse(transition_name);
-        if (transition != NULL) {
+        if (transition != nullptr) {
             transition->setSync(true);
             fusion->addTransition(transition);
         }
@@ -85,7 +87,7 @@ void ModularPetriNet::printMarquage() {
 ////////////////////////////////////////////////////////////////////////////////////
 void ModularPetriNet::renommerTransitions(vectorString liste_transitions) {
     for (int i = 0; i < m_modules.size(); i++)
-        m_modules.at(i)->renommerTransitions(liste_transitions);
+        m_modules[i]->renommerTransitions(liste_transitions);
 }
 
 //////////////////////////////////////////
@@ -990,4 +992,23 @@ void ModularPetriNet::writeTextFile(const string filename) {
     }
 
     myfile.close();
+}
+
+/*
+ * Returns the module to which all transitions belong
+ *
+ */
+size_t ModularPetriNet::getModule(const std::set<string> &list_transitions) {
+    for (const auto & module : m_modules) {
+        bool found {true};
+
+    }
+    return true;
+}
+
+/*
+ * Returns a Petri  net giving its index
+ */
+PetriNet *ModularPetriNet::getModule(const int index) {
+    return m_modules[index];
 }

@@ -49,7 +49,7 @@ public:
 
     vector<Fils> getListFilsEx(ListMarquage *groupe);
 
-    vector<Fils> getListFils(ListMarquage *groupe);
+
 
     int addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids);
 

@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////
 
 Automata::Automata() {
-    m_parent = NULL;
+    m_parent = nullptr;
 }
 
 Automata::~Automata() {
@@ -265,8 +265,7 @@ void Automata::substitute(vector<ListMarquage *> liste_noeuds, ListMarquage *noe
 void Automata::suppressDuplicates() {
     vector<Arc *>::iterator Itor_debut;
     vector<Arc *>::iterator Itor_index;
-    int i = 0;
-    int j = 0;
+    int i,j ;
     for (Itor_debut = m_arcs.begin(), i = 0; Itor_debut < m_arcs.end(); Itor_debut++, i++) {
         j = i + 1;
         for (Itor_index = (Itor_debut + 1); Itor_index < m_arcs.end(); Itor_index++, j++) {
@@ -299,7 +298,7 @@ ListMarquage *Automata::addNode2(ListMarquage *groupe) {
     return groupe;
 }
 
-static const ModularSpace *Automata::getParent() {
+const ModularSpace *Automata::getParent() {
     return m_parent;
 }
 
