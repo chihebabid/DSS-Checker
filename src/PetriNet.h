@@ -42,22 +42,15 @@ typedef vector<string> vectorString;
 
 class PetriNet {
 public:
-
     string getSCCName(SCC *scc);
 
     bool isDivergent(Marking &marq);
 
     vector<Fils> getListFilsEx(ListMarquage *groupe);
 
-
-
     int addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids);
 
-    bool aciveFusion(Marking *marq);
-
     void replaceCyclePhase1(PilePhase1 *pile, const int index, Marking *marq);
-
-    void replaceCycle(PileRed *pile, const int index, Fils *fils);
 
     bool estLocalementRedondant(Marking *marq);
 
@@ -82,10 +75,6 @@ public:
     void setMarquage(Marking *marquage);
 
     Marking getMarquage();
-
-    Automata *getLocalSpace(Marking marquage);
-
-    Transition getTransition(const int index);
 
     Place getPlace(const int index);
 
@@ -127,15 +116,12 @@ private:
 
     void update(vector<Fils> &liste_fils, Marking marq, Transition &transition);
 
-    vector<Fils> getListeFils();
-
     vector<Fils> getListeFils(Marking marq);
 
     ListMarquage getListeFilsMarquages(Marking &marq);
 
     int m_numero;
 
-//	vector<Marquage> m_list_marq_inserted;
     vector<Transition *> getListeTransitionsFranchissables();
 
     Place *getPlaceAdresse(string placename);

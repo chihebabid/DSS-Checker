@@ -9,10 +9,10 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "IntNode.h"
+#include <string>
+using std::string;
 
-
-class Node : public IntNode {
+class Node  {
 public:
     void setName(const string name);
 

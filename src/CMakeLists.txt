@@ -53,14 +53,10 @@ add_executable(distributedstatespace main.cpp
         Place.h
         Fils.cpp
         Fils.h
-        IntNode.cpp
-        IntNode.h
         Transition.cpp
         Transition.h
         ListMarquage.cpp
         ListMarquage.h
-        ListSync.cpp
-        ListSync.h
         Fusion.cpp
         Fusion.h
         Graphe.cpp
@@ -71,8 +67,6 @@ add_executable(distributedstatespace main.cpp
         NodeSGSimplified.h
         ArcSG.cpp
         ArcSG.h
-        IntNode.cpp
-        IntNode.h
         ElementRed.cpp
         ElementRed.h
         Element_dss.cpp

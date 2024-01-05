@@ -22,13 +22,11 @@ public:
 
     static bool verifier(vector<Transition *> &liste, string transition);
 
-    static bool find(vector<string> liste, string value);
-
     static bool find(vector<Marking> list, Marking *marq);
 
-    Operations();
+    Operations()=default;
 
-    virtual ~Operations();
+    virtual ~Operations()=default;
 
 };
 

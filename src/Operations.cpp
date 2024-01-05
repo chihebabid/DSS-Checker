@@ -9,34 +9,6 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-Operations::Operations() {
-
-}
-
-Operations::~Operations() {
-
-}
-
-//DEL bvec Operations::bvec_shl(bvec bv, int nb_bits)
-//DEL {
-//DEL 	bvec decaler=bvec_con(2,2);
-//DEL 	bvec result=bvec_copy(bv);
-//DEL 	for (int i=0;i<nb_bits;i++) {
-//DEL 		bvec temp=bvec_copy(result);
-//DEL 		result=bvec_mul(result,decaler);
-//DEL 	}
-//DEL
-//DEL 	return result;
-//DEL }
-
-//DEL void Operations::printVec(bvec vec)
-//DEL {
-//DEL 	for (int i=0;i<vec.bitnum();i++) {
-//DEL 		if (vec[i]==bdd_true()) cout<<1;
-//DEL 		else cout<<0;
-//DEL 	}
-//DEL }
-
 bool Operations::find(vector<Marking> list, Marking *marq) {
 
     for (int i = 0; i < list.size(); i++)
@@ -44,11 +16,7 @@ bool Operations::find(vector<Marking> list, Marking *marq) {
     return false;
 }
 
-bool Operations::find(vector<string> liste, string value) {
-    for (int i = 0; i < liste.size(); i++)
-        if (value == liste.at(i)) return true;
-    return false;
-}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 // V�rifier si toutes les transitons de 'liste' sont �tiquet�es par 'transition'

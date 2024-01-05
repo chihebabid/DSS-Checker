@@ -103,10 +103,6 @@ Place PetriNet::getPlace(const int index) {
     return m_places[index];
 }
 
-Transition PetriNet::getTransition(const int index) {
-    return m_transitions[index];
-}
-
 ////////////////////////////////
 // Renvoyer le marquage courant
 ////////////////////////////////
@@ -194,63 +190,6 @@ int PetriNet::addPlacesSorties(string nom_transition, vector<string> liste_place
     printf("ERREUR : relation erron�e!\n");
     return -1;
 }
-
-
-////////////////////////////////////////////////////////////////////
-/// Construire le graphe local accessible � partir d'un marquage ///
-////////////////////////////////////////////////////////////////////
-Automata *PetriNet::getLocalSpace(Marking marquage) {
-    vector<Marking> list_marq_inserted;
-    Pile pile;
-    Element elt;
-    Automata *graphe = new Automata();
-    elt.marquage = marquage;
-    setMarquage(&marquage);
-    elt.liste_transitions = getListeTransitionsFranchissables();
-    pile.push_back(elt);
-
-    ListMarquage *node = new ListMarquage();
-    node->addMarquage(&marquage);
-    // Indiquer si le marquage en question est r�cemment ins�r�
-    if (!graphe->isMarquageExist(&marquage)) list_marq_inserted.push_back(marquage);
-    graphe->addNode(node);
-    while (pile.size() > 0) {
-        Element current_elt = pile.back();
-        pile.pop_back();
-
-        if (current_elt.liste_transitions.size() > 0) {
-
-            Transition *transition = current_elt.liste_transitions[current_elt.liste_transitions.size() - 1];
-            current_elt.liste_transitions.pop_back();
-
-            // On doit tirer la transition correspondante apr�s avoir pr�ciser le marquage
-            setMarquage(&current_elt.marquage);
-            tirer(*transition);
-
-            node = new ListMarquage();
-            Marking m = getMarquage();
-            node->addMarquage(&m);
-            // Indiquer si le marquage en question est r�cemment ins�r�
-            if (!graphe->isMarquageExist(&marquage)) list_marq_inserted.push_back(getMarquage());
-            //cout<<"\n The new  marquage="<<getMarquage().getString();
-            bool result = graphe->addNode(node);
-            //arc=new Arc();
-
-            graphe->addArc(current_elt.marquage, transition->getName(), *node->getMarquage(0));
-            //cout<<"\n Ajout du noeud r�usssi ="<<result;
-            if (current_elt.liste_transitions.size() > 0) pile.push_back(current_elt);
-            // Ajouter le marquage dans la pile et ses transitions franchissables
-            if (result) {
-                elt.marquage = getMarquage();
-                setMarquage(&elt.marquage);
-                elt.liste_transitions = getListeTransitionsFranchissables();
-                if (elt.liste_transitions.size() > 0) pile.push_back(elt);
-            }
-        }
-    }
-    return graphe;
-}
-
 
 /////////////////////////////////////
 /// Renvoyer le nom d'un marquage ///
@@ -476,7 +415,7 @@ int PetriNet::getNumero() {
 void PetriNet::renommerTransitions(vectorString transitions) {
     for (int i = 0; i < m_transitions.size(); i++) {
         if (!m_transitions.at(i).isSync()) {
-            if (!Operations::find(transitions, m_transitions.at(i).getName()))
+            if (std::find(transitions.begin(), transitions.end(),m_transitions[i].getName()) == transitions.end())
                 m_transitions.at(i).setName("$");
         }
     }
@@ -493,10 +432,6 @@ Transition *PetriNet::getTransitionAdresse(const string nom_transition) {
     if (indice != -1)
         return &m_transitions[indice];
     else return NULL;
-}
-
-vector<Fils> PetriNet::getListeFils() {
-    return getListeFils(getMarquage());
 }
 
 ////////////////////////////////////////////////////
@@ -564,38 +499,6 @@ void PetriNet::replaceCyclePhase1(PilePhase1 *pile, const int index, Marking *ma
     pile->m_liste.push_back(nouveau_elt);
 }
 
-///////////////////////////////////////////////////////////////////
-// Remplacer les noeuds apparetnant � un cycle par un seul noeud //
-///////////////////////////////////////////////////////////////////
-void PetriNet::replaceCycle(PileRed *pile, const int index, Fils *fils) {
-    vector<ListMarquage *> liste_noeuds_supprimer;
-    ElementRed nouveau_elt;
-    ListMarquage *nouveau_groupe = new ListMarquage();
-    nouveau_groupe->addMarquage(&fils->getMarquage());
-    for (int i = pile->m_liste.size() - 1; i >= index; i--) {
-
-        ElementRed elt = pile->m_liste.back();
-        nouveau_elt.addFils(elt.liste_fils);
-
-        liste_noeuds_supprimer.push_back(elt.groupe);
-        nouveau_groupe->addGroupe(*elt.groupe);
-        pile->m_liste.pop_back();
-
-    }
-    nouveau_elt.groupe = nouveau_groupe;
-    nouveau_elt.etat = false;
-    pile->m_liste.push_back(nouveau_elt);
-    m_graphe->addArcs(nouveau_groupe, fils->getListeTransitions(), nouveau_groupe);
-    m_graphe->substitute(liste_noeuds_supprimer, nouveau_groupe);
-}
-
-bool PetriNet::aciveFusion(Marking *marq) {
-    setMarquage(marq);
-    for (int i = 0; i < m_transitions.size(); i++) {
-        if (m_transitions.at(i).isSync() && m_transitions.at(i).isFranchissableLocal()) return true;
-    }
-    return false;
-}
 
 
 ////////////////////////////////////////////////////
