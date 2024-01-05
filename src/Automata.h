@@ -84,8 +84,6 @@ private:
 
     vector<ListMarquage *> getParents(ListMarquage *node);
 
-    vector<ListMarquage *> getFils(ListMarquage *node);
-
     int m_code;
     vector<ListMarquage *> m_nodes;
     vector<Arc *> m_arcs;

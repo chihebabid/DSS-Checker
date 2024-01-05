@@ -51,10 +51,11 @@ bdd DSSIterator::cond()  const
     if (std::get<2>(m_lsucc[m_current_edge])==NULL ) {
         return bddtrue;
     }
-    spot::formula f=spot::formula::ap (std::get<2>(m_lsucc[m_current_edge])->getName());
+    /*spot::formula f=spot::formula::ap (std::get<2>(m_lsucc[m_current_edge])->getName());
     spot::bdd_dict *p=m_dict_ptr->get();
     bdd   result=bdd_ithvar ( ( p->var_map.find ( f ) )->second );
-    return result & spot::kripke_succ_iterator::cond();
+    return result & spot::kripke_succ_iterator::cond();*/
+    return bddtrue;
 }
 
 spot::bdd_dict_ptr* DSSIterator::m_dict_ptr;

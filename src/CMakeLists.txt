@@ -87,8 +87,6 @@ add_executable(distributedstatespace main.cpp
         RElement_dss.h
         SCC.cpp
         SCC.h
-        InternalArc.cpp
-        InternalArc.h
         GrapheSync.cpp
         GrapheSync.h
         NodeSG.cpp

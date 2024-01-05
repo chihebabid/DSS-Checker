@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "StateGraph.h"
 
 StateGraph::StateGraph() {

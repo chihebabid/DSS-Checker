@@ -3,9 +3,7 @@
 
 #include "SCC.h"
 
-#include "InternalArc.h"
 
-class InternalArc;
 
 class SCC;
 

@@ -186,15 +186,6 @@ void Automata::setNumero(const int num) {
 }
 
 
-vector<ListMarquage *> Automata::getFils(ListMarquage *node) {
-    vector<ListMarquage *> list;
-    for (int i = 0; i < m_arcs.size(); i++) {
-        if (m_arcs[i]->getSource() == node)
-            list.push_back(m_arcs[i]->getDestination());
-    }
-    return list;
-}
-
 vector<ListMarquage *> Automata::getParents(ListMarquage *node) {
     vector<ListMarquage *> list;
     for (int i = 0; i < m_arcs.size(); i++) {
