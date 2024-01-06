@@ -29,12 +29,8 @@ add_executable(distributedstatespace main.cpp
         ConstructPetriFromFile.h
         ModularPetriNet.cpp
         ModularPetriNet.h
-        ModularSpace.cpp
-        ModularSpace.h
         ArcSG.cpp
         ArcSG.h
-        Automata.cpp
-        Automata.h
         Arc.cpp
         Arc.h
         Marking.cpp
@@ -47,16 +43,12 @@ add_executable(distributedstatespace main.cpp
         Node.h
         Place.cpp
         Place.h
-        Fils.cpp
-        Fils.h
         Transition.cpp
         Transition.h
         ListMarquage.cpp
         ListMarquage.h
         Fusion.cpp
         Fusion.h
-        GrapheSync.cpp
-        GrapheSync.h
         NodeSGSimplified.cpp
         NodeSGSimplified.h
         ArcSG.cpp
@@ -75,8 +67,6 @@ add_executable(distributedstatespace main.cpp
         RElement_dss.h
         SCC.cpp
         SCC.h
-        GrapheSync.cpp
-        GrapheSync.h
         NodeSG.cpp
         NodeSG.h
         ArcSync.cpp

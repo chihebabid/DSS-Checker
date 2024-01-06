@@ -12,25 +12,15 @@
 #include <vector>
 #include <set>
 
-#include "ModularSpace.h"
 #include "PetriNet.h"
 #include "NodeSG.h"
 #include "NodeSGSimplified.h"
-#include "GrapheSync.h"
 #include "Operations.h"
 #include "DistributedState.h"
 #include "RElement_dss.h"
 
-/*class SCC;-
-class ProductSCC;*/
 #define ListLocalStates vector<Marking*>*
 #define ListGlobalStates vector<ListLocalStates>*
-
-
-//class DistributedState;
-typedef vector<Marking> ListMarqLoc;
-
-class ModularSpace;
 
 class PetriNet;
 

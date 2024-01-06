@@ -7,30 +7,15 @@
 
 #include <set>
 #include "Marking.h"
-#include "Fils.h"
 #include "StateGraph.h"
-
+#include "Place.h"
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
-
-
-class PilePhase1;
-
-class PileRed;
-
 class Transition;
 
-class Automata;
-
-class GrapheSync;
-
-class Fils;
-
 class ListMarquage;
-
-class Graphe;
 
 class StateGraph;
 
@@ -44,8 +29,6 @@ typedef vector<string> vectorString;
 class PetriNet {
 public:
     string getSCCName(SCC *scc);
-
-    bool isDivergent(Marking &marq);
 
     int addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids);
 
@@ -75,21 +58,16 @@ public:
 
     int getPlacesCount();
 
-    PetriNet();
+    PetriNet()=default;
 
-    virtual ~PetriNet();
+    virtual ~PetriNet()=default;
 
     StateGraph *getStateGraph(Marking marquage);
-
-
 
     void printMetaStateEx(MetaState *ms);
 
     bool areTransitionsIncluded(const std::set<string> &list_transitions);
 private:
-    Automata *m_graphe;
-
-    void update(vector<Fils> &liste_fils, Marking marq, Transition &transition);
 
     int m_numero;
 

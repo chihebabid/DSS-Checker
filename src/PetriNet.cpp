@@ -2,25 +2,12 @@
 //
 //////////////////////////////////////////////////////////////////////
 #include <algorithm>
-#include "Automata.h"
 #include "PetriNet.h"
 #include "misc.h"
 
 typedef vector<element_t> Pile;
 typedef vector<PElement> PStack;
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-PetriNet::PetriNet() {
-    m_places.clear();
-    ml_transitions.clear();
-    m_graphe = NULL;
-}
-
-PetriNet::~PetriNet() {
-
-}
 
 //////////////////////////////////
 // Renvoyer le nombre de places
@@ -203,40 +190,6 @@ Transition *PetriNet::getTransitionAdresse(const string nom_transition) {
 }
 
 
-
-////////////////////////////////////////////////////////////
-// Mettre � jour la liste des fils
-////////////////////////////////////////////////////////////
-void PetriNet::update(vector<Fils> &liste_fils, Marking marq, Transition &transition) {
-    int indice = -1;
-    for (int i = 0; i < liste_fils.size() && (indice == -1); i++) {
-        if (liste_fils.at(i).getMarquage() == marq) indice = i;
-    }
-    if (indice != -1) {
-        liste_fils.at(indice).addTransition(transition);
-    } else {
-        Fils fils;
-        fils.setMarquage(marq);
-        fils.addTransition(transition);
-        liste_fils.push_back(fils);
-    }
-}
-
-bool PetriNet::isDivergent(Marking &marq) {
-    Noeud *noeud = m_graphe->getFirstNodeContainMarquage(&marq);
-    if (noeud == NULL) return false;
-    vector<Transition *> liste_transitions;
-    setMarquage(&marq);
-    liste_transitions = getListeTransitionsFranchissables();
-    for (int t = 0; t < liste_transitions.size(); t++) {
-        setMarquage(&marq);
-        tirer(*liste_transitions.at(t));
-        Marking m = getMarquage();
-        if (noeud->existMarquage(&m)) return true;
-    }
-    return false;
-
-}
 
 
 

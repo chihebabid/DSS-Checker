@@ -5,7 +5,6 @@
 #ifndef DISTRIBUTEDSTATESPACE_MISC_H
 #define DISTRIBUTEDSTATESPACE_MISC_H
 #include <vector>
-#include "Fils.h"
 #include "ListMarquage.h"
 #include "Fusion.h"
 #include "ProductSCC.h"
