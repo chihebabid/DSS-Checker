@@ -129,4 +129,16 @@ class Element_dss : public PElement_dss {
 public:
     ProductSCC *m_product {nullptr};
 };
+/**************************************************************************/
+struct PileRed {
+public:
+    int isCycle(Marking *marq) {
+        int result = -1;
+        for (int i = 0; i < (m_liste.size() - 1) && result == -1; i++) {
+            if (m_liste.at(i).isExist(marq)) result = i;
+        }
+        return result;
+    }
+    vector<ElementRed> m_liste;
+};
 #endif //DISTRIBUTEDSTATESPACE_MISC_H

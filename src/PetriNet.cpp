@@ -4,7 +4,6 @@
 
 #include "Automata.h"
 #include "PetriNet.h"
-#include "PileRed.h"
 #include "misc.h"
 
 typedef vector<element_t> Pile;

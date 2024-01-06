@@ -43,8 +43,6 @@ add_executable(distributedstatespace main.cpp
         ProductSCC.h
         PetriNet.cpp
         PetriNet.h
-        PileRed.cpp
-        PileRed.h
         Node.cpp
         Node.h
         Place.cpp
