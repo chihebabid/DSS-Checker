@@ -5,7 +5,7 @@
 #define ListGlobalStates vector<ListLocalStates>*
 
 #include "ProductSCC.h"
-#include "PElement_dss.h"
+#include "misc.h"
 
 class RElement_dss : public PElement_dss {
 public:

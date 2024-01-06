@@ -7,7 +7,7 @@
 #define ListGlobalStates vector<ListLocalStates>*
 
 #include "Fusion.h"
-#include "PElement_dss.h"
+#include "misc.h"
 
 class Element_dss : public PElement_dss {
 public:

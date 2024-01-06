@@ -67,14 +67,10 @@ add_executable(distributedstatespace main.cpp
         NodeSGSimplified.h
         ArcSG.cpp
         ArcSG.h
-        ElementRed.cpp
-        ElementRed.h
         Element_dss.cpp
         Element_dss.h
         Operations.cpp
         Operations.h
-        PElement_dss.cpp
-        PElement_dss.h
         DistributedState.cpp
         DistributedState.h
         MetaGraph.cpp
@@ -97,15 +93,14 @@ add_executable(distributedstatespace main.cpp
         Element.h
         ElementPhase1.cpp
         ElementPhase1.h
-        PElement.cpp
-        PElement.h
         DSS/DSSBuilder.cpp DSS/DSSBuilder.h DSS/ModuleSS.cpp DSS/ModuleSS.h
         SpotMC/DSSKripke.cpp
         SpotMC/DSSKripke.h
         SpotMC/DSSIterator.cpp
         SpotMC/DSSIterator.h
         SpotMC/DSSState.cpp
-        SpotMC/DSSState.h)
+        SpotMC/DSSState.h
+        misc.h)
 
 target_link_libraries(distributedstatespace
         bddx

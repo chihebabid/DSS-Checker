@@ -7,7 +7,7 @@
 #include "PileRed.h"
 #include "PilePhase1.h"
 #include "Element.h"
-#include "PElement.h"
+#include "misc.h"
 
 typedef vector<Element> Pile;
 typedef vector<PElement> PStack;
