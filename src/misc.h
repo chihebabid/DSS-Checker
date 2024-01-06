@@ -118,4 +118,9 @@ public:
     std::vector<ElementPhase1> m_liste;
 
 };
+/***********************************************************************/
+struct element_t {
+    Marking marquage;
+    vector<Transition *> liste_transitions;
+};
 #endif //DISTRIBUTEDSTATESPACE_MISC_H

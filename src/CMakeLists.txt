@@ -87,8 +87,6 @@ add_executable(distributedstatespace main.cpp
         NodeSG.h
         ArcSync.cpp
         ArcSync.h
-        Element.cpp
-        Element.h
         DSS/DSSBuilder.cpp DSS/DSSBuilder.h DSS/ModuleSS.cpp DSS/ModuleSS.h
         SpotMC/DSSKripke.cpp
         SpotMC/DSSKripke.h

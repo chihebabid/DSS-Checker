@@ -5,11 +5,9 @@
 #include "Automata.h"
 #include "PetriNet.h"
 #include "PileRed.h"
-
-#include "Element.h"
 #include "misc.h"
 
-typedef vector<Element> Pile;
+typedef vector<element_t> Pile;
 typedef vector<PElement> PStack;
 
 //////////////////////////////////////////////////////////////////////
@@ -581,7 +579,7 @@ void PetriNet::addArcs(ListMarquage *groupe, ListMarquage *noeud) {
 Graphe *PetriNet::getLocalGraph(Marking marquage) {
     vector<Marking> list_marq_inserted;
     Pile pile;
-    Element elt;
+    element_t elt;
     Graphe *graphe = new Graphe();
     elt.marquage = marquage;
     setMarquage(&marquage);
@@ -594,7 +592,7 @@ Graphe *PetriNet::getLocalGraph(Marking marquage) {
     if (!graphe->existMarquage(&marquage)) list_marq_inserted.push_back(marquage);
     graphe->addMarquage(&marquage);
     while (pile.size() > 0) {
-        Element current_elt = pile.back();
+        element_t current_elt = pile.back();
         pile.pop_back();
 
         if (current_elt.liste_transitions.size() > 0) {
