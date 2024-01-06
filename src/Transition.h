@@ -18,7 +18,7 @@
 class Transition : public Node {
 public:
     inline int getPlacesEntreesCount() {
-        return mlOutputPlaces.size();
+        return ml_input_places.size();
     }
 
     int getPetri();
@@ -42,14 +42,17 @@ public:
     void addPlaceEntree(Place *place, int poids);
 
     inline void tirer() {
-        // Ajouter les jetons aux places de sorties
-        for (unsigned int i = 0; i < m_places_sorties.size(); i++) {
-            m_places_sorties.at(i)->addTokens(m_poids_sorties.at(i));
+        // Add tokens to output places
+        size_t index {0};
+        for (auto & o_place : ml_output_places) {
+            o_place->addTokens(m_poids_sorties[index]);
+            ++index;
         }
-        //Supprimer les jetons � partir de places d'entr�es
-        for (unsigned int i = 0; i < mlOutputPlaces.size(); i++) {
-            mlOutputPlaces.at(i)->subTokens(m_poids_entrees.at(i));
-
+        // Sub tokens from input places
+        index=0;
+        for (auto & in_place : ml_input_places) {
+            in_place->subTokens(m_poids_entrees[index]);
+            ++index;
         }
     }
 
@@ -63,12 +66,10 @@ private:
     int m_petri_num;
     int m_code;
     bool m_sync;
-    vector<Place *> mlOutputPlaces;
-    vector<Place *> m_places_sorties;
+    vector<Place *> ml_input_places;
+    vector<Place *> ml_output_places;
     vector<int> m_poids_entrees;
     vector<int> m_poids_sorties;
-
-
 };
 
 #endif // !defined(AFX_TRANSITION_H__AD708264_D0C2_490C_967C_95F9B5F7195D__INCLUDED_)

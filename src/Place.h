@@ -21,13 +21,13 @@ public:
 
     uint32_t getTokens();
 
-    Place();
+    Place()=default;
 
-    virtual ~Place();
+    virtual ~Place()=default;
 
 private:
 
-    uint32_t m_nb_tokens;
+    uint32_t m_nb_tokens {0};
 };
 
 #endif // !defined(AFX_PLACE_H__4A191FB4_6CFF_4348_9744_00D6AE78A3E1__INCLUDED_)

@@ -9,13 +9,6 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-Place::Place() : m_nb_tokens(0) {
-
-}
-
-Place::~Place() {
-
-}
 
 uint32_t Place::getTokens() {
     return m_nb_tokens;

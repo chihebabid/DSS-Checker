@@ -11,8 +11,8 @@
 
 Transition::Transition() {
     m_sync = false;
-    mlOutputPlaces.clear();
-    m_places_sorties.clear();
+    ml_input_places.clear();
+    ml_output_places.clear();
     m_poids_entrees.clear();
     m_poids_sorties.clear();
 }
@@ -22,8 +22,8 @@ Transition::~Transition() {
 }
 
 bool Transition::isFranchissableLocal() {
-    for (int i = 0; i < mlOutputPlaces.size(); i++) {
-        if (mlOutputPlaces[i]->getTokens() < m_poids_entrees.at(i)) return false;
+    for (int i = 0; i < ml_input_places.size(); i++) {
+        if (ml_input_places[i]->getTokens() < m_poids_entrees.at(i)) return false;
 
     }
     return true;
@@ -31,13 +31,13 @@ bool Transition::isFranchissableLocal() {
 
 
 void Transition::addPlaceEntree(Place *place, int poids) {
-    mlOutputPlaces.push_back(place);
+    ml_input_places.push_back(place);
     m_poids_entrees.push_back(poids);
 
 }
 
 void Transition::addPlaceSortie(Place *place, int poids) {
-    m_places_sorties.push_back(place);
+    ml_output_places.push_back(place);
     m_poids_sorties.push_back(poids);
 
 }
