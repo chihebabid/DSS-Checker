@@ -5,11 +5,11 @@
 
 class ProductSCC {
 public:
-    ProductSCC();
+    ProductSCC()=default;
 
     void addSCC(SCC *scc);
 
-    virtual ~ProductSCC();
+    virtual ~ProductSCC()=default;
 
     bool operator==(const ProductSCC &product);
 

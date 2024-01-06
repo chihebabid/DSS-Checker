@@ -15,7 +15,8 @@
 using namespace std;
 
 class ArcSync;
-
+class StateGraph;
+class ProductSCC;
 class MetaState {
 public:
     MetaState();

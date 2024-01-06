@@ -41,4 +41,6 @@ uint32_t SCC::getId() const {
 
 uint32_t SCC::mCounter{0};
 
-
+MetaState * SCC::getMetaState() const {
+    return m_parentMetaState;
+}

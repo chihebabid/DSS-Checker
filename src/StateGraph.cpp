@@ -12,11 +12,6 @@ StateGraph::~StateGraph() {
         delete m_nodes.at(i);
 }
 
-// Return nodes count
-long StateGraph::getCountNodes() {
-    return m_nodes.size();
-}
-
 // Return arcs count
 long StateGraph::getCountArcs() {
     u_int32_t res = 0;
@@ -38,15 +33,6 @@ Marking *StateGraph::addMarquage(Marking *m) {
     Marking *p = existState(m);
     if (!p) m_nodes.push_back(m);
     return p;
-}
-
-/*void StateGraph::addArc(InternalArc *arc)
-{
-    mArcs.push_back(*arc);
-}*/
-
-void StateGraph::setID(int module) {
-    m_module_id = module;
 }
 
 

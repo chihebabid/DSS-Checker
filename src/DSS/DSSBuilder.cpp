@@ -35,7 +35,7 @@ void DSSBuilder::buildInitialMS() {
     for (int module = 0; module < mptrMPNet->getModulesCount(); ++module) {
         ms = new MetaState();
         StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(mptrMPNet->getModule(module)->getMarquage());
-        state_graph->setID(module);
+
         ms->setStateGraph(state_graph);
         mlModuleSS[module]->insertMS(ms);
         list_metatstates.push_back(ms);
@@ -75,7 +75,6 @@ void DSSBuilder::buildInitialMS() {
                     dest_ms = new MetaState();
                     StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(
                             mptrMPNet->getModule(module)->getMarquage());
-                    state_graph->setID(module);
                     dest_ms->setStateGraph(state_graph);
                     dest_list_metatstates[module] = dest_ms;
                     dest_productscc->addSCC(dest_ms->getInitialSCC());

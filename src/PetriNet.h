@@ -102,8 +102,6 @@ public:
 
     virtual ~PetriNet();
 
-    Graphe *getLocalGraph(Marking marquage);
-
     StateGraph *getStateGraph(Marking marquage);
 
     void printMetaState(MetaState *ms);

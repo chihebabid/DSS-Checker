@@ -1,13 +1,5 @@
 #include "ProductSCC.h"
 
-ProductSCC::ProductSCC() {
-    m_product.clear();
-}
-
-ProductSCC::~ProductSCC() {
-    //dtor
-}
-
 void ProductSCC::addSCC(SCC *scc) {
     m_product.push_back(scc);
 }

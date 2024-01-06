@@ -51,21 +51,7 @@ public:
 
     ListGlobalStates computeSychronisedProduct(vector<ListLocalStates> &states_enabling_fusion);
 
-    void extractionFusion(vector<ListMarqLoc *> &liste, NodeSG *node);
-
-    void renommerTransitions(vectorString liste_transitions);
-
-    ModularSpace *constructReducedStateSpace();
-
     DistributedState *buildDSS();
-
-    DistributedState *buildReducedDSS();
-
-    Marking getMarquageModule(const int index);
-
-    Fusion *getFusion(const int index);
-
-    int getCountFusions();
 
     void addSync(const string transition_name);
 
@@ -87,19 +73,8 @@ public:
     size_t getModule(const std::set<string> &list_transitions);
     PetriNet *getModule(const int index);
 private:
-
-    vector<NodeSGSimplified> *calculerProduitSynchronises(vector<ListMarqLoc> &list);
-
-    void constructSync2();
-
-    void reduceMarquageName(NodeSG *node, Fusion *fusion);
-
-    GrapheSync *m_graphe_sync;
-    void printMarquage();
     vector<PetriNet *> m_modules;
-    ModularSpace *m_espace;
     DistributedState *m_dss;
-    vector<Fusion *> getFusionsFranchissables();
     vector<Fusion *> m_fusions;
 };
 

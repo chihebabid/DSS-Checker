@@ -567,63 +567,8 @@ void PetriNet::addArcs(ListMarquage *groupe, ListMarquage *noeud) {
             }
         }
     }
-
 }
 
-
-////////////////////////////////////////////////////////////////////
-/// Construire le graphe local accessible � partir d'un marquage ///
-////////////////////////////////////////////////////////////////////
-Graphe *PetriNet::getLocalGraph(Marking marquage) {
-    vector<Marking> list_marq_inserted;
-    Pile pile;
-    element_t elt;
-    Graphe *graphe = new Graphe();
-    elt.marquage = marquage;
-    setMarquage(&marquage);
-    elt.liste_transitions = getListeTransitionsFranchissables();
-    pile.push_back(elt);
-
-    ListMarquage *node = new ListMarquage();
-    node->addMarquage(&marquage);
-    // Indiquer si le marquage en question est r�cemment ins�r�
-    if (!graphe->existMarquage(&marquage)) list_marq_inserted.push_back(marquage);
-    graphe->addMarquage(&marquage);
-    while (pile.size() > 0) {
-        element_t current_elt = pile.back();
-        pile.pop_back();
-
-        if (current_elt.liste_transitions.size() > 0) {
-
-            Transition *transition = current_elt.liste_transitions[current_elt.liste_transitions.size() - 1];
-            current_elt.liste_transitions.pop_back();
-
-            // On doit tirer la transition correspondante apr�s avoir pr�ciser le marquage
-            setMarquage(&current_elt.marquage);
-            tirer(*transition); // Franchissement
-
-            Marking m = getMarquage();
-
-            // Indiquer si le marquage en question est r�cemment inséré
-            if (!graphe->existMarquage(&marquage)) list_marq_inserted.push_back(m);
-            //cout<<"\n The new  marquage="<<getMarquage().getString();
-            graphe->addMarquage(&m);
-            //arc=new Arc();
-
-            //graphe->addArc(current_elt.marquage,transition->getName(),*node->getMarquage(0));
-            //cout<<"\n Ajout du noeud r�usssi ="<<result;
-            if (current_elt.liste_transitions.size() > 0) pile.push_back(current_elt);
-            // Ajouter le marquage dans la pile et ses transitions franchissables
-/*			if (result) {
-				elt.marquage=getMarquage();
-				setMarquage(&elt.marquage);
-				elt.liste_transitions=getListeTransitionsFranchissables();
-				if (elt.liste_transitions.size()>0) pile.push_back(elt);
-			}*/
-        }
-    }
-    return graphe;
-}
 
 // Construction de Meta-graphe
 

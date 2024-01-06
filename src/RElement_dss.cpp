@@ -9,7 +9,7 @@ RElement_dss::~RElement_dss() {
 }
 
 MetaState *RElement_dss::getMetaState(int i) const {
-    return ml_metastates.at(i);
+    return ml_metastates[i];
 }
 
 void RElement_dss::addMetaState(MetaState *ms) {

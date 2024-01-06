@@ -13,12 +13,7 @@
 class ElementRed {
 public:
 
-    void addFils(vector<Fils> &liste)  {
-        for (int i = 0; liste_fils.size(); i++) {
-            if (!isExist(&liste.at(i).getMarquage()))
-                liste_fils.push_back(liste.at(i));
-        }
-    }
+
 
     ElementRed(const ElementRed &elt) {
         {

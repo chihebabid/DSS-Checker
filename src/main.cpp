@@ -171,13 +171,7 @@ int main(int argc, char *argv[]) {
         dss = petri->buildDSS();
         finish = clock();
         cout << "Distributed state space successfully built." << endl;
-    } else if (algorithm == "V2") {
-        cout << "Building the distributed state space (V2) has been started...\n";
-        start = clock();
-        dss = petri->buildReducedDSS();
-        finish = clock();
-
-    } else {
+    }  else {
         cout << "Building DSS (new version) has been started...\n";
         DSSBuilder builder(petri);
         start = clock();
