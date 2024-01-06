@@ -6,8 +6,8 @@
 #define AFX_PETRINET_H__91DDDBD6_8669_4EC2_A0F5_E20F2FAFDC37__INCLUDED_
 
 #include <set>
-#include "Marking.h"
-#include "StateGraph.h"
+#include "DSS/Marking.h"
+#include "DSS/StateGraph.h"
 #include "Place.h"
 #if _MSC_VER > 1000
 #pragma once
@@ -68,7 +68,6 @@ public:
 
     bool areTransitionsIncluded(const std::set<string> &list_transitions);
 private:
-
     int m_numero;
 
     vector<Transition *> getListeTransitionsFranchissables();

@@ -51,5 +51,41 @@ class Element_dss : public PElement_dss {
 public:
     ProductSCC *m_product {nullptr};
 };
+/**********************************************************************************/
+class RElement_dss : public PElement_dss {
+public:
+    //ProductSCC
+    RElement_dss():PElement_dss() {}
+
+    ~RElement_dss()=default;
+
+    RElement_dss(const RElement_dss &elt) : PElement_dss(elt) {
+
+        this->ml_metastates = elt.ml_metastates;
+    }
+
+    RElement_dss &operator=(const RElement_dss &elt) {
+        PElement_dss::operator=(elt);
+        this->ml_metastates = elt.ml_metastates;
+        return *this;
+    }
+
+    MetaState *getMetaState(int i) const {
+        return ml_metastates[i];
+    }
+
+    void addMetaState(MetaState *ms) {
+        ml_metastates.push_back(ms);
+    }
+
+    void setListMetaStates(vector<MetaState *> &l_metastates) {
+        ml_metastates = l_metastates;
+    }
+
+private:
+    vector<MetaState *> ml_metastates;
+};
+
+
 
 #endif //DISTRIBUTEDSTATESPACE_MISC_H

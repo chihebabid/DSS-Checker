@@ -17,10 +17,6 @@ DistributedState::~DistributedState() {
 }
 
 
-void DistributedState::build() {
-    cout << "Building Distributed state space..." << endl;
-
-}
 
 
 MetaGraph *DistributedState::getMetaGraph(const int index) {

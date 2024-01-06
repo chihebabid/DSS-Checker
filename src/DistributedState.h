@@ -8,15 +8,13 @@
 #ifndef DISTRIBUTEDSTATE_H_
 #define DISTRIBUTEDSTATE_H_
 
-#include "MetaState.h"
-#include "MetaGraph.h"
+#include "DSS/MetaState.h"
+#include "DSS/MetaGraph.h"
 
 class ModularPetriNet;
 
 class DistributedState {
 public:
-    void build();
-
     MetaGraph *getMetaGraph(const int index);
 
     DistributedState(ModularPetriNet *petri);

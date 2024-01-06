@@ -15,10 +15,8 @@
 #include "PetriNet.h"
 #include "NodeSG.h"
 #include "NodeSGSimplified.h"
-#include "Operations.h"
 #include "DistributedState.h"
-#include "RElement_dss.h"
-
+#include "misc.h"
 #define ListLocalStates vector<Marking*>*
 #define ListGlobalStates vector<ListLocalStates>*
 
@@ -57,7 +55,6 @@ public:
 
     void extractEnabledFusionReduced(vector<MetaState *> &list_ms, vector<RElement_dss> &list_elt);
 
-    void extractEnabledFusionV2(vector<MetaState *> &list_ms, vector<RElement_dss> &list_elt);
     size_t getModule(const std::set<string> &list_transitions);
     PetriNet *getModule(const int index);
 private:

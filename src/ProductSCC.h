@@ -1,7 +1,7 @@
 #ifndef PRODUCTSCC_H
 #define PRODUCTSCC_H
 
-#include "SCC.h"
+#include "DSS/SCC.h"
 
 class ProductSCC {
 public:

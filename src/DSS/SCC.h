@@ -1,8 +1,8 @@
 #ifndef SCC_H
 #define SCC_H
 
-#include "Marking.h"
-#include "MetaState.h"
+#include "DSS/Marking.h"
+#include "DSS/MetaState.h"
 
 // This class represents a Strongly Connected Component
 class MetaState;

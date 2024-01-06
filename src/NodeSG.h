@@ -5,7 +5,7 @@
 #if !defined(AFX_MARQUAGEGLOBAL_H__32E095E3_E8C6_4893_B5D6_381F7392D41B__INCLUDED_)
 #define AFX_MARQUAGEGLOBAL_H__32E095E3_E8C6_4893_B5D6_381F7392D41B__INCLUDED_
 
-#include "Marking.h"    // Added by ClassView
+#include "DSS/Marking.h"    // Added by ClassView
 
 using std::vector;
 #if _MSC_VER > 1000

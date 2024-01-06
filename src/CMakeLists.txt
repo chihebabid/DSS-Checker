@@ -31,10 +31,8 @@ add_executable(distributedstatespace main.cpp
         ModularPetriNet.h
         ArcSG.cpp
         ArcSG.h
-        Arc.cpp
-        Arc.h
-        Marking.cpp
-        Marking.h
+        DSS/Marking.cpp
+        DSS/Marking.h
         ProductSCC.cpp
         ProductSCC.h
         PetriNet.cpp
@@ -53,20 +51,16 @@ add_executable(distributedstatespace main.cpp
         NodeSGSimplified.h
         ArcSG.cpp
         ArcSG.h
-        Operations.cpp
-        Operations.h
         DistributedState.cpp
         DistributedState.h
-        MetaGraph.cpp
-        MetaGraph.h
-        MetaState.cpp
-        MetaState.h
-        StateGraph.cpp
-        StateGraph.h
-        RElement_dss.cpp
-        RElement_dss.h
-        SCC.cpp
-        SCC.h
+        DSS/MetaGraph.cpp
+        DSS/MetaGraph.h
+        DSS/MetaState.cpp
+        DSS/MetaState.h
+        DSS/StateGraph.cpp
+        DSS/StateGraph.h
+        DSS/SCC.cpp
+        DSS/SCC.h
         NodeSG.cpp
         NodeSG.h
         ArcSync.cpp

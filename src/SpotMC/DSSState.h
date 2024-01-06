@@ -6,8 +6,8 @@
 #define DISTRIBUTEDSTATESPACE_DSSSTATE_H
 
 #include <twa/twa.hh>
-#include "../SCC.h"
-#include "../MetaState.h"
+#include "DSS/SCC.h"
+#include "DSS/MetaState.h"
 
 class DSSState : public spot::state {
     SCC *m_scc;
