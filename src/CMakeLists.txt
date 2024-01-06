@@ -45,8 +45,6 @@ add_executable(distributedstatespace main.cpp
         PetriNet.h
         PileRed.cpp
         PileRed.h
-        PilePhase1.cpp
-        PilePhase1.h
         Node.cpp
         Node.h
         Place.cpp
@@ -91,8 +89,6 @@ add_executable(distributedstatespace main.cpp
         ArcSync.h
         Element.cpp
         Element.h
-        ElementPhase1.cpp
-        ElementPhase1.h
         DSS/DSSBuilder.cpp DSS/DSSBuilder.h DSS/ModuleSS.cpp DSS/ModuleSS.h
         SpotMC/DSSKripke.cpp
         SpotMC/DSSKripke.h

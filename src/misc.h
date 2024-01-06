@@ -76,5 +76,46 @@ public:
     ListGlobalStates m_gs;
     Fusion *m_fusion;
 };
+/********************************************************************************/
+class ElementPhase1 {
+public:
+    ElementPhase1(const ElementPhase1 &elt) {
+        this->groupe = elt.groupe;
+        this->etat = elt.etat;
+        this->liste_fils = elt.liste_fils;
+    }
 
+    bool etat;
+
+    bool isExist(Marking *marq)  {
+        return groupe->existMarquage(marq);
+    }
+
+    ElementPhase1()=default;
+
+    virtual ~ElementPhase1()=default;
+
+    ListMarquage *groupe;
+    ListMarquage liste_fils;
+
+    ElementPhase1 &operator=(const ElementPhase1 &elt)  {
+        this->groupe = elt.groupe;
+        this->liste_fils = elt.liste_fils;
+        this->etat = elt.etat;
+        return *this;
+    }
+};
+
+struct PilePhase1 {
+public:
+    long isCycle(Marking *marq) {
+        for (long i = 0; i < m_liste.size(); i++) {
+            if (m_liste.at(i).groupe->existMarquage(marq)) return i;
+        }
+        return -1L;
+    }
+
+    std::vector<ElementPhase1> m_liste;
+
+};
 #endif //DISTRIBUTEDSTATESPACE_MISC_H

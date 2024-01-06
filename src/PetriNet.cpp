@@ -5,7 +5,7 @@
 #include "Automata.h"
 #include "PetriNet.h"
 #include "PileRed.h"
-#include "PilePhase1.h"
+
 #include "Element.h"
 #include "misc.h"
 
