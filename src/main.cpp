@@ -194,6 +194,10 @@ int main(int argc, char *argv[]) {
         auto my_bdd_dict {spot::make_bdd_dict()};
         spot::twa_graph_ptr af {formula2Automaton(negate_formula.f, my_bdd_dict, dot_formula)};
 
+        // Get module index
+        auto index_module {petri->getModule(negate_formula.propositions)};
+        std::cout<<"Property will be checked against module #"<<index_module<<std::endl;
+
         // build a twa graph of the SOG
         cout << "\nTranslating SOG to SPOT ..." << endl;
         /*spot::twa_graph_ptr k = spot::make_twa_graph(

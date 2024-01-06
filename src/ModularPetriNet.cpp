@@ -998,11 +998,12 @@ void ModularPetriNet::writeTextFile(const string filename) {
  *
  */
 size_t ModularPetriNet::getModule(const std::set<string> &list_transitions) {
+    size_t index {0};
     for (const auto & module : m_modules) {
-        bool found {true};
-
+        if (module->areTransitionsIncluded(list_transitions)) return index;
+        ++index;
     }
-    return true;
+    return -1; // Error
 }
 
 /*

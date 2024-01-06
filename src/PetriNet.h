@@ -4,16 +4,18 @@
 
 #if !defined(AFX_PETRINET_H__91DDDBD6_8669_4EC2_A0F5_E20F2FAFDC37__INCLUDED_)
 #define AFX_PETRINET_H__91DDDBD6_8669_4EC2_A0F5_E20F2FAFDC37__INCLUDED_
-//#include "StdAfx.h"
-#include "Marking.h"    // Added by ClassView
-#include "Fils.h"    // Added by ClassView
+
+#include <set>
+#include "Marking.h"
+#include "Fils.h"
+#include "Graphe.h"
+#include "StateGraph.h"
 
 #if _MSC_VER > 1000
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include "Graphe.h"
-#include "StateGraph.h"
+
 
 class PilePhase1;
 
@@ -108,7 +110,7 @@ public:
 
     void printMetaStateEx(MetaState *ms);
 
-
+    bool areTransitionsIncluded(const std::set<string> &list_transitions);
 private:
     void addArcs(ListMarquage *list, ListMarquage *noeud);
 
@@ -127,7 +129,7 @@ private:
     Place *getPlaceAdresse(string placename);
 
     vector<Place> m_places;
-    vector<Transition> m_transitions;
+    vector<Transition> ml_transitions;
 
 };
 

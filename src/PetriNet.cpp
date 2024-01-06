@@ -1,7 +1,7 @@
 // PetriNet.cpp: implementation of the PetriNet class.
 //
 //////////////////////////////////////////////////////////////////////
-
+#include <algorithm>
 #include "Automata.h"
 #include "PetriNet.h"
 #include "misc.h"
@@ -14,7 +14,7 @@ typedef vector<PElement> PStack;
 //////////////////////////////////////////////////////////////////////
 PetriNet::PetriNet() {
     m_places.clear();
-    m_transitions.clear();
+    ml_transitions.clear();
     m_graphe = NULL;
 }
 
@@ -30,7 +30,7 @@ int PetriNet::getPlacesCount() {
 }
 
 int PetriNet::getTransitionsCount() {
-    return m_transitions.size();
+    return ml_transitions.size();
 }
 
 ////////////////////////////////////////////////////
@@ -38,8 +38,8 @@ int PetriNet::getTransitionsCount() {
 ////////////////////////////////////////////////////
 int PetriNet::getNbTransitionsFranchissables() {
     int count = 0;
-    for (unsigned int i = 0; i < m_transitions.size(); i++)
-        if (m_transitions.at(i).isFranchissable()) count++;
+    for (unsigned int i = 0; i < ml_transitions.size(); i++)
+        if (ml_transitions.at(i).isFranchissable()) count++;
     return count;
 }
 
@@ -55,7 +55,7 @@ void PetriNet::addPlace(Place place) {
 //////////////////////////////////
 void PetriNet::addTransition(Transition transition) {
     transition.setPetri(this->getNumero());
-    m_transitions.push_back(transition);
+    ml_transitions.push_back(transition);
 }
 
 //////////////////////////////////
@@ -69,7 +69,7 @@ void PetriNet::addListPlaces(vector<Place> liste_places) {
 void PetriNet::addListTransitions(vector<Transition> liste_transitions) {
     for (unsigned int i = 0; i < liste_transitions.size(); i++) {
         liste_transitions[i].setPetri(this->getNumero());
-        m_transitions.push_back(liste_transitions[i]);
+        ml_transitions.push_back(liste_transitions[i]);
     }
 }
 
@@ -90,10 +90,10 @@ Place *PetriNet::getPlaceAdresse(string placename) {
 ///////////////////////////////////////////////////////////////////////////////
 Transition *PetriNet::getTransitionAdresse(const int code) {
     int indice = -1;
-    for (int i = 0; i < m_transitions.size() && indice == -1; i++) {
-        if (code == m_transitions[i].getCode()) indice = i;
+    for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
+        if (code == ml_transitions[i].getCode()) indice = i;
     }
-    return &m_transitions[indice];
+    return &ml_transitions[indice];
 }
 
 Place PetriNet::getPlace(const int index) {
@@ -124,9 +124,9 @@ void PetriNet::setMarquage(Marking *marquage) {
 ///////////////////////////////////////////////////////////////
 vector<Transition *> PetriNet::getListeTransitionsFranchissables() {
     vector<Transition *> liste_transitions;
-    for (int i = 0; i < m_transitions.size(); i++)
-        if (m_transitions.at(i).isFranchissable()) {
-            liste_transitions.push_back(&m_transitions.at(i));
+    for (int i = 0; i < ml_transitions.size(); i++)
+        if (ml_transitions.at(i).isFranchissable()) {
+            liste_transitions.push_back(&ml_transitions.at(i));
         }
 
     return liste_transitions;
@@ -148,15 +148,15 @@ void PetriNet::printMarquage() {
 int PetriNet::addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids) {
     // Localisation de l'indice de la transition
     int indice = -1;
-    for (int i = 0; i < m_transitions.size() && indice == -1; i++) {
-        if (m_transitions[i].getName() == nom_transition)
+    for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
+        if (ml_transitions[i].getName() == nom_transition)
             indice = i;
     }
     if (indice != -1) {
         // Ajout de places d'entr�e
         //printf("Places d'entr�e\n");
         for (int i = 0; i < liste_places_entrees.size(); i++) {
-            m_transitions[indice].addPlaceEntree(getPlaceAdresse(liste_places_entrees[i]), liste_poids.at(i));
+            ml_transitions[indice].addPlaceEntree(getPlaceAdresse(liste_places_entrees[i]), liste_poids.at(i));
             //printf("%s, ",liste_places_entrees[i].mot.c_str());
 
         }
@@ -172,14 +172,14 @@ int PetriNet::addPlacesEntrees(string nom_transition, vector<string> liste_place
 int PetriNet::addPlacesSorties(string nom_transition, vector<string> liste_places_sorties, vector<int> liste_poids) {
     // Localisation de l'indice de la transition
     int indice = -1;
-    for (int i = 0; i < m_transitions.size() && indice == -1; i++) {
-        if (m_transitions[i].getName() == nom_transition)
+    for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
+        if (ml_transitions[i].getName() == nom_transition)
             indice = i;
     }
     if (indice != -1) {
         // Ajout de places de sortie
         for (int j = 0; j < liste_places_sorties.size(); j++) {
-            m_transitions[indice].addPlaceSortie(getPlaceAdresse(liste_places_sorties.at(j)), liste_poids.at(j));
+            ml_transitions[indice].addPlaceSortie(getPlaceAdresse(liste_places_sorties.at(j)), liste_poids.at(j));
             //printf("%s, ",liste_places_sorties[j].mot.c_str());
         }
         return 0;
@@ -410,10 +410,10 @@ int PetriNet::getNumero() {
 // Renommer les transitions //
 //////////////////////////////
 void PetriNet::renommerTransitions(vectorString transitions) {
-    for (int i = 0; i < m_transitions.size(); i++) {
-        if (!m_transitions.at(i).isSync()) {
-            if (std::find(transitions.begin(), transitions.end(),m_transitions[i].getName()) == transitions.end())
-                m_transitions.at(i).setName("$");
+    for (int i = 0; i < ml_transitions.size(); i++) {
+        if (!ml_transitions.at(i).isSync()) {
+            if (std::find(transitions.begin(), transitions.end(), ml_transitions[i].getName()) == transitions.end())
+                ml_transitions.at(i).setName("$");
         }
     }
 }
@@ -423,11 +423,11 @@ void PetriNet::renommerTransitions(vectorString transitions) {
 /////////////////////////////////////////////////////////////////////
 Transition *PetriNet::getTransitionAdresse(const string nom_transition) {
     int indice = -1;
-    for (int i = 0; i < m_transitions.size() && indice == -1; i++) {
-        if (nom_transition == m_transitions[i].getName()) indice = i;
+    for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
+        if (nom_transition == ml_transitions[i].getName()) indice = i;
     }
     if (indice != -1)
-        return &m_transitions[indice];
+        return &ml_transitions[indice];
     else return NULL;
 }
 
@@ -495,7 +495,6 @@ void PetriNet::replaceCyclePhase1(PilePhase1 *pile, const int index, Marking *ma
     //nouveau_elt.liste_fils.addGroupe(getListeFilsMarquages(*marq));
     pile->m_liste.push_back(nouveau_elt);
 }
-
 
 
 ////////////////////////////////////////////////////
@@ -745,3 +744,11 @@ string PetriNet::getSCCName(SCC *scc) {
     return getMarquageName(*scc->getListStates()->at(0));
 }
 
+bool PetriNet::areTransitionsIncluded(const std::set<string> &list_transitions) {
+    for (const auto &transition: list_transitions) {
+        if (std::find_if(ml_transitions.begin(), ml_transitions.end(), [transition](auto &elt) { return elt.getName() == transition; }) == ml_transitions.end()) {
+            return false;
+        }
+    }
+    return true;
+}
