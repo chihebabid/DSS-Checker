@@ -8,6 +8,7 @@
 #include "Fils.h"
 #include "ListMarquage.h"
 #include "Fusion.h"
+#include "ProductSCC.h"
 
 class ElementRed {
 public:
@@ -122,5 +123,10 @@ public:
 struct element_t {
     Marking marquage;
     vector<Transition *> liste_transitions;
+};
+/*************************************************************************/
+class Element_dss : public PElement_dss {
+public:
+    ProductSCC *m_product {nullptr};
 };
 #endif //DISTRIBUTEDSTATESPACE_MISC_H

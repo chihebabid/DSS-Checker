@@ -4,7 +4,6 @@
 
 #include <fstream>
 #include <set>
-#include "Element_dss.h"
 #include "ModularPetriNet.h"
 #include "time.h"
 #include "ArcSync.h"

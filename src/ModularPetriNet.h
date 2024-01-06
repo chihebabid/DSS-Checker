@@ -11,7 +11,7 @@
 
 #include <vector>
 #include <set>
-#include "Element_dss.h"
+
 #include "ModularSpace.h"
 #include "PetriNet.h"
 #include "NodeSG.h"

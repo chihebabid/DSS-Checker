@@ -65,8 +65,6 @@ add_executable(distributedstatespace main.cpp
         NodeSGSimplified.h
         ArcSG.cpp
         ArcSG.h
-        Element_dss.cpp
-        Element_dss.h
         Operations.cpp
         Operations.h
         DistributedState.cpp
