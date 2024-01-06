@@ -36,8 +36,6 @@ public:
 
 private:
     vector<MetaState *> ml_metastate;
-
-
 };
 
 #endif /* METAGRAPH_H_ */

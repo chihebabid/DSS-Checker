@@ -31,16 +31,6 @@ NodeSG::NodeSG(const NodeSG &val) {
 
 }
 
-
-void NodeSG::addArc(NodeSGSimplified source, Fusion *transition, NodeSG *global_dest) {
-
-    ArcSG *arc = new ArcSG();
-    arc->setData(source, transition, global_dest);
-    m_arcs->push_back(arc);
-
-}
-
-
 long NodeSG::getCountArcs() {
     return m_arcs->size();
 }

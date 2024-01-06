@@ -14,6 +14,7 @@
 
 #include "ListMarquage.h"    // Added by ClassView
 #include "ModularSpace.h"
+#include "Arc.h"
 
 typedef vector<Marking> ListMarqLoc;
 

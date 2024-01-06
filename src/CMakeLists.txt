@@ -55,8 +55,6 @@ add_executable(distributedstatespace main.cpp
         ListMarquage.h
         Fusion.cpp
         Fusion.h
-        Graphe.cpp
-        Graphe.h
         GrapheSync.cpp
         GrapheSync.h
         NodeSGSimplified.cpp

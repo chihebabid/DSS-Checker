@@ -21,27 +21,7 @@ class ModularSpace {
     friend class Automata;
 
 public:
-    void display2();
 
-    void insertGraphe(const int index, Automata *automata);
-
-    GrapheSync *getGrapheSync();
-
-    void setGrapheSync(GrapheSync *graphe);
-
-    void display(int choix, int i);
-
-    void setParent(ModularPetriNet *petri);
-
-    Automata *getEspaceLocal(const int index);
-
-    void addGrapheSync(GrapheSync *graphe);
-
-    void setNbModules(const int n);
-
-    void addGraphe(int index, Automata *automata);
-
-    long getTotalArcs();
 
     long getLocalArcsCount();
 

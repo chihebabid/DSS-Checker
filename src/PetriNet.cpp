@@ -29,34 +29,8 @@ int PetriNet::getPlacesCount() {
     return m_places.size();
 }
 
-int PetriNet::getTransitionsCount() {
-    return ml_transitions.size();
-}
 
-////////////////////////////////////////////////////
-// Retourner le nombre de transitions franchissables
-////////////////////////////////////////////////////
-int PetriNet::getNbTransitionsFranchissables() {
-    int count = 0;
-    for (unsigned int i = 0; i < ml_transitions.size(); i++)
-        if (ml_transitions.at(i).isFranchissable()) count++;
-    return count;
-}
 
-//////////////////////////////////
-// Ajouter une place
-//////////////////////////////////
-void PetriNet::addPlace(Place place) {
-    m_places.push_back(place);
-}
-
-//////////////////////////////////
-// Ins�rer une transition
-//////////////////////////////////
-void PetriNet::addTransition(Transition transition) {
-    transition.setPetri(this->getNumero());
-    ml_transitions.push_back(transition);
-}
 
 //////////////////////////////////
 // Ajouter une liste de places
@@ -138,13 +112,6 @@ void PetriNet::tirer(Transition &t) {
 }
 
 
-void PetriNet::printMarquage() {
-    for (int i = 0; i < m_places.size(); i++) {
-//		cout<<m_places[i].getName()<<"("<<m_places[i].getTokens()<<")";
-        if (i != m_places.size() - 1) cout << ", ";
-    }
-}
-
 int PetriNet::addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids) {
     // Localisation de l'indice de la transition
     int indice = -1;
@@ -207,190 +174,6 @@ string PetriNet::getMarquageName(Marking marquage) {
     return resultat;
 }
 
-///////////////////////////////////////////////////////////////////////////
-/// Construire le graphe local accessible r�duit � partir d'un marquage ///
-///////////////////////////////////////////////////////////////////////////
-Automata *PetriNet::getLocalSpaceReduced(vector<Marking> &liste_marquages, GrapheSync *graphe_sync, Automata *graphe) {
-    //cout<<"\n-----------------Transition synchronis�e est franchie-----------------\n";
-    m_graphe = graphe;
-
-    PileRed pile;
-    ElementRed elt;
-    for (int i = 0; i < m_graphe->getCountNodes(); i++) {
-        ListMarquage *node;
-        node = m_graphe->getNode(i);
-        elt.groupe = node;
-        elt.liste_fils = getListFilsEx(node);
-        elt.etat = false;
-        if (elt.liste_fils.size() > 0) pile.m_liste.push_back(elt);
-
-    }
-
-    for (int i = 0; i < liste_marquages.size(); i++) {
-        if (!m_graphe->isMarquageExist(&liste_marquages.at(i))) {
-            ListMarquage *groupe;
-            groupe = new ListMarquage();
-
-            groupe->addMarquage(&liste_marquages.at(i));
-            elt.groupe = groupe;
-            elt.liste_fils = getListeFils(liste_marquages.at(i));
-            elt.etat = estLocalementRedondant(&liste_marquages.at(i)) && graphe_sync->estRedondant(&liste_marquages.at(i), getNumero());
-            pile.m_liste.push_back(elt);
-        }
-    }
-
-    vector<ListMarquage *> liste_groupes;
-
-
-    while (pile.m_liste.size() > 0) {
-
-        ElementRed current_elt = pile.m_liste.back();
-        pile.m_liste.pop_back();
-
-        /*cout<<"\n"<<m_graphe->m_parent->getCorrespondant(current_elt.groupe,getNumero()).c_str()<<" "<<current_elt.liste_fils.size()<<" "<<current_elt.etat;
-        for (int k=0;k<current_elt.liste_fils.size();k++)
-        cout<<"\n Fils "<<k<<" : "<<m_graphe->m_parent->getCorrespondantMarquage(current_elt.liste_fils.at(k).getMarquage(),getNumero()).c_str();*/
-
-        //int d;cin>>d;
-        /**************************************************/
-        /** Si l'�l�ment courant n'est pas tau-redondant **/
-        /**************************************************/
-
-        if (current_elt.etat == false) {
-
-            if (current_elt.liste_fils.size() > 0) {
-                // R�cuprer un fils de ce marquage
-                Fils fils = current_elt.liste_fils.back();
-                current_elt.liste_fils.pop_back();
-                pile.m_liste.push_back(current_elt);
-
-                if (!graphe->isMarquageExist(&fils.getMarquage())) {
-                    /*test++;
-                    cout<<"\nNoeud ajoute : "<<m_graphe->m_parent->getCorrespondant(current_elt.groupe,getNumero()).c_str();
-                    cout<<"\n--------------------------------------------------------------"<<test;*/
-                    // Enregistrer le marquage fils dans la pile et ses fils
-                    m_graphe->addNode2(current_elt.groupe);
-                    elt.groupe = new ListMarquage();
-                    elt.groupe->addMarquage(&fils.getMarquage());
-                    elt.liste_fils = getListeFils(fils.getMarquage());
-                    elt.etat = (estLocalementRedondant(&fils.getMarquage()) && graphe_sync->estRedondant(&fils.getMarquage(), getNumero()));
-                    pile.m_liste.push_back(elt);
-                    m_graphe->addArcs(current_elt.groupe, fils.getListeTransitions(), elt.groupe);
-
-                } else {
-                    liste_groupes = graphe->getNodesContainMarquage(&fils.getMarquage());
-                    for (unsigned int index = 0; index < liste_groupes.size(); index++) {
-
-                        m_graphe->addArcs(current_elt.groupe, fils.getListeTransitions(), liste_groupes.at(index));
-                    }
-                }
-            } else {
-                /*test++;
-                cout<<"\nNoeud ajoute : "<<m_graphe->m_parent->getCorrespondant(current_elt.groupe,getNumero()).c_str();
-                cout<<"\n--------------------------------------------------------------"<<test;*/
-                m_graphe->addNode2(current_elt.groupe);
-
-            }
-
-        }
-            /********************************************/
-            /** Si l'�l�ment courant est tau-redondant **/
-            /********************************************/
-        else {
-
-            if (current_elt.liste_fils.size() > 0) {
-
-                // On commence par r�cup�rer un de ses fils
-                Fils fils = current_elt.liste_fils.back();
-                Marking marquage_fils = fils.getMarquage();
-
-
-                current_elt.liste_fils.pop_back();
-                pile.m_liste.push_back(current_elt);
-
-                // Collecter les informations relatives au fils
-                if (!graphe->isMarquageExist(&marquage_fils)) {
-
-                    elt.groupe = new ListMarquage();
-                    *elt.groupe = *current_elt.groupe;
-                    elt.groupe->addMarquage(&marquage_fils);
-                    elt.liste_fils = getListeFils(marquage_fils);
-                    elt.etat = (estLocalementRedondant(&marquage_fils) && graphe_sync->estRedondant(&marquage_fils, getNumero()));
-                    pile.m_liste.push_back(elt);
-
-                } else {
-                    liste_groupes = graphe->getNodesContainMarquage(&fils.getMarquage());
-                    for (int index = 0; index < liste_groupes.size(); index++) {
-                        liste_groupes.at(index)->addGroupe(*current_elt.groupe);
-                        //m_graphe->addArcs(current_elt.groupe,fils.getListeTransitions(),liste_groupes.at(index));
-                    }
-                }
-            }
-        }
-
-
-    }
-    /*cout<<"\ntest :"<<test;
-    cout<<"\n#nodes : "<<graphe->getCountNodes();	*/
-    //exit(0);
-    graphe->display();
-    return graphe;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////
-// Renvoyer la liste des marquages locaux accessibles � partir d'un marquage donn�e
-/////////////////////////////////////////////////////////////////////////////////////
-vector<Marking> *PetriNet::getListMarquageAccFrom(Marking marquage, Automata *automata, ListMarquage **liste) {
-    vector<Marking> *m_list_marq_inserted = new vector<Marking>();
-    m_list_marq_inserted->clear();
-    m_graphe = automata;
-    m_list_marq_inserted->push_back(marquage);
-    PilePhase1 pile;
-    ElementPhase1 elt;
-    ListMarquage *groupe = new ListMarquage();
-    groupe->addMarquage(&marquage);
-    elt.groupe = groupe;
-    elt.liste_fils = getListeFilsMarquages(marquage);
-    pile.m_liste.push_back(elt);
-
-
-    while (pile.m_liste.size() > 0) {
-
-        ElementPhase1 current_elt = pile.m_liste.back();
-        pile.m_liste.pop_back();
-        if (current_elt.liste_fils.getCount() > 0) {
-
-            Marking marquage = current_elt.liste_fils.pop();
-            pile.m_liste.push_back(current_elt);
-            //Lorsqu'il existe une CFC
-            int index;
-            if ((index = pile.isCycle(&marquage)) != -1) {
-                replaceCyclePhase1(&pile, index, &marquage);
-            }
-                //Sinon ajouter le marquage courant et ces fils
-            else {
-                if (m_list_marq_inserted->end() == find(m_list_marq_inserted->begin(), m_list_marq_inserted->end(), marquage)) {
-                    m_list_marq_inserted->push_back(marquage);
-                    elt.groupe = new ListMarquage();
-                    elt.groupe->addMarquage(&marquage);
-                    elt.liste_fils = getListeFilsMarquages(marquage);
-                    pile.m_liste.push_back(elt);
-                }
-            }
-        } else {
-            if (current_elt.etat == true) {
-                addArcs(current_elt.groupe, m_graphe->addNode2(current_elt.groupe));
-
-            } else {
-                delete current_elt.groupe;
-            }
-        }
-
-    }
-    // D�terminer le noeud initial
-    *liste = automata->getFirstNodeContainMarquage(&m_list_marq_inserted->at(0));
-    return m_list_marq_inserted;
-}
 
 ///////////////////////////////////
 // Sp�cifier le num�ro du module //
@@ -406,18 +189,6 @@ int PetriNet::getNumero() {
     return m_numero;
 }
 
-//////////////////////////////
-// Renommer les transitions //
-//////////////////////////////
-void PetriNet::renommerTransitions(vectorString transitions) {
-    for (int i = 0; i < ml_transitions.size(); i++) {
-        if (!ml_transitions.at(i).isSync()) {
-            if (std::find(transitions.begin(), transitions.end(), ml_transitions[i].getName()) == transitions.end())
-                ml_transitions.at(i).setName("$");
-        }
-    }
-}
-
 /////////////////////////////////////////////////////////////////////
 // Renvoyer un pointeur vers une transition en connaissant son nom //
 /////////////////////////////////////////////////////////////////////
@@ -431,18 +202,7 @@ Transition *PetriNet::getTransitionAdresse(const string nom_transition) {
     else return NULL;
 }
 
-////////////////////////////////////////////////////
-// Tester si un marquage est localement redondant //
-////////////////////////////////////////////////////
-bool PetriNet::estLocalementRedondant(Marking *marq) {
-    setMarquage(marq);
-    vector<Transition *> liste_transition = getListeTransitionsFranchissables();
-    if (liste_transition.size() == 0) {
-        return false;
-    }
-    return (Operations::verifier(liste_transition, "$"));
 
-}
 
 ////////////////////////////////////////////////////////////
 // Mettre � jour la liste des fils
@@ -462,79 +222,6 @@ void PetriNet::update(vector<Fils> &liste_fils, Marking marq, Transition &transi
     }
 }
 
-////////////////////////////////////////////////////
-// Renvoyer la liste des marquages fils d'un marquage donn�
-////////////////////////////////////////////////////
-ListMarquage PetriNet::getListeFilsMarquages(Marking &marq) {
-    setMarquage(&marq);
-    ListMarquage result;
-    vector<Transition *> liste_transitions = getListeTransitionsFranchissables();
-    for (int i = 0; i < liste_transitions.size(); i++) {
-        setMarquage(&marq);
-        tirer(*liste_transitions.at(i));
-        Marking m = getMarquage();
-        result.addMarquage(&m);
-    }
-    return result;
-}
-
-///////////////////////////////////////////////////////////////////
-// Remplacer les noeuds apparetnant � un cycle par un seul noeud //
-///////////////////////////////////////////////////////////////////
-void PetriNet::replaceCyclePhase1(PilePhase1 *pile, const int index, Marking *marq) {
-    ElementPhase1 nouveau_elt;
-    nouveau_elt.groupe = new ListMarquage();
-    nouveau_elt.etat = true;
-    for (int i = pile->m_liste.size() - 1; i >= index; i--) {
-        ElementPhase1 elt = pile->m_liste.back();
-        nouveau_elt.groupe->addGroupe(*elt.groupe);
-        nouveau_elt.liste_fils.addGroupe(elt.liste_fils);
-        pile->m_liste.pop_back();
-    }
-    nouveau_elt.groupe->addMarquage(marq);
-    //nouveau_elt.liste_fils.addGroupe(getListeFilsMarquages(*marq));
-    pile->m_liste.push_back(nouveau_elt);
-}
-
-
-////////////////////////////////////////////////////
-// Renvoyer la liste des fils d'un marquage donn�
-////////////////////////////////////////////////////
-vector<Fils> PetriNet::getListeFils(Marking marq) {
-    setMarquage(&marq);
-    vector<Fils> result;
-    vector<Transition *> liste_transitions = getListeTransitionsFranchissables();
-    for (int i = 0; i < liste_transitions.size(); i++) {
-        setMarquage(&marq);
-        tirer(*liste_transitions.at(i));
-        update(result, getMarquage(), *liste_transitions.at(i));
-    }
-    return result;
-}
-
-////////////////////////////////////////////////////
-// Renvoyer la liste des fils  d'un ensemble de marquages qui ne sont pas inclus dans groupe
-////////////////////////////////////////////////////
-vector<Fils> PetriNet::getListFilsEx(ListMarquage *groupe) {
-    vector<Transition *> liste_transitions;
-    vector<Fils> result;
-    for (int i = 0; i < groupe->getCount(); i++) {
-        setMarquage(groupe->getMarquage(i));
-        liste_transitions = getListeTransitionsFranchissables();
-
-        for (int t = 0; t < liste_transitions.size(); t++) {
-            setMarquage(groupe->getMarquage(i));
-            tirer(*liste_transitions.at(t));
-            Marking m = getMarquage();
-            if (groupe->existMarquage(&m)) {
-                update(result, getMarquage(), *liste_transitions.at(t));
-            }
-        }
-    }
-    return result;
-}
-
-
 bool PetriNet::isDivergent(Marking &marq) {
     Noeud *noeud = m_graphe->getFirstNodeContainMarquage(&marq);
     if (noeud == NULL) return false;
@@ -551,23 +238,6 @@ bool PetriNet::isDivergent(Marking &marq) {
 
 }
 
-void PetriNet::addArcs(ListMarquage *groupe, ListMarquage *noeud) {
-    vector<Transition *> liste_transitions;
-
-    for (int i = 0; i < groupe->getCount(); i++) {
-        setMarquage(groupe->getMarquage(i));
-        liste_transitions = getListeTransitionsFranchissables();
-
-        for (int t = 0; t < liste_transitions.size(); t++) {
-            setMarquage(groupe->getMarquage(i));
-            tirer(*liste_transitions.at(t));
-            Marking m = getMarquage();
-            if (groupe->existMarquage(&m)) {
-                m_graphe->addArc(noeud, liste_transitions.at(t)->getName(), noeud);
-            }
-        }
-    }
-}
 
 
 // Construction de Meta-graphe
@@ -636,28 +306,6 @@ StateGraph *PetriNet::getStateGraph(Marking marquage) {
 
     state_graph->computeSCCTarjan();
     return state_graph;
-}
-
-
-// Display Information related to a Meta-State
-
-void PetriNet::printMetaState(MetaState *ms) {
-    vector<Marking *> *list_states = ms->getListMarq();
-    cout << "Number of states: " << list_states->size() << endl;
-    for (int i = 0; i < list_states->size(); i++) {
-        cout << "State n°" << i << ": " << getMarquageName(*list_states->at(i)) << endl;
-    }
-
-    vector<SCC *> *list_sccs = ms->getListSCCs();
-    cout << "Number of SCCs: " << list_sccs->size() << endl;
-    for (int i = 0; i < list_sccs->size(); i++) {
-        cout << "SCC n°" << i << endl;
-        vector<Marking *> *lscc_states = list_sccs->at(i)->getListStates();
-        for (int j = 0; j < lscc_states->size(); j++) {
-            cout << getMarquageName(*lscc_states->at(j)) << " , ";
-        }
-        cout << endl;
-    }
 }
 
 

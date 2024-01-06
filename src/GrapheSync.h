@@ -17,14 +17,7 @@ class NodeSG;
 
 class GrapheSync {
 public:
-
-    bool estRedondant(Marking *marquage, const int index);
-
     NodeSG *getNode(const int index);
-
-    NodeSG *addNode(NodeSG *node);
-
-    bool isNodeExist(NodeSG *marq);
 
     int getCountArcs();
 

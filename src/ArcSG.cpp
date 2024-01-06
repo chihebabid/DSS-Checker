@@ -46,7 +46,3 @@ ArcSG::ArcSG(const ArcSG &val) {
 
 }
 
-
-void ArcSG::setDestination(NodeSG *destination) {
-    m_destination = destination;
-}

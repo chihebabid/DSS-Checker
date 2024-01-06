@@ -8,7 +8,6 @@
 #include <set>
 #include "Marking.h"
 #include "Fils.h"
-#include "Graphe.h"
 #include "StateGraph.h"
 
 #if _MSC_VER > 1000
@@ -48,27 +47,15 @@ public:
 
     bool isDivergent(Marking &marq);
 
-    vector<Fils> getListFilsEx(ListMarquage *groupe);
-
     int addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids);
 
-    void replaceCyclePhase1(PilePhase1 *pile, const int index, Marking *marq);
-
-    bool estLocalementRedondant(Marking *marq);
-
     Transition *getTransitionAdresse(const string nom_transition);
-
-    void renommerTransitions(vectorString transitions);
 
     int getNumero();
 
     void setNumero(const int index);
 
-    Automata *getLocalSpaceReduced(vector<Marking> &liste_marquages, GrapheSync *graphe_sync, Automata *graphe);
-
     string getMarquageName(Marking marquage);
-
-    vector<Marking> *getListMarquageAccFrom(Marking, Automata *automata, ListMarquage **list);
 
     int addPlacesSorties(string nom_transition, vector<string> liste_places_sorties, vector<int> liste_poids);
 
@@ -86,17 +73,7 @@ public:
 
     void addListPlaces(vector<Place> liste_places);
 
-    void addTransition(Transition transition);
-
-    void addPlace(Place place);
-
-    int getNbTransitionsFranchissables();
-
-    int getTransitionsCount();
-
     int getPlacesCount();
-
-    void printMarquage();
 
     PetriNet();
 
@@ -104,21 +81,15 @@ public:
 
     StateGraph *getStateGraph(Marking marquage);
 
-    void printMetaState(MetaState *ms);
+
 
     void printMetaStateEx(MetaState *ms);
 
     bool areTransitionsIncluded(const std::set<string> &list_transitions);
 private:
-    void addArcs(ListMarquage *list, ListMarquage *noeud);
-
     Automata *m_graphe;
 
     void update(vector<Fils> &liste_fils, Marking marq, Transition &transition);
-
-    vector<Fils> getListeFils(Marking marq);
-
-    ListMarquage getListeFilsMarquages(Marking &marq);
 
     int m_numero;
 

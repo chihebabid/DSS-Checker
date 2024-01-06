@@ -19,8 +19,6 @@ class NodeSG;
 
 class ArcSG {
 public:
-    void setDestination(NodeSG *destination);
-
     Fusion *getFusion();
 
     ArcSG(const ArcSG &val);
@@ -32,8 +30,6 @@ public:
     NodeSGSimplified *getMarquageSource();
 
     NodeSG *getNodeSGDest();
-
-    void setData(NodeSGSimplified source, Fusion *transition, NodeSG *global_dest);
 
     ArcSG();
 
@@ -47,12 +43,6 @@ private:
 
 };
 
-inline void ArcSG::setData(NodeSGSimplified source, Fusion *transition, NodeSG *global_dest) {
-    m_fusion = transition;
-    m_destination = global_dest;
-    m_marquage_depart = source;
-
-}
 
 inline Fusion *ArcSG::getFusion() {
     return m_fusion;

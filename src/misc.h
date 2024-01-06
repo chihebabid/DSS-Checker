@@ -10,37 +10,6 @@
 #include "Fusion.h"
 #include "ProductSCC.h"
 
-class ElementRed {
-public:
-
-
-
-    ElementRed(const ElementRed &elt) {
-        {
-            this->groupe = elt.groupe;
-            this->etat = elt.etat;
-            this->liste_fils = elt.liste_fils;
-        }
-    }
-
-    ElementRed &operator=(const ElementRed &elt) {
-        if (this == &elt) return *this;
-        this->groupe = elt.groupe;
-        this->etat = elt.etat;
-        this->liste_fils = elt.liste_fils;
-        return *this;
-    }
-
-    bool isExist(Marking *marq) {
-        return groupe->existMarquage(marq);
-    }
-
-    ListMarquage *groupe;
-    std::vector<Fils> liste_fils;
-    bool etat;
-    ElementRed()=default;
-    virtual ~ElementRed()=default;
-};
 
 struct PElement {
     Marking *marquage;
@@ -72,48 +41,7 @@ public:
     ListGlobalStates m_gs;
     Fusion *m_fusion;
 };
-/********************************************************************************/
-class ElementPhase1 {
-public:
-    ElementPhase1(const ElementPhase1 &elt) {
-        this->groupe = elt.groupe;
-        this->etat = elt.etat;
-        this->liste_fils = elt.liste_fils;
-    }
 
-    bool etat;
-
-    bool isExist(Marking *marq)  {
-        return groupe->existMarquage(marq);
-    }
-
-    ElementPhase1()=default;
-
-    virtual ~ElementPhase1()=default;
-
-    ListMarquage *groupe;
-    ListMarquage liste_fils;
-
-    ElementPhase1 &operator=(const ElementPhase1 &elt)  {
-        this->groupe = elt.groupe;
-        this->liste_fils = elt.liste_fils;
-        this->etat = elt.etat;
-        return *this;
-    }
-};
-
-struct PilePhase1 {
-public:
-    long isCycle(Marking *marq) {
-        for (long i = 0; i < m_liste.size(); i++) {
-            if (m_liste.at(i).groupe->existMarquage(marq)) return i;
-        }
-        return -1L;
-    }
-
-    std::vector<ElementPhase1> m_liste;
-
-};
 /***********************************************************************/
 struct element_t {
     Marking marquage;
@@ -124,16 +52,5 @@ class Element_dss : public PElement_dss {
 public:
     ProductSCC *m_product {nullptr};
 };
-/**************************************************************************/
-struct PileRed {
-public:
-    int isCycle(Marking *marq) {
-        int result = -1;
-        for (int i = 0; i < (m_liste.size() - 1) && result == -1; i++) {
-            if (m_liste.at(i).isExist(marq)) result = i;
-        }
-        return result;
-    }
-    vector<ElementRed> m_liste;
-};
+
 #endif //DISTRIBUTEDSTATESPACE_MISC_H

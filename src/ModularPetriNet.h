@@ -34,10 +34,8 @@ class ModularSpace;
 
 class PetriNet;
 
-class NodeSGSimplified;
-
 using namespace std;
-//#define ListProductFusion std::vector<Element_dss>
+
 typedef std::vector<Element_dss> ListProductFusion;
 typedef vector<RElement_dss> RListProductFusion;
 

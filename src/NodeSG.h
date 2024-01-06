@@ -33,17 +33,12 @@ public:
 
     long getCountArcs();
 
-    void addArc(NodeSGSimplified source, Fusion *transition, NodeSG *global_dest);
-
-    inline long getMarquageCount() { return m_list.size(); };
-
     NodeSG(const NodeSG &node);
 
     NodeSG &operator=(const NodeSG &val);
 
     bool operator==(NodeSG &marq);
 
-    void addMarquage(Marking &marquage, ListMarquage *equiv);
 
     NodeSG();
 
@@ -53,11 +48,6 @@ public:
 };
 
 
-inline void NodeSG::addMarquage(Marking &marquage, ListMarquage *equiv) {
-    using std::vector;
-    m_list.push_back(marquage);
-    m_equiv.push_back(equiv);
-}
 
 
 inline bool NodeSG::operator==(NodeSG &marq) {
