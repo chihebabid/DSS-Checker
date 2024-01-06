@@ -40,6 +40,14 @@ public:
         else
             return h > oh;
     }
+
+    SCC * getSCC() const {
+        return m_scc;
+    }
+
+    MetaState *getMetaState() const{
+        return m_metaState;
+    }
 };
 
 

@@ -5,21 +5,7 @@
 
 #include "Transition.h"
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
 
-Transition::Transition() {
-    m_sync = false;
-    ml_input_places.clear();
-    ml_output_places.clear();
-    m_poids_entrees.clear();
-    m_poids_sorties.clear();
-}
-
-Transition::~Transition() {
-
-}
 
 bool Transition::isFranchissableLocal() {
     for (int i = 0; i < ml_input_places.size(); i++) {

@@ -186,28 +186,28 @@ int main(int argc, char *argv[]) {
         cout << "DSS has been successfully built." << endl;
         if (dot_output) builder.writeToFile(file_name + ".dot");
         if (txt_output) builder.outputTXT();
+        if (property_file != "") {
+            bool dot_formula {false};
+            // build automata of the negation of the formula
+            Formula negate_formula {negateFormula(property_file)};
+            auto my_bdd_dict {spot::make_bdd_dict()};
+            spot::twa_graph_ptr af {formula2Automaton(negate_formula.f, my_bdd_dict, dot_formula)};
+
+            // Get module index
+            auto index_module {petri->getModule(negate_formula.propositions)};
+            std::cout<<"Property will be checked against module #"<<index_module<<std::endl;
+            auto moduleGraph {builder.getModuleGraph(index_module)};
+            // build a twa graph of the SOG
+
+            auto k = std::make_shared<DSSKripke>(my_bdd_dict,moduleGraph);
+            auto res = (k->intersecting_run(af) == 0);
+            if (res)
+                cout << "\nProperty is verified..." << endl;
+            else
+                cout << "\nProperty is violated..." << endl;
+        }
     }
-    if (property_file != "") {
-        bool dot_formula {false};
-        // build automata of the negation of the formula
-        Formula negate_formula {negateFormula(property_file)};
-        auto my_bdd_dict {spot::make_bdd_dict()};
-        spot::twa_graph_ptr af {formula2Automaton(negate_formula.f, my_bdd_dict, dot_formula)};
 
-        // Get module index
-        auto index_module {petri->getModule(negate_formula.propositions)};
-        std::cout<<"Property will be checked against module #"<<index_module<<std::endl;
-
-        // build a twa graph of the SOG
-        cout << "\nTranslating SOG to SPOT ..." << endl;
-        /*spot::twa_graph_ptr k = spot::make_twa_graph(
-                std::make_shared<DSSKripke>(my_bdd_dict, DR.getGraph(), Rnewnet.getListTransitionAP(), Rnewnet.getListPlaceAP()),
-                spot::twa::prop_set::all(), true);
-              // computes the explicit synchronization product
-        auto run = k->intersecting_run(af);*/
-
-
-    }
     //ModularSpace* espace_etat=petri->constructReducedStateSpace();
 
     duration = (double) (finish - start) / CLOCKS_PER_SEC;

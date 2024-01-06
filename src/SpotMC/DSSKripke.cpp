@@ -5,13 +5,27 @@
 #include "DSSKripke.h"
 #include "DSSState.h"
 
-DSSKripke::DSSKripke(const spot::bdd_dict_ptr &dict_ptr,MetaGraph *metagraph): spot::kripke(dict_ptr),m_metagraph(metagraph)
+DSSKripke::DSSKripke(const spot::bdd_dict_ptr &dict_ptr,ModuleSS *metagraph): spot::kripke(dict_ptr),m_metagraph(metagraph)
 {
-
-    // DSSKripkeIteratorv2::m_dict_ptr=&dict_ptr;
+    DSSIterator::m_dict_ptr=&dict_ptr;
 }
 
 spot::state* DSSKripke::get_init_state() const {
-    //cout<<"Initial state given...\n";
     return new DSSState(m_metagraph->getMetaState(0)->getInitialSCC(),m_metagraph->getMetaState(0));
+}
+
+DSSIterator* DSSKripke::succ_iter(const spot::state* s) const {
+    auto ss = static_cast<const DSSState*>(s);
+    auto scc=ss->getSCC();
+    auto meta = ss->getMetaState();
+
+    bdd cond = state_condition(ss);
+    return new DSSIterator(scc,meta,cond);
+
+}
+std::string DSSKripke::format_state(const spot::state* s) const {
+    return "";
+}
+bdd DSSKripke::state_condition(const spot::state* s) const {
+    return bddtrue;
 }

@@ -13,10 +13,7 @@ public:
     void addState(Marking *m);
     vector<Marking *> *getListStates();
     bool isEqual(const SCC &scc);
-
-
     uint32_t getId() const;
-
 private:
     vector<Marking *> m_list;
     static uint32_t mCounter;

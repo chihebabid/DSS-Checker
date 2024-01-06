@@ -58,14 +58,14 @@ public:
 
     bool isFranchissableLocal();
 
-    Transition();
+    Transition()=default;
 
-    virtual ~Transition();
+    virtual ~Transition()=default;
 
 private:
     int m_petri_num;
     int m_code;
-    bool m_sync;
+    bool m_sync {false};
     vector<Place *> ml_input_places;
     vector<Place *> ml_output_places;
     vector<int> m_poids_entrees;

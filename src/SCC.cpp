@@ -3,14 +3,13 @@
 #include "SCC.h"
 
 SCC::SCC() {
-    mId=mCounter++;
+    mId = mCounter++;
 }
 
 
-
 Marking *SCC::existState(Marking *m) {
-    auto it {std::find_if(m_list.begin(), m_list.end(),[m](Marking *elt){return *m==*elt;})};
-    return it==m_list.end() ? nullptr : *it;
+    auto it{std::find_if(m_list.begin(), m_list.end(), [m](Marking *elt) { return *m == *elt; })};
+    return it == m_list.end() ? nullptr : *it;
 }
 
 // Compare whether two SCCs are equal
@@ -40,6 +39,6 @@ uint32_t SCC::getId() const {
 }
 
 
-uint32_t SCC::mCounter {0};
+uint32_t SCC::mCounter{0};
 
 

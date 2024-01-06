@@ -100,7 +100,7 @@ void DSSBuilder::buildInitialMS() {
                     if (fusion->participate(module)) {
 #endif
                     if (!mlModuleSS[module]->findMetaStateByProductSCC(*dest_productscc)) {
-                        ArcSync *arc_sync = new ArcSync();
+                        auto *arc_sync = new ArcSync();
                         MetaState *source_ms = elt.getMetaState(module);
                         arc_sync->setData(startProduct, fusion, dest_list_metatstates.at(module));
                         source_ms->addSyncArc(arc_sync);
@@ -271,4 +271,8 @@ void DSSBuilder::outputTXT() {
     cout << "#SCCs: " << sumSCC << endl;
     cout << "#Local edges: " << sumLocalEdges << endl;
     cout << "#Sync edges:" << sumSyncEdges << endl;
+}
+
+ModuleSS* DSSBuilder::getModuleGraph(const int index) const {
+    return mlModuleSS[index];
 }
