@@ -26,7 +26,7 @@ long SCC::getCount() {
 }
 
 void SCC::addState(Marking *m) {
-    //if (!existState(m))
+    //if (!existMarking(m))
     m->setSCCContainer(this);
     m_list.emplace_back(m);
 }

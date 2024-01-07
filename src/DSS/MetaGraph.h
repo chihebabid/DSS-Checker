@@ -26,7 +26,7 @@ public:
 
     virtual ~MetaGraph();
 
-    vector<Marking *> *getListLocalStates(ProductSCC *productscc);
+    vector<Marking *> getListLocalStates(ProductSCC *productscc);
 
     MetaState *findMetaStateByProductSCC(ProductSCC *productscc);
 

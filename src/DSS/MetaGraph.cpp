@@ -7,7 +7,7 @@
 #include <iostream>
 #include "MetaGraph.h"
 
-#define ListLocalStates vector<Marking*>*
+//#define ListLocalStates vector<Marking*>*
 
 MetaGraph::MetaGraph() {
     ml_metastate.clear();
@@ -23,13 +23,13 @@ void MetaGraph::addMetaState(MetaState *ms) {
     ml_metastate.push_back(ms);
 }
 
-ListLocalStates MetaGraph::getListLocalStates(ProductSCC *productscc) {
+vector<Marking*> MetaGraph::getListLocalStates(ProductSCC *productscc) {
     bool result = false;
-    vector<Marking *> *list_local_states = NULL;
+    vector<Marking *> list_local_states;
     for (int i = 0; i < ml_metastate.size() && !result; i++) {
         MetaState *ms = ml_metastate.at(i);
         if (ms->getSCCProductName() == productscc) {
-            list_local_states = ms->getListMarq();
+            list_local_states = ms->getListMarkings();
             result = true;
         }
     }

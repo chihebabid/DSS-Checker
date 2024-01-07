@@ -44,7 +44,7 @@ vector<MetaState *> &ModuleSS::getLMetaState() {
  * @brief Remove a metastate
  */
 void ModuleSS::removeMetaState(MetaState *ms) {
-    for (auto edge: ms->getSucc()) {
+    for (auto edge: ms->getSyncSucc()) {
         delete edge;
     }
 
@@ -56,13 +56,13 @@ void ModuleSS::removeMetaState(MetaState *ms) {
     };
 
     for (const auto elt: mlMetaState) {
-        if (!elt->getSucc().empty()) {
-            auto ptr = std::find_if(begin(elt->getSucc()), end(elt->getSucc()), compare);
-            if (ptr != elt->getSucc().end()) {
+        if (!elt->getSyncSucc().empty()) {
+            auto ptr = std::find_if(begin(elt->getSyncSucc()), end(elt->getSyncSucc()), compare);
+            if (ptr != elt->getSyncSucc().end()) {
                 //cout<<"erassed\n";
-                //cout<<"size before : "<<elt->getSucc().size()<<endl;
-                elt->getSucc().erase(ptr);
-                //cout<<"size after : "<<elt->getSucc().size()<<endl;
+                //cout<<"size before : "<<elt->getSyncSucc().size()<<endl;
+                elt->getSyncSucc().erase(ptr);
+                //cout<<"size after : "<<elt->getSyncSucc().size()<<endl;
                 delete (*ptr);
             }
         }

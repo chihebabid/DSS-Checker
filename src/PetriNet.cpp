@@ -206,7 +206,7 @@ MetaState *PetriNet::getMetaState(Marking marquage) {
     pstack.push_back(elt);
 
 
-    ms->addMarquage(elt.marquage);
+    ms->insertMarking(elt.marquage);
 
     while (pstack.size() > 0) {
         PElement current_elt = pstack.back();
@@ -225,11 +225,11 @@ MetaState *PetriNet::getMetaState(Marking marquage) {
             Marking *new_state;
             new_state = new Marking(getMarquage());
             // Indiquer si le marquage en question est r�cemment inséré
-            //if (!state_graph->existState(new_state)) list_marq_inserted.push_back(*new_state);
+            //if (!state_graph->existMarking(new_state)) list_marq_inserted.push_back(*new_state);
             //cout<<"\n The old  marquage="<<current_elt.marquage.get8BitsValue()<<endl;
             //cout<<"firing of "<<(*transition).getName()<<endl;
             //cout<<"\n The new  marquage="<<getMarquageName(*new_state)<<endl;
-            Marking *old_state = ms->addMarquage(new_state);
+            Marking *old_state = ms->insertMarking(new_state);
             //if (old_state) cout<<"\n The found  marquage="<<getMarquageName(*old_state)<<endl;
 
             //cout<<"\n The current  marquage (old)="<<getMarquageName(*current_elt.marquage)<<endl;
@@ -260,9 +260,9 @@ MetaState *PetriNet::getMetaState(Marking marquage) {
 
 
 void PetriNet::printMetaStateEx(MetaState *ms) {
-    vector<Marking *> *list_states = ms->getListMarq();
+    auto list_states = ms->getListMarkings();
 
-    cout << "Number of states: " << list_states->size() << endl;
+    cout << "Number of states: " << list_states.size() << endl;
     cout << "Number of arcs: " << ms->getArcCount() << endl;
     //for (ms->
     /*for (int i=0;i<list_arcs->size();i++) {

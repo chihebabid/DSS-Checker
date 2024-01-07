@@ -139,7 +139,7 @@ void DSSBuilder::buildInitialMS() {
                     // Redirect edges to ptrMS
                     // A comment
                     for (const auto &m: mlModuleSS[module]->getLMetaState()) {
-                        for (const auto &edge: m->getSucc()) {
+                        for (const auto &edge: m->getSyncSucc()) {
                             if (edge->getMetaStateDest() == ptrMS) edge->setDestination(_ms);
                         }
                     }
@@ -166,14 +166,14 @@ void DSSBuilder::writeToFile(const string &filename) {
                    << " {" << endl;
             /*********************************/
 
-            for (const auto &source: *ms->getListMarq()) {
+            for (const auto &source: ms->getListMarkings()) {
                 auto sourceName = petri->getMarquageName(*source);
                 myfile << sourceName << getProductSCCName(pscc);
                 myfile << " [label=\"" << sourceName << "\"] ";
                 myfile << ";\n";
             }
 
-            for (const auto &source: *(ms->getListMarq())) {
+            for (const auto &source: ms->getListMarkings()) {
                 auto sourceName = petri->getMarquageName(*source);
                 auto lsucc = source->getListSucc();
                 if (!lsucc.empty()) {
@@ -191,7 +191,7 @@ void DSSBuilder::writeToFile(const string &filename) {
             myfile << "label=\"" << getProductSCCName(pscc) << module << "\"" << endl;
             myfile << "}" << endl;
 
-            for (const auto &arc: ms->getSucc()) { // Build output edges of Metastate ms
+            for (const auto &arc: ms->getSyncSucc()) { // Build output edges of Metastate ms
                 myfile << petri->getSCCName(ms->getSCCProductName()->getSCC(module)) << getProductSCCName(pscc)
                        << " -> ";
                 MetaState *ms_dest = arc->getMetaStateDest();
@@ -230,8 +230,8 @@ MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
     for (const auto &elt: mlModuleSS[module]->getLMetaState()) {
         if (elt != ms && *elt == *ms) {
             //Compare out edges
-            auto lEdges1 = ms->getSucc();
-            auto lEdges2 = elt->getSucc();
+            auto lEdges1 = ms->getSyncSucc();
+            auto lEdges2 = elt->getSyncSucc();
             if (lEdges1.size() == lEdges2.size()) { // Check that all edges are the same
                 bool areSame = true;
                 for (const auto &edge1: lEdges1) {
@@ -256,10 +256,10 @@ void DSSBuilder::outputTXT() {
     for (const auto &module: mlModuleSS) {
         sumMS += module->getMetaStateCount();
         for (const auto &ms: module->getLMetaState()) {
-            sumStates += ms->getListMarq()->size();
+            sumStates += ms->getListMarkings().size();
             sumSCC += ms->getListSCCs()->size();
             sumLocalEdges += ms->getArcCount();
-            sumSyncEdges += ms->getSucc().size();
+            sumSyncEdges += ms->getSyncSucc().size();
         }
     }
     cout << "#MetaStates: " << sumMS << endl;

@@ -19,8 +19,8 @@ MetaState::~MetaState() {
 
 
 
-vector<Marking *> *MetaState::getListMarq() {
-    return &m_nodes;
+vector<Marking *> &MetaState::getListMarkings() {
+    return m_nodes;
 }
 
 /*vector<InternalArc>* MetaState::getListArcs() {
@@ -57,7 +57,7 @@ void MetaState::addSyncArc(ArcSync *sync_arc) {
     mArcs.push_back(sync_arc);
 }
 
-vector<ArcSync *> &MetaState::getSucc() {
+vector<ArcSync *> &MetaState::getSyncSucc() {
     return mArcs;
 }
 
@@ -69,10 +69,10 @@ uint32_t MetaState::getArcCount() {
 }
 
 bool MetaState::operator==(const MetaState &ms) {
-    if (ms.getListMarq()->size() != getListMarq()->size()) return false;
-    for (const auto &elt1: *(ms.getListMarq())) {
+    if (ms.getListMarkings().size() != getListMarkings().size()) return false;
+    for (const auto &elt1: ms.getListMarkings()) {
         bool found = false;
-        for (const auto &elt2: *getListMarq()) {
+        for (const auto &elt2: getListMarkings()) {
             if (*elt1 == *elt2) {
                 found = true;
                 break;
@@ -120,7 +120,7 @@ void MetaState::strongconnect(Marking *v) {
     }
 }
 
-Marking *MetaState::existState(Marking *marq) {
+Marking *MetaState::existMarking(Marking *marq) {
     bool result = false;
     int i = 0;
     for (i = 0; i < m_nodes.size() && !result; i++)
@@ -128,8 +128,8 @@ Marking *MetaState::existState(Marking *marq) {
     return result ? m_nodes.at(i - 1) : NULL;
 }
 
-Marking *MetaState::addMarquage(Marking *m) {
-    Marking *p = existState(m);
+Marking *MetaState::insertMarking(Marking *m) {
+    Marking *p = existMarking(m);
     if (!p) m_nodes.push_back(m);
     return p;
 }

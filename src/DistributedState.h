@@ -25,7 +25,7 @@ public:
 
     virtual ~DistributedState();
 
-    vector<Marking *> *getLocalStates(ProductSCC *productscc, const int module);
+    vector<Marking *> getLocalStates(ProductSCC *productscc, const int module);
 
 private:
     ModularPetriNet *m_petri;

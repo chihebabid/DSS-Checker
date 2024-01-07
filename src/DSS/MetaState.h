@@ -20,9 +20,9 @@ class ProductSCC;
 class MetaState {
 public:
     MetaState();
-    vector<ArcSync *> &getSucc();
-    vector<Marking *> *getListMarq();
-    //vector<InternalArc>* getListArcs();
+    vector<ArcSync *> &getSyncSucc();
+    vector<Marking *> &getListMarkings();
+
     vector<SCC *> *getListSCCs();
     SCC *findSCC(Marking *state);
     virtual ~MetaState();
@@ -33,8 +33,8 @@ public:
     uint32_t getArcCount();
     bool operator==(const MetaState &ms);
     uint32_t getId() const;
-    Marking *existState(Marking *marq);
-    Marking *addMarquage(Marking *m);
+    Marking *existMarking(Marking *marq);
+    Marking *insertMarking(Marking *m);
     void computeSCCTarjan();
 private:
     //StateGraph *m_graph;

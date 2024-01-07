@@ -193,9 +193,9 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
         for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {
                 canBeActive = false;
-                ListLocalStates list_states = list_ms.at(j)->getListMarq(); //  m_dss->getLocalStates(product,j);
-                for (int index = 0; index < list_states->size() && !canBeActive; index++) {
-                    m_modules.at(j)->setMarquage(list_states->at(index));
+                auto list_states = list_ms.at(j)->getListMarkings(); //  m_dss->getLocalStates(product,j);
+                for (int index = 0; index < list_states.size() && !canBeActive; index++) {
+                    m_modules[j]->setMarquage(list_states[index]);
                     if (fusion->isFranchissableLocal(j)) {
                         canBeActive = true;
                     }
@@ -211,20 +211,20 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
 
             states_enabling_fusion.resize(getModulesCount());
             for (int j = 0; j < getModulesCount(); j++) {
-                ListLocalStates list_states = list_ms.at(j)->getListMarq();
+                auto list_states = list_ms[j]->getListMarkings();
                 // states_enabling_fusion.at(j)= NULL;
                 states_enabling_fusion.at(j) = new vector<Marking *>();
                 if (fusion->participate(j)) {
-                    for (int index = 0; index < list_states->size(); index++) {
-                        m_modules.at(j)->setMarquage(list_states->at(index));
+                    for (int index = 0; index < list_states.size(); index++) {
+                        m_modules.at(j)->setMarquage(list_states[index]);
                         if (fusion->isFranchissableLocal(j)) {
-                            states_enabling_fusion.at(j)->push_back(list_states->at(index));
+                            states_enabling_fusion.at(j)->push_back(list_states[index]);
                         }
 
                     }
 
                 } else if (!fusion->participate(j)) {
-                    states_enabling_fusion.at(j)->push_back(list_states->at(0));
+                    states_enabling_fusion.at(j)->push_back(list_states[0]);
                 }
 
             }
@@ -254,13 +254,12 @@ void ModularPetriNet::extractEnabledFusion(ProductSCC *product,
         for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {
                 canBeActive = false;
-                ListLocalStates list_states = m_dss->getLocalStates(product, j);
-                for (int index = 0; index < list_states->size() && !canBeActive; index++) {
-                    m_modules.at(j)->setMarquage(list_states->at(index));
+                auto list_states = m_dss->getLocalStates(product, j);
+                for (int index = 0; index < list_states.size() && !canBeActive; index++) {
+                    m_modules.at(j)->setMarquage(list_states[index]);
                     if (fusion->isFranchissableLocal(j)) {
                         canBeActive = true;
                     }
-
                 }
             }
         }
@@ -272,21 +271,21 @@ void ModularPetriNet::extractEnabledFusion(ProductSCC *product,
 
             states_enabling_fusion.resize(getModulesCount());
             for (int j = 0; j < getModulesCount(); j++) {
-                ListLocalStates list_states = m_dss->getLocalStates(product, j);
+                auto list_states = m_dss->getLocalStates(product, j);
                 // states_enabling_fusion.at(j)= NULL;
                 states_enabling_fusion.at(j) = new vector<Marking *>();
                 if (fusion->participate(j)) {
-                    for (int index = 0; index < list_states->size(); index++) {
-                        m_modules.at(j)->setMarquage(list_states->at(index));
+                    for (int index = 0; index < list_states.size(); index++) {
+                        m_modules.at(j)->setMarquage(list_states[index]);
                         if (fusion->isFranchissableLocal(j)) {
-                            states_enabling_fusion.at(j)->push_back(list_states->at(index));
+                            states_enabling_fusion.at(j)->push_back(list_states[index]);
                         }
 
                     }
 
                 } else if (!fusion->participate(j)) {
 
-                    states_enabling_fusion.at(j)->push_back(list_states->at(0));
+                    states_enabling_fusion.at(j)->push_back(list_states[0]);
 
                 }
 
@@ -376,10 +375,10 @@ void ModularPetriNet::writeToFile(const string filename) {
             myfile << "label=\"" << getProductSCCName(pscc) << "\"" << endl;
             myfile << "}" << endl;
 
-            for (int k = 0; k < ms->getSucc().size(); k++) {
+            for (int k = 0; k < ms->getSyncSucc().size(); k++) {
                 myfile << petri->getSCCName(pscc->getSCC(module))
                        << getProductSCCName(pscc) << module << " -> ";
-                ArcSync *arc = ms->getSucc().at(k);
+                ArcSync *arc = ms->getSyncSucc().at(k);
                 MetaState *ms_dest = arc->getMetaStateDest();
                 myfile
                         << petri->getSCCName(
@@ -424,7 +423,7 @@ void ModularPetriNet::writeTextFile(const string filename) {
             MetaState *ms = m_dss->getMetaGraph(module)->getMetaState(i);
             ProductSCC *pscc = ms->getSCCProductName();
             myfile << "Metastate : " << getProductSCCName(pscc) << endl;
-            for (auto source_mark: *ms->getListMarq()) {
+            for (auto source_mark: ms->getListMarkings()) {
                 myfile << petri->getMarquageName(*source_mark);
                 for (auto succ: source_mark->getListSucc()) {
                     Transition *t = succ.first;
@@ -440,7 +439,7 @@ void ModularPetriNet::writeTextFile(const string filename) {
         unsigned int total_arcs = 0;
         for (int i = 0; i < m_dss->getMetaGraph(module)->getMetaStateCount(); i++) {
             MetaState *ms = m_dss->getMetaGraph(module)->getMetaState(i);
-            total_arcs += ms->getSucc().size();
+            total_arcs += ms->getSyncSucc().size();
         }
         myfile << "#Synchronisation arcs : " << total_arcs << endl;
         // List sync arcs
@@ -448,9 +447,9 @@ void ModularPetriNet::writeTextFile(const string filename) {
 
             MetaState *ms = m_dss->getMetaGraph(module)->getMetaState(i);
             ProductSCC *pscc = ms->getSCCProductName();
-            for (int k = 0; k < ms->getSucc().size(); k++) {
+            for (int k = 0; k < ms->getSyncSucc().size(); k++) {
                 myfile << getProductSCCName(pscc) << " ==== ";
-                ArcSync *arc = ms->getSucc().at(k);
+                ArcSync *arc = ms->getSyncSucc().at(k);
                 MetaState *ms_dest = arc->getMetaStateDest();
                 myfile << "(" << getProductSCCName(arc->getStartProduct())
                        << "," << arc->getFusion()->getName() << ") ===> ";
