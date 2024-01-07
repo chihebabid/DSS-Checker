@@ -7,6 +7,32 @@
 // This class represents a Strongly Connected Component
 class MetaState;
 class SCC {
+    struct IteratorSucc {
+        explicit IteratorSucc(SCC * ptr):m_ptr(ptr){
+        }
+
+        std::vector<std::pair<SCC * ,Transition*>>::iterator begin() {
+            update();
+            return m_succ.begin();
+        }
+        std::vector<std::pair<SCC * ,Transition*>>::iterator end() { return m_succ.end(); }
+        std::vector<std::pair<SCC * ,Transition*>>& getSuccessors() {
+            update();
+            return m_succ;
+        }
+    private:
+        void update() {
+            m_succ.clear();
+            for (const auto & marking : m_ptr->m_list) {
+                for (const auto & succ : marking->getListSucc()) {
+                    m_succ.emplace_back(succ.second->getSCCContainer(), succ.first);
+                }
+            }
+        }
+        SCC *m_ptr;
+        std::vector<std::pair<SCC *,Transition*>> m_succ;
+    };
+
 public:
     SCC();
     virtual ~SCC()=default;
