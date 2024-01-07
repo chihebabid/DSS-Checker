@@ -27,7 +27,8 @@ long SCC::getCount() {
 
 void SCC::addState(Marking *m) {
     //if (!existState(m))
-    m_list.push_back(m);
+    m->setSCCContainer(this);
+    m_list.emplace_back(m);
 }
 
 vector<Marking *> *SCC::getListStates() {

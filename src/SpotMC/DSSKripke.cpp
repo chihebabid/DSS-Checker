@@ -11,16 +11,15 @@ DSSKripke::DSSKripke(const spot::bdd_dict_ptr &dict_ptr,ModuleSS *metagraph): sp
 }
 
 spot::state* DSSKripke::get_init_state() const {
-    return new DSSState(m_metagraph->getMetaState(0)->getInitialSCC(),m_metagraph->getMetaState(0));
+    return new DSSState(m_metagraph->getMetaState(0)->getInitialSCC());
 }
 
 DSSIterator* DSSKripke::succ_iter(const spot::state* s) const {
     auto ss = static_cast<const DSSState*>(s);
     auto scc=ss->getSCC();
-    auto meta = ss->getMetaState();
 
     bdd cond = state_condition(ss);
-    return new DSSIterator(scc,meta,cond);
+    return new DSSIterator(scc,cond);
 
 }
 std::string DSSKripke::format_state(const spot::state* s) const {

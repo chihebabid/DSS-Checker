@@ -65,14 +65,14 @@ public:
 
     void addSucc(Transition *, Marking *);
 
-    vector<pair<Transition *, Marking *>> *getListSucc();
+    vector<pair<Transition *, Marking *>> &getListSucc();
 
     Marking();
 
     virtual ~Marking();
 
-    SCC *getSccContainer() const;
-
+    SCC *getSCCContainer() const;
+    void setSCCContainer(SCC *c);
     friend ostream &operator<<(ostream &stream, const Marking &);
 
 private:

@@ -61,11 +61,7 @@ DistributedState *ModularPetriNet::buildDSS() {
     vector<MetaState *> list_metatstates;
     for (int module = 0; module < getModulesCount(); module++) {
         ms = new MetaState();
-        StateGraph *state_graph = m_modules[module]->getStateGraph(
-                m_modules[module]->getMarquage());
-        //state_graph->setID(module);
-        //cout<<"I'm here"<<endl;
-        ms->setStateGraph(state_graph);
+
         m_dss->addMetaState(ms, module);
         m_modules[module]->printMetaStateEx(ms);
         list_metatstates.push_back(ms);
@@ -107,13 +103,6 @@ DistributedState *ModularPetriNet::buildDSS() {
                 for (int module = 0; module < getModulesCount(); module++) {
                     dest_ms = new MetaState();
 
-                    StateGraph *state_graph = m_modules[module]->getStateGraph(
-                            m_modules[module]->getMarquage());
-                   // state_graph->setID(module);
-
-                    dest_ms->setStateGraph(state_graph);
-                    // m_dss->addMetaState(ms,module);
-                    // m_modules[module]->printMetaStateEx(ms);
                     dest_list_metatstates.push_back(dest_ms);
                     dest_productscc->addSCC(dest_ms->getInitialSCC());
                 }
@@ -437,7 +426,7 @@ void ModularPetriNet::writeTextFile(const string filename) {
             myfile << "Metastate : " << getProductSCCName(pscc) << endl;
             for (auto source_mark: *ms->getListMarq()) {
                 myfile << petri->getMarquageName(*source_mark);
-                for (auto succ: *source_mark->getListSucc()) {
+                for (auto succ: source_mark->getListSucc()) {
                     Transition *t = succ.first;
                     Marking *dest_marq = succ.second;
 

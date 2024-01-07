@@ -195,21 +195,18 @@ Transition *PetriNet::getTransitionAdresse(const string nom_transition) {
 
 // Construction de Meta-graphe
 
-StateGraph *PetriNet::getStateGraph(Marking marquage) {
+MetaState *PetriNet::getMetaState(Marking marquage) {
     //vector<Marquage> list_marq_inserted;
     PStack pstack;
     PElement elt;
-    StateGraph *state_graph = new StateGraph();
+    auto *ms = new MetaState();
     elt.marquage = new Marking(marquage);
     setMarquage(&marquage);
     elt.liste_transitions = getListeTransitionsFranchissables();
     pstack.push_back(elt);
 
-    // ListMarquage* node=new ListMarquage();
-    // node->addMarquage(&marquage);
-    // Indiquer si le marquage en question est r�cemment ins�r�
-    //if (!state_graph->existState(&marquage)) list_marq_inserted.push_back(marquage);
-    state_graph->addMarquage(elt.marquage);
+
+    ms->addMarquage(elt.marquage);
 
     while (pstack.size() > 0) {
         PElement current_elt = pstack.back();
@@ -232,7 +229,7 @@ StateGraph *PetriNet::getStateGraph(Marking marquage) {
             //cout<<"\n The old  marquage="<<current_elt.marquage.get8BitsValue()<<endl;
             //cout<<"firing of "<<(*transition).getName()<<endl;
             //cout<<"\n The new  marquage="<<getMarquageName(*new_state)<<endl;
-            Marking *old_state = state_graph->addMarquage(new_state);
+            Marking *old_state = ms->addMarquage(new_state);
             //if (old_state) cout<<"\n The found  marquage="<<getMarquageName(*old_state)<<endl;
 
             //cout<<"\n The current  marquage (old)="<<getMarquageName(*current_elt.marquage)<<endl;
@@ -257,8 +254,8 @@ StateGraph *PetriNet::getStateGraph(Marking marquage) {
         }
     }
 
-    state_graph->computeSCCTarjan();
-    return state_graph;
+    ms->computeSCCTarjan();
+    return ms;
 }
 
 

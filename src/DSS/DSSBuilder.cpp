@@ -33,10 +33,8 @@ void DSSBuilder::buildInitialMS() {
     auto *productscc = new ProductSCC();
     vector<MetaState *> list_metatstates;
     for (int module = 0; module < mptrMPNet->getModulesCount(); ++module) {
-        ms = new MetaState();
-        StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(mptrMPNet->getModule(module)->getMarquage());
-
-        ms->setStateGraph(state_graph);
+        //ms = new MetaState();
+        ms = mptrMPNet->getModule(module)->getMetaState(mptrMPNet->getModule(module)->getMarquage());
         mlModuleSS[module]->insertMS(ms);
         list_metatstates.push_back(ms);
         productscc->addSCC(ms->getInitialSCC());
@@ -72,10 +70,9 @@ void DSSBuilder::buildInitialMS() {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
-                    dest_ms = new MetaState();
-                    StateGraph *state_graph = mptrMPNet->getModule(module)->getStateGraph(
-                            mptrMPNet->getModule(module)->getMarquage());
-                    dest_ms->setStateGraph(state_graph);
+
+                    dest_ms =  mptrMPNet->getModule(module)->getMetaState(
+                                mptrMPNet->getModule(module)->getMarquage());
                     dest_list_metatstates[module] = dest_ms;
                     dest_productscc->addSCC(dest_ms->getInitialSCC());
 #ifdef REDUCTION
@@ -168,19 +165,19 @@ void DSSBuilder::writeToFile(const string &filename) {
             myfile << "subgraph cluster" << getProductSCCName(pscc) << module
                    << " {" << endl;
             /*********************************/
-            StateGraph *ss = ms->getStateGraph();
-            for (const auto &source: *ss->getListMarquages()) {
+
+            for (const auto &source: *ms->getListMarq()) {
                 auto sourceName = petri->getMarquageName(*source);
                 myfile << sourceName << getProductSCCName(pscc);
                 myfile << " [label=\"" << sourceName << "\"] ";
                 myfile << ";\n";
             }
 
-            for (const auto &source: *(ss->getListMarquages())) {
+            for (const auto &source: *(ms->getListMarq())) {
                 auto sourceName = petri->getMarquageName(*source);
                 auto lsucc = source->getListSucc();
-                if (!lsucc->empty()) {
-                    for (const auto &elt: *lsucc) {
+                if (!lsucc.empty()) {
+                    for (const auto &elt: lsucc) {
                         myfile << sourceName << getProductSCCName(pscc);
                         string tName = elt.first->getName();
                         myfile << " -> ";
@@ -261,7 +258,7 @@ void DSSBuilder::outputTXT() {
         for (const auto &ms: module->getLMetaState()) {
             sumStates += ms->getListMarq()->size();
             sumSCC += ms->getListSCCs()->size();
-            sumLocalEdges += ms->getStateGraph()->getCountArcs();
+            sumLocalEdges += ms->getArcCount();
             sumSyncEdges += ms->getSucc().size();
         }
     }

@@ -7,7 +7,6 @@
 
 #include <set>
 #include "DSS/Marking.h"
-#include "DSS/StateGraph.h"
 #include "Place.h"
 #if _MSC_VER > 1000
 #pragma once
@@ -16,8 +15,6 @@
 class Transition;
 
 class ListMarquage;
-
-class StateGraph;
 
 class MetaState;
 
@@ -62,7 +59,7 @@ public:
 
     virtual ~PetriNet()=default;
 
-    StateGraph *getStateGraph(Marking marquage);
+    MetaState *getMetaState(Marking marquage);
 
     void printMetaStateEx(MetaState *ms);
 

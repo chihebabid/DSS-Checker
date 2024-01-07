@@ -11,23 +11,22 @@
 
 class DSSState : public spot::state {
     SCC *m_scc;
-    MetaState *m_metaState;
     /**
      * Default constructor
      */
 public:
-    DSSState(SCC* scc,MetaState *ms) : m_scc(scc),m_metaState(ms) {
+    DSSState(SCC* scc) : m_scc(scc) {
 
     };
 
     DSSState* clone() const override
     {
-        return new DSSState(m_scc,m_metaState);
+        return new DSSState(m_scc);
     }
 
     size_t hash() const override
     {
-        return (m_metaState->getId()<<32) | m_scc->getId();
+        return m_scc->getId();
     }
 
     int compare(const spot::state* other) const override
@@ -43,10 +42,6 @@ public:
 
     SCC * getSCC() const {
         return m_scc;
-    }
-
-    MetaState *getMetaState() const{
-        return m_metaState;
     }
 };
 

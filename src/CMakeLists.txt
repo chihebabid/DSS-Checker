@@ -57,8 +57,6 @@ add_executable(distributedstatespace main.cpp
         DSS/MetaGraph.h
         DSS/MetaState.cpp
         DSS/MetaState.h
-        DSS/StateGraph.cpp
-        DSS/StateGraph.h
         DSS/SCC.cpp
         DSS/SCC.h
         NodeSG.cpp

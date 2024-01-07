@@ -46,12 +46,16 @@ void Marking::addSucc(Transition *t, Marking *m) {
     ml_succ.push_back(pair<Transition *, Marking *>(t, m));
 }
 
-vector<pair<Transition *, Marking *>> *Marking::getListSucc() {
-    return &ml_succ;
+vector<pair<Transition *, Marking *>> &Marking::getListSucc() {
+    return ml_succ;
 }
 
-SCC *Marking::getSccContainer() const {
+SCC *Marking::getSCCContainer() const {
     return m_sccContainer;
+}
+
+void Marking::setSCCContainer(SCC *c) {
+    m_sccContainer=c;
 }
 
 ostream &operator<<(ostream &stream, const Marking &m) {
