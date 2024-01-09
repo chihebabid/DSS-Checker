@@ -11,14 +11,6 @@ MetaState::MetaState() {
     m_id = m_Counter++;
 }
 
-MetaState::~MetaState() {
-
-}
-
-
-
-
-
 vector<Marking *> &MetaState::getListMarkings()  {
     return m_nodes;
 }
@@ -109,6 +101,7 @@ void MetaState::computeStrongConnectedComponents(Marking *v) {
     // If v is a root node, pop the stack and generate an SCC
     if (v->lowlink == v->index) {
         SCC *scc = new SCC();
+        scc->setMetaState(this);
         Marking *w;
         do {
             w = m_stack.back();
@@ -122,10 +115,10 @@ void MetaState::computeStrongConnectedComponents(Marking *v) {
 
 Marking *MetaState::existMarking(Marking *marq) {
     bool result = false;
-    int i = 0;
-    for (i = 0; i < m_nodes.size() && !result; i++)
+    int i ;
+    for (i = 0; i < m_nodes.size() && !result; ++i)
         result = (*m_nodes.at(i) == *marq);
-    return result ? m_nodes.at(i - 1) : NULL;
+    return result ? m_nodes.at(i - 1) : nullptr;
 }
 
 Marking *MetaState::insertMarking(Marking *m) {

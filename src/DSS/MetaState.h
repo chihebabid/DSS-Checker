@@ -19,12 +19,12 @@ class ProductSCC;
 class MetaState {
 public:
     MetaState();
+    virtual ~MetaState()=default;
+
     vector<ArcSync *> &getSyncSucc();
     vector<Marking *> &getListMarkings();
-
     vector<SCC *> *getListSCCs();
     SCC *findSCC(Marking *state);
-    virtual ~MetaState();
     SCC *getInitialSCC();
     ProductSCC *getSCCProductName();
     void setSCCProductName(ProductSCC *name);

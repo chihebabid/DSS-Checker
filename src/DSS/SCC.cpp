@@ -46,6 +46,10 @@ MetaState * SCC::getMetaState() const {
     return m_parentMetaState;
 }
 
+void SCC::setMetaState(MetaState* ms) {
+    m_parentMetaState=ms;
+}
+
 
 void SCC::IteratorSucc::update() {
     m_succ.clear();

@@ -38,11 +38,20 @@ public:
     bool isEqual(const SCC &scc);
     uint32_t getId() const;
     MetaState * getMetaState() const;
+    void setMetaState(MetaState* ms);
+    std::vector<std::pair<SCC * ,Transition*>>::iterator beginSucc() {
+        return m_iterator_succ.begin();
+    }
+    std::vector<std::pair<SCC * ,Transition*>>::iterator endSucc() {
+        return m_iterator_succ.end();
+    }
+
 private:
     vector<Marking *> m_list;
     static uint32_t mCounter;
     uint32_t mId;
     MetaState *m_parentMetaState;
+    IteratorSucc m_iterator_succ {this};
 };
 
 #endif // SCC_H

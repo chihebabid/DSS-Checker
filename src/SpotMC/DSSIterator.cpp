@@ -4,21 +4,22 @@
 
 #include "DSSIterator.h"
 #include "Transition.h"
+
 DSSIterator::DSSIterator(SCC *scc, bdd cnd) : m_scc(scc), kripke_succ_iterator(cnd) {
     auto ms{m_scc->getMetaState()};
 
-    // Add local successors
+    // Transitions inside a SCC
     for (const auto &source: *(scc->getListStates())) {
-        //auto sourceName = petri->getMarquageName(*source);
         auto lsucc = source->getListSucc();
-
         for (const auto &elt: lsucc) {
             Transition *t = elt.first;
             Marking *m = elt.second;
             m_lsucc.emplace_back(m->getSCCContainer(), t);
         }
-        // TODO : add sync closed
-        // TODO : add sync edges if exists
+    }
+    // Succ sucessors
+    for (auto it_succ = m_scc->beginSucc(); it_succ != m_scc->endSucc(); ++it_succ) {
+        m_lsucc.emplace_back(it_succ->first, it_succ->second);
     }
 }
 
@@ -34,7 +35,6 @@ bool DSSIterator::next() {
 }
 
 bool DSSIterator::done() const {
-
     return m_current_edge == m_lsucc.size();
 }
 
@@ -43,18 +43,9 @@ DSSState *DSSIterator::dst() const {
 }
 
 bdd DSSIterator::cond() const {
-    /*spot::formula f=spot::formula::ap (std::get<2>(m_lsucc[m_current_edge])->getName());
-    spot::bdd_dict *p=m_dict_ptr->get();
-    bdd   result=bdd_ithvar ( ( p->var_map.find ( f ) )->second );
-    return result & spot::kripke_succ_iterator::cond();*/
-    auto trans {m_lsucc[m_current_edge].second};
-
-    if (trans==nullptr) return bddtrue;
-    auto trans_name {trans->getName()};
-    spot::bdd_dict *p=m_dict_ptr->get();
-    spot::formula f=spot::formula::ap(trans_name);
-    bdd   result=bdd_ithvar((p->var_map.find(f))->second);
-
+    spot::formula f = spot::formula::ap(m_lsucc[m_current_edge].second->getName());
+    spot::bdd_dict *p = m_dict_ptr->get();
+    bdd result = bdd_ithvar((p->var_map.find(f))->second);
     return result & spot::kripke_succ_iterator::cond();
 }
 
