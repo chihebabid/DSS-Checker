@@ -15,6 +15,9 @@
 
 class Fusion : public Node {
 public:
+    Fusion()=default;
+    virtual ~Fusion()=default;
+
     bool participatePartially(const int index_module);
 
     bool isFranchissableLocal(int module);
@@ -31,10 +34,7 @@ public:
 
     void addTransition(Transition *transition);
 
-    Fusion();
-
-    virtual ~Fusion();
-
+    Transition *getTransitionOfModule(int module) const;
 private:
     vector<Transition *> m_transitions;
 

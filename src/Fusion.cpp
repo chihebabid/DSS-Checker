@@ -5,18 +5,6 @@
 #include "Transition.h"
 #include "Fusion.h"
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
-
-Fusion::Fusion() {
-
-}
-
-Fusion::~Fusion() {
-
-}
-
 void Fusion::tirer() {
     for (int i = 0; i < m_transitions.size(); i++) m_transitions[i]->tirer();
 }
@@ -77,4 +65,8 @@ bool Fusion::isFranchissableLocal(int module) {
         }
     }
     return false;
+}
+
+Transition *Fusion::getTransitionOfModule(int module) const{
+    return m_transitions[module];
 }
