@@ -3,7 +3,7 @@
 //
 
 #include "DSSBuilder.h"
-#include "ArcSync.h"
+#include "../ArcSync.h"
 #include <fstream>
 
 // Enable/disable reduction on the fly
@@ -11,7 +11,7 @@
 
 DSSBuilder::DSSBuilder(ModularPetriNet *ptr) : mptrMPNet(ptr) {
     for (uint32_t i = 0; i < mptrMPNet->getModulesCount(); i++) {
-        auto elt = new ModuleSS();
+        auto elt = new ModuleSS(i);
         mlModuleSS.push_back(elt);
     }
 }

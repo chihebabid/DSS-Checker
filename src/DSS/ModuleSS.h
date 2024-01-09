@@ -5,11 +5,13 @@
 #ifndef DISTRIBUTEDSTATESPACE_MODULESS_H
 #define DISTRIBUTEDSTATESPACE_MODULESS_H
 
-#include "ArcSync.h"
+#include "../ArcSync.h"
 #include "MetaState.h"
 
 class ModuleSS {
 public:
+    ModuleSS(size_t id):m_id_module(id) {}
+
     MetaState *getInitialMS();
 
     bool insertMS(MetaState *ms);
@@ -26,8 +28,10 @@ public:
 
     void removeMetaState(MetaState *ms);
 
+    size_t getIDModule() const { return m_id_module; }
 private:
     vector<MetaState *> mlMetaState;
+    size_t m_id_module;
 };
 
 

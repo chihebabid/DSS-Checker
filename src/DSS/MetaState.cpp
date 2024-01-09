@@ -19,7 +19,7 @@ MetaState::~MetaState() {
 
 
 
-vector<Marking *> &MetaState::getListMarkings() {
+vector<Marking *> &MetaState::getListMarkings()  {
     return m_nodes;
 }
 
@@ -68,9 +68,9 @@ uint32_t MetaState::getArcCount() {
     return res;
 }
 
-bool MetaState::operator==(const MetaState &ms) {
+bool MetaState::operator==(MetaState &ms) {
     if (ms.getListMarkings().size() != getListMarkings().size()) return false;
-    for (const auto &elt1: ms.getListMarkings()) {
+    for (auto &elt1: ms.getListMarkings()) {
         bool found = false;
         for (const auto &elt2: getListMarkings()) {
             if (*elt1 == *elt2) {
@@ -89,7 +89,7 @@ uint32_t MetaState::getId() const {
 
 uint32_t MetaState::m_Counter {0};
 
-void MetaState::strongconnect(Marking *v) {
+void MetaState::computeStrongConnectedComponents(Marking *v) {
     v->index = m_index;
     v->lowlink = m_index;
     m_index++;
@@ -101,7 +101,7 @@ void MetaState::strongconnect(Marking *v) {
     for (auto elt: v->getListSucc()) {
         Marking *w = elt.second;
         if (w->index == -1) {
-            strongconnect(w);
+            computeStrongConnectedComponents(w);
             v->lowlink = min(v->lowlink, w->lowlink);
         } else if (w->onstack) v->lowlink = min(v->lowlink, w->index);
 
@@ -145,5 +145,5 @@ void MetaState::computeSCCTarjan() {
     }
 
     for (int i = 0; i < m_nodes.size(); i++)
-        if (m_nodes.at(i)->index == -1) strongconnect(m_nodes.at(i));
+        if (m_nodes.at(i)->index == -1) computeStrongConnectedComponents(m_nodes.at(i));
 }

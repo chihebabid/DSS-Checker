@@ -10,7 +10,7 @@
 
 #include <vector>
 #include "Marking.h"
-#include "ProductSCC.h"
+#include "../ProductSCC.h"
 #include "MetaState.h"
 
 using namespace std;

@@ -14,7 +14,8 @@ MetaState *ModuleSS::getInitialMS() {
  * @return : false if it is already exists
  */
 bool ModuleSS::insertMS(MetaState *ms) {
-    mlMetaState.emplace_back(ms);
+    ms->setIdModule(m_id_module);
+    mlMetaState.push_back(ms);
     return true;
 }
 

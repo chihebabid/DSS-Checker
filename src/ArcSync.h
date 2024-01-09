@@ -15,7 +15,8 @@ class ProductSCC;
 
 class ArcSync {
 public:
-    ArcSync();
+    ArcSync()=default;
+    virtual ~ArcSync()=default;
 
     Fusion *getFusion();
 
@@ -26,9 +27,6 @@ public:
     MetaState *getMetaStateDest();
 
     ProductSCC *getStartProduct();
-
-    virtual ~ArcSync();
-
 private:
     Fusion *m_fusion;
     ProductSCC m_source;

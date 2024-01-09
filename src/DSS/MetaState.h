@@ -9,13 +9,12 @@
 #define METASTATE_H_
 
 #include <vector>
-
-#include "ProductSCC.h"
+#include "SCC.h"
+#include "../ProductSCC.h"
 
 using namespace std;
 
 class ArcSync;
-class StateGraph;
 class ProductSCC;
 class MetaState {
 public:
@@ -31,24 +30,26 @@ public:
     void setSCCProductName(ProductSCC *name);
     void addSyncArc(ArcSync *sync_arc);
     uint32_t getArcCount();
-    bool operator==(const MetaState &ms);
+    bool operator==(MetaState &ms);
     uint32_t getId() const;
     Marking *existMarking(Marking *marq);
     Marking *insertMarking(Marking *m);
     void computeSCCTarjan();
+    void setIdModule(const size_t id) { m_id_module = id;}
+    size_t getIdModule() const { return m_id_module;}
 private:
-    //StateGraph *m_graph;
+    size_t m_id_module;
     ProductSCC *m_name;
     vector<ArcSync *> mArcs;
     uint32_t m_id;
     static uint32_t m_Counter;
 
-    void strongconnect(Marking *v);
     vector<Marking *> m_nodes;
     vector<string> ml_transition_names;
     vector<SCC *> ml_scc;
     unsigned int m_index; // Used in Tarjan algorithm
     vector<Marking *> m_stack;
+    void computeStrongConnectedComponents(Marking *v);
 };
 
 #endif /* METASTATE_H_ */

@@ -1,11 +1,13 @@
 #ifndef SCC_H
 #define SCC_H
 
-#include "DSS/Marking.h"
-#include "DSS/MetaState.h"
+#include "Marking.h"
+#include "MetaState.h"
+
 
 // This class represents a Strongly Connected Component
 class MetaState;
+
 class SCC {
     struct IteratorSucc {
         explicit IteratorSucc(SCC * ptr):m_ptr(ptr){
@@ -21,14 +23,7 @@ class SCC {
             return m_succ;
         }
     private:
-        void update() {
-            m_succ.clear();
-            for (const auto & marking : m_ptr->m_list) {
-                for (const auto & succ : marking->getListSucc()) {
-                    m_succ.emplace_back(succ.second->getSCCContainer(), succ.first);
-                }
-            }
-        }
+        void update();
         SCC *m_ptr;
         std::vector<std::pair<SCC *,Transition*>> m_succ;
     };

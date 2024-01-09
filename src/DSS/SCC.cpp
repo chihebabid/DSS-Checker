@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include "SCC.h"
-
+#include "ArcSync.h"
 SCC::SCC() {
     mId = mCounter++;
 }
@@ -44,4 +44,21 @@ uint32_t SCC::mCounter{0};
 
 MetaState * SCC::getMetaState() const {
     return m_parentMetaState;
+}
+
+
+void SCC::IteratorSucc::update() {
+    m_succ.clear();
+    for (const auto & marking : m_ptr->m_list) {
+        for (const auto & succ : marking->getListSucc()) {
+            m_succ.emplace_back(succ.second->getSCCContainer(), succ.first);
+        }
+    }
+    auto ms {m_ptr->getMetaState()};
+    for(auto & edge : ms->getSyncSucc()) {
+        auto startProduct {edge->getStartProduct()};
+        if (m_ptr==startProduct->getSCC(ms->getIdModule())) {
+
+        }
+    }
 }

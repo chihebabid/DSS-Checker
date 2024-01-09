@@ -7,13 +7,6 @@
 
 #include "ArcSync.h"
 
-ArcSync::ArcSync() {
-}
-
-ArcSync::~ArcSync() {
-}
-
-
 MetaState *ArcSync::getMetaStateDest() {
     return m_destination;
 }

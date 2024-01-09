@@ -5,7 +5,7 @@
 #ifndef DISTRIBUTEDSTATESPACE_DSSBUILDER_H
 #define DISTRIBUTEDSTATESPACE_DSSBUILDER_H
 
-#include "ModularPetriNet.h"
+#include "../ModularPetriNet.h"
 #include "ModuleSS.h"
 #include <string>
 

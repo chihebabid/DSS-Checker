@@ -48,5 +48,4 @@ private:
 
 };
 
-typedef ListMarquage Noeud;
 #endif // !defined(AFX_MARQUAGE_H__63B24673_B0CC_4C49_9388_0D2377C1C7F6__INCLUDED_)
