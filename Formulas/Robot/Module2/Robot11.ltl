@@ -1,0 +1,1 @@
+(r_stops <-> (r_begin_move <-> <>r_stops)) U (r_stops U (r_stops || (<>r_begin_move U r_end_move)))
