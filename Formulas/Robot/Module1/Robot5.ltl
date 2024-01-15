@@ -1,0 +1,1 @@
+<>p_start || ((p_started U p_start) U (p_sop U (!(p_moved <-> r_stops) || <>r_stops)))
