@@ -1,0 +1,1 @@
+!((p_started <-> ![]p_moved) U ((p_moved <-> []p_move) U (p_sop || (p_moved <-> []p_move))))

@@ -1,0 +1,1 @@
+(<>p_relSC <-> <>p_move) -> (p_sop U !<>(true U p_relSC))

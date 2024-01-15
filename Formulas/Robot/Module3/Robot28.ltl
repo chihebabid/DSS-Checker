@@ -1,0 +1,1 @@
+p_sop U <>(!<>!p_start U (!<>!p_start && !(p_started <-> []p_move)))

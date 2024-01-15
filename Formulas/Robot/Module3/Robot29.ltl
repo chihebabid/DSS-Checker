@@ -1,0 +1,1 @@
+[](p_moved && !([]p_intoSC <-> ([]p_move <-> (p_sop U (p_sop || []p_start)))))
