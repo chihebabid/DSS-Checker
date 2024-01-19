@@ -114,7 +114,6 @@ Input
    FF2b_5 [ Fork_4 ]
    End_4 [ Eat_4 ]
 
-
 End
 Output
  FF1a_4 [ Catch1_4 ]
@@ -144,8 +143,6 @@ Input
    FF2b_1 [ Fork_5 ]
    FF2b_5 [ Catch2_5 ]
    End_5 [ Eat_5 ]
-
-
 End
 Output
 FF1a_5 [ Catch1_5 ]

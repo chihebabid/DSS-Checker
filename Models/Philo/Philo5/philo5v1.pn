@@ -43,7 +43,6 @@ End_1 [ Fork_1 ]
    End_3 [ Fork_2 ]
    End_2 [ Fork_2 ]
    End_2 [ Think_2 ]
-
 End
 
 
@@ -92,7 +91,6 @@ Output
  End_4 [ Think_4 ]
  End_4 [ Fork_4 ]
  End_5 [ Fork_4 ]
-
 End
 
 Places
@@ -114,8 +112,6 @@ Input
    FF2b_1 [ Fork_5 ]
    FF2b_5 [ Catch2_5 ]
    End_5 [ Eat_5 ]
-
-
 End
 Output
 FF1a_5 [ Catch1_5 ]
