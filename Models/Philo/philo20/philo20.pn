@@ -1,0 +1,443 @@
+Module : 5
+Places
+	Marquage : 1;
+   Think_1 ,Fork_1, Think_2 ,Fork_2, Think_3 ,Fork_3 ,Think_4 ,Fork_4
+	Marquage : 0;
+   Catch1_1,Catch2_1,Eat_1,Catch1_2,Catch2_2,Eat_2, Catch1_3,Catch2_3,Eat_3,Catch1_4,Catch2_4,Eat_4
+End
+Transitions
+ 	FF1a_1, FF1a_4,FF1a_5,FF1a_2,FF1a_3,FF1b_4,FF1b_3,FF1b_2,FF1b_1,FF2a_1,FF2a_2,FF2a_3,FF2a_4,FF2b_1,FF2b_5,FF2b_4,FF2b_3,FF2b_2,End_4,End_5,End_2,End_3,End_1;
+End
+Input
+	FF1a_1 [ Think_1 ]
+	FF1a_4 [ Think_4 ]
+	FF1a_4 [ Fork_3 ]
+ 	FF1a_5 [ Fork_4 ]
+ 	FF1a_2 [ Fork_1 ]
+ 	FF1a_1 [ Think_2 ]
+ 	FF1a_3 [ Fork_2 ]
+ 	FF1a_3 [ Think_3 ]
+ 	FF1b_4 [ Think_4 ]
+	FF1b_4 [ Fork_4 ]
+       FF1b_3 [ Think_3 ]
+	FF1b_3 [ Fork_3 ]
+	FF1b_2 [ Think_2 ]
+	FF1b_2 [ Fork_2 ]
+	FF1b_1 [ Think_1 ]
+	FF1b_1 [ Fork_1 ]
+	FF2a_1 [ Fork_1 ]
+	FF2a_1 [ Catch1_1 ]
+	FF2a_2 [ Fork_2 ]
+	FF2a_2 [ Catch1_2 ]
+	FF2a_3 [ Fork_3 ]
+	FF2a_3 [ Catch1_3 ]
+	FF2a_4 [ Fork_4 ]
+	FF2a_4 [ Catch1_4 ]
+	FF2b_1 [ Catch2_1 ]
+	FF2b_5 [ Fork_4 ]
+	FF2b_4 [ Fork_3 ]
+	FF2b_4 [ Catch2_4 ]
+	FF2b_3 [ Fork_2 ]
+	FF2b_3 [ Catch2_3 ]
+	FF2b_2 [ Fork_1 ]
+	FF2b_2 [ Catch2_2 ]
+	End_4 [ Eat_4 ]
+	End_2 [ Eat_2 ]
+	End_3 [ Eat_3 ]
+	End_1 [ Eat_1 ]
+
+
+
+End
+Output
+	FF1a_1 [ Catch1_1 ]
+	FF1a_4  [ Catch1_4 ]
+	FF1a_2  [ Catch1_2 ]
+	FF1a_3 [ Catch1_3 ]
+	FF1b_4 [ Catch2_4 ]
+	FF1b_3 [ Catch2_3 ]
+	FF1b_2 [ Catch2_2 ]
+	FF1b_1 [ Catch2_1 ]
+	FF2a_1 [ Eat_1 ]
+	FF2a_2 [ Eat_2 ]
+	FF2a_3 [ Eat_3 ]
+	FF2a_4 [ Eat_4 ]
+	FF2b_1 [ Eat_1 ]
+	FF2b_4 [ Eat_4 ]
+	FF2b_3 [ Eat_3 ]
+	FF2b_2 [ Eat_2 ]
+	End_4 [ Think_4 ]
+	End_4 [ Fork_4 ]
+	End_4 [ Fork_3 ]
+	End_5 [ Fork_4 ]
+	End_2 [ Think_2 ]
+	End_2 [ Fork_2 ]
+	End_2 [ Fork_1 ]
+	End_3 [ Think_3 ]
+	End_3 [ Fork_3 ]
+	End_3 [ Fork_2 ]
+	End_1 [ Fork_1 ]
+	End_1 [ Think_1 ]
+
+
+End
+Places
+	Marquage : 1;
+   Think_5 ,Fork_5, Think_6 ,Fork_6,Think_7 ,Fork_7, Think_8 ,Fork_8
+	Marquage : 0;
+   Catch1_5,Catch2_5,Eat_5,Catch1_6,Catch2_6,Eat_6, Catch1_7,Catch2_7,Eat_7,Catch1_8,Catch2_8,Eat_8
+End
+Transitions
+ 	FF1a_8,FF1a_9,FF1a_6,FF1a_7,FF1a_5,FF1b_5,FF1b_7,FF1b_6,FF1b_8,FF2a_5,FF2a_6,FF2a_7,FF2a_8,FF2b_9,FF2b_8,FF2b_7,FF2b_6,FF2b_5,End_5,End_8,End_9,End_6,End_7;
+End
+Input
+	FF1a_8 [ Fork_7 ]
+	FF1a_8 [ Think_8 ]
+	FF1a_9 [ Fork_8 ]
+	FF1a_6  [ Think_6 ]
+	FF1a_6 [ Fork_5 ]
+	FF1a_7  [ Think_7 ]
+	FF1a_7 [ Fork_6 ]
+	FF1a_5 [ Think_5 ]
+	FF1b_5 [ Think_5 ]
+	FF1b_5 [ Fork_5 ]
+	FF1b_7 [ Think_7 ]
+	FF1b_7 [ Fork_7 ]
+	FF1b_6 [ Think_6 ]
+	FF1b_6 [ Fork_6 ]
+	FF1b_8 [ Think_8 ]
+	FF1b_8 [ Fork_8 ]
+	FF2a_5 [ Fork_5 ]
+	FF2a_5 [ Catch1_5 ]
+	FF2a_6 [ Fork_6 ]
+	FF2a_6 [ Catch1_6 ]
+	FF2a_7 [ Fork_7 ]
+	FF2a_7 [ Catch1_7 ]
+	FF2a_8 [ Fork_8 ]
+	FF2a_8 [ Catch1_8 ]
+	FF2b_9 [ Fork_8 ]
+	FF2b_8 [ Catch2_8 ]
+	FF2b_8 [ Fork_7 ]
+	FF2b_7 [ Catch2_7 ]
+	FF2b_7 [ Fork_6 ]
+	FF2b_6 [ Catch2_6 ]
+	FF2b_6 [ Fork_5 ]
+	FF2b_5 [ Catch2_5 ]
+	End_5 [ Eat_5 ]
+	End_8 [ Eat_8 ]
+	End_6 [ Eat_6 ]
+	End_7 [ Eat_7 ]
+
+
+
+End
+Output
+
+	 FF1a_8 [ Catch1_8 ]
+	 FF1a_6 [ Catch1_6 ]
+	 FF1a_7 [ Catch1_7 ]
+	 FF1a_5 [ Catch1_5 ]
+	 FF1b_5 [ Catch2_5 ]
+	 FF1b_7 [ Catch2_7 ]
+	 FF1b_6 [ Catch2_6 ]
+	 FF1b_8 [ Catch2_8 ]
+	 FF2a_5 [ Eat_5 ]
+	 FF2a_6 [ Eat_6 ]
+	 FF2a_7 [ Eat_7 ]
+	 FF2a_8 [ Eat_8 ]
+	 FF2b_8 [ Eat_8 ]
+	 FF2b_7 [ Eat_7 ]
+	 FF2b_6 [ Eat_6 ]
+	 FF2b_5 [ Eat_5 ]
+	 End_5 [ Think_5 ]
+	 End_5 [ Fork_5 ]
+	 End_8 [ Think_8 ]
+	 End_8 [ Fork_8 ]
+	 End_8 [ Fork_7 ]
+	 End_9 [ Fork_8 ]
+	 End_6 [ Think_6 ]
+	 End_6 [ Fork_6 ]
+	 End_6 [ Fork_5 ]
+	 End_7 [ Think_7 ]
+	 End_7 [ Fork_7 ]
+	 End_7 [ Fork_6 ]
+
+
+
+
+End
+
+Places
+	Marquage : 1;
+   Think_9 ,Fork_9, Think_10 ,Fork_10,Think_11 ,Fork_11, Think_12 ,Fork_12
+	Marquage : 0;
+   Catch1_9,Catch2_9,Eat_9,Catch1_10,Catch2_10,Eat_10,Catch1_11,Catch2_11,Eat_11,Catch1_12,Catch2_12,Eat_12
+End
+Transitions
+ 	FF1a_9,FF1a_13,FF1a_12,FF1a_11,FF1a_10,FF1b_9,FF1b_11,FF1b_10,FF1b_12,FF2a_10,FF2a_11,FF2a_12,FF2a_9,FF2b_9,FF2b_13,FF2b_12,FF2b_11,FF2b_10,End_9,End_11,End_10,End_13,End_12;
+End
+Input
+  FF1a_9 [ Think_9 ]
+  FF1a_13 [ Fork_12 ]
+  FF1a_12 [ Fork_11 ]
+  FF1a_12 [ Think_12 ]
+  FF1a_11 [ Fork_10 ]
+  FF1a_11 [ Think_11 ]
+  FF1a_10 [ Fork_9 ]
+  FF1a_10 [ Think_10 ]
+  FF1b_9 [ Think_9 ]
+  FF1b_9 [ Fork_9 ]
+  FF1b_11 [ Think_11 ]
+  FF1b_11 [ Fork_11 ]
+  FF1b_10 [ Think_10 ]
+  FF1b_10 [ Fork_10 ]
+  FF1b_12 [ Think_12 ]
+  FF1b_12 [ Fork_12 ]
+  FF2a_10 [ Fork_10 ]
+  FF2a_10 [ Catch1_10 ]
+  FF2a_11 [ Fork_11 ]
+  FF2a_11 [ Catch1_11 ]
+  FF2a_12 [ Fork_12 ]
+  FF2a_12 [ Catch1_12 ]
+  FF2a_9 [ Fork_9 ]
+  FF2a_9 [ Catch1_9 ]
+  FF2b_9 [ Catch2_9 ]
+  FF2b_13 [ Fork_12 ]
+  FF2b_12 [ Catch2_12 ]
+  FF2b_12 [ Fork_11 ]
+  FF2b_11 [ Catch2_11 ]
+  FF2b_11 [ Fork_10 ]
+  FF2b_10 [ Catch2_10 ]
+  FF2b_10 [ Fork_9 ]
+  End_9 [ Eat_9 ]
+  End_11 [ Eat_11 ]
+  End_10 [ Eat_10 ]
+  End_12 [ Eat_12 ]
+
+
+
+
+End
+Output
+	FF1a_9 [ Catch1_9 ]
+	FF1a_12 [ Catch1_12 ]
+	FF1a_11 [ Catch1_11 ]
+	FF1a_10 [ Catch1_10 ]
+	FF1b_9 [ Catch2_9 ]
+	FF1b_11 [ Catch2_11 ]
+	FF1b_10 [ Catch2_10 ]
+	FF1b_12 [ Catch2_12 ]
+	FF2a_10 [ Eat_10 ]
+	FF2a_11 [ Eat_11 ]
+	FF2a_12 [ Eat_12 ]
+	FF2b_9 [ Eat_9 ]
+	FF2b_12 [ Eat_12 ]
+	FF2b_11 [ Eat_11 ]
+	FF2b_10 [ Eat_10 ]
+	End_9 [ Fork_9 ]
+	End_9 [ Think_9 ]
+	End_11 [ Fork_10 ]
+	End_11 [ Think_11 ]
+	End_11 [ Fork_11 ]
+	End_10 [ Fork_9 ]
+	End_10 [ Think_10 ]
+	End_10 [ Fork_10 ]
+	End_13 [ Fork_12 ]
+	End_12 [ Fork_11 ]
+	End_12 [ Think_12 ]
+	End_12 [ Fork_12 ]
+
+
+End
+
+
+
+
+Places
+	Marquage : 1;
+	Think_13 ,Fork_13, Think_14 ,Fork_14,Think_15 ,Fork_15, Think_16 ,Fork_16
+
+	Marquage : 0;
+	Catch1_13,Catch2_13,Eat_13,Catch1_14,Catch2_14,Eat_14,Catch1_15,Catch2_15,Eat_15,Catch1_16,Catch2_16,Eat_16
+
+End
+Transitions
+ 	FF1a_17,FF1a_16,FF1a_15,FF1a_14,FF1a_13,FF1b_15,FF1b_14,FF1b_16,FF1b_13,FF2a_13,FF2a_14,FF2a_15,FF2a_16,FF2b_13,FF2b_16,FF2b_17,FF2b_14,FF2b_15,End_15,End_14,End_17,End_16,End_13;
+End
+Input
+  FF1a_17 [ Fork_16 ]
+  FF1a_16 [ Fork_15 ]
+  FF1a_16 [ Think_16 ]
+  FF1a_15 [ Fork_14 ]
+  FF1a_15 [ Think_15 ]
+  FF1a_14 [ Fork_13 ]
+  FF1a_14 [ Think_14 ]
+  FF1a_13 [ Think_13 ]
+  FF1b_15 [ Think_15 ]
+  FF1b_15 [ Fork_15 ]
+  FF1b_14 [ Think_14 ]
+  FF1b_14 [ Fork_14 ]
+  FF1b_16 [ Think_16 ]
+  FF1b_16 [ Fork_16 ]
+  FF1b_13 [ Think_13 ]
+  FF1b_13 [ Fork_13 ]
+  FF2a_13 [ Fork_13 ]
+  FF2a_13 [ Catch1_13 ]
+  FF2a_14 [ Fork_14 ]
+  FF2a_14 [ Catch1_14 ]
+  FF2a_15 [ Fork_15 ]
+  FF2a_15 [ Catch1_15 ]
+  FF2a_16 [ Fork_16 ]
+  FF2a_16 [ Catch1_16 ]
+  FF2b_13 [ Catch2_13 ]
+  FF2b_16 [ Fork_15 ]
+  FF2b_16 [ Catch2_16 ]
+  FF2b_17 [ Fork_16 ]
+
+  FF2b_14 [ Fork_13 ]
+  FF2b_14 [ Catch2_14 ]
+  FF2b_15 [ Fork_14 ]
+  FF2b_15 [ Catch2_15 ]
+  End_15 [ Eat_15 ]
+  End_14 [ Eat_14 ]
+  End_16 [ Eat_16 ]
+  End_13 [ Eat_13 ]
+
+
+
+
+
+
+End
+Output
+	FF1a_16 [ Catch1_16 ]
+	FF1a_15 [ Catch1_15 ]
+	FF1a_14 [ Catch1_14 ]
+	FF1a_13 [ Catch1_13 ]
+	FF1b_15 [ Catch2_15 ]
+	FF1b_14 [ Catch2_14 ]
+	FF1b_16 [ Catch2_16 ]
+	FF1b_13 [ Catch2_13 ]
+	FF2a_13 [ Eat_13 ]
+	FF2a_14 [ Eat_14 ]
+	FF2a_15 [ Eat_15 ]
+	FF2a_16 [ Eat_16 ]
+	FF2b_13 [ Eat_13 ]
+	FF2b_16 [ Eat_16 ]
+
+	FF2b_14 [ Eat_14 ]
+	FF2b_15 [ Eat_15 ]
+	End_15 [ Fork_14 ]
+	End_15 [ Fork_15 ]
+	End_15 [ Think_15 ]
+	End_14 [ Fork_13 ]
+	End_14 [ Fork_14 ]
+	End_14 [ Think_14 ]
+	End_17 [ Fork_16 ]
+	End_16 [ Fork_15 ]
+	End_16 [ Fork_16 ]
+	End_16 [ Think_16 ]
+	End_13 [ Fork_13 ]
+	End_13 [ Think_13 ]
+
+
+
+
+
+
+
+End
+
+
+Places
+	Marquage : 1;
+	Think_17 ,Fork_17, Think_18 ,Fork_18,Think_19 ,Fork_19, Think_20 ,Fork_20
+
+	Marquage : 0;
+	Catch1_17,Catch2_17,Eat_17,Catch1_18,Catch2_18,Eat_18,Catch1_19,Catch2_19,Eat_19,Catch1_20,Catch2_20,Eat_20
+
+End
+Transitions
+ 	FF1a_1,FF1a_17,FF1a_20,FF1a_19,FF1a_18,FF1b_17,FF1b_19,FF1b_18,FF1b_20,FF2a_17,FF2b_1,FF2a_20,FF2a_19,FF2a_18,FF2b_17,FF2b_20,End_1,FF2b_18,FF2b_19,End_19,End_18,End_20,End_17;
+End
+Input
+
+    FF1a_1 [ Fork_20 ]
+    FF1a_17 [ Think_17 ]
+    FF1a_20 [ Fork_19 ]
+    FF1a_20 [ Think_20 ]
+    FF1a_19  [ Fork_18 ]
+    FF1a_19  [ Think_19 ]
+    FF1a_18  [ Fork_17 ]
+    FF1a_18  [ Think_18 ]
+    FF1b_17 [ Think_17 ]
+    FF1b_17 [ Fork_17 ]
+    FF1b_19 [ Think_19 ]
+    FF1b_19 [ Fork_19 ]
+    FF1b_18 [ Think_18 ]
+    FF1b_18 [ Fork_18 ]
+    FF1b_20 [ Think_20 ]
+    FF1b_20 [ Fork_20 ]
+    FF2a_17 [ Fork_17 ]
+    FF2a_17 [ Catch1_17 ]
+    FF2b_1 [ Fork_20 ]
+    FF2a_20 [ Fork_20 ]
+    FF2a_20 [ Catch1_20 ]
+    FF2a_19 [ Fork_19 ]
+    FF2a_19 [ Catch1_19 ]
+    FF2a_18 [ Fork_18 ]
+    FF2a_18 [ Catch1_18 ]
+    FF2b_20 [ Catch2_20 ]
+    FF2b_20 [ Fork_19 ]
+    FF2b_18 [ Catch2_18 ]
+    FF2b_18 [ Fork_17 ]
+    FF2b_19 [ Catch2_19 ]
+    FF2b_19 [ Fork_18 ]
+    End_19 [ Eat_19 ]
+    End_18 [ Eat_18 ]
+    End_20 [ Eat_20 ]
+    End_17 [ Eat_17 ]
+    FF2b_17 [ Catch2_17 ]
+
+
+
+End
+Output
+   FF1a_17 [ Catch1_17 ]
+    FF1a_20 [ Catch1_20 ]
+    FF1a_19 [ Catch1_19 ]
+    FF1a_18 [ Catch1_18 ]
+    FF1b_17 [ Catch2_17 ]
+    FF1b_19 [ Catch2_19 ]
+    FF1b_18 [ Catch2_18 ]
+    FF1b_20 [ Catch2_20 ]
+    FF2a_17 [ Eat_17 ]
+    FF2a_20 [ Eat_20 ]
+    FF2a_19 [ Eat_19 ]
+    FF2a_18 [ Eat_18 ]
+    FF2b_20 [ Eat_20 ]
+    End_1 [ Fork_20 ]
+    FF2b_18 [ Eat_18 ]
+    FF2b_19 [ Eat_19 ]
+    End_19 [ Fork_18 ]
+    End_19 [ Fork_19 ]
+    End_19 [ Think_19 ]
+    End_18 [ Fork_17 ]
+    End_18 [ Fork_18 ]
+    End_18 [ Think_18 ]
+    End_20 [ Fork_19 ]
+    End_20 [ Fork_20 ]
+    End_20 [ Think_20 ]
+
+    End_17 [ Fork_17 ]
+    End_17 [ Think_17 ]
+    FF2b_17 [ Eat_17 ]
+
+
+
+
+End
+
+Sync
+	FF1a_1,FF1a_9,FF1a_5,FF1a_17,FF1a_13,FF2b_9,FF2b_1,FF2b_5,End_5,End_9,FF2b_17,End_1,End_17,End_13
+End
