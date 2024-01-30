@@ -1,0 +1,1 @@
+p_relSC U (p_relSC || !p_sop)

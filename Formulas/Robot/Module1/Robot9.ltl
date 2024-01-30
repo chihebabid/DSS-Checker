@@ -1,0 +1,1 @@
+(p_move <-> r_stops) U ((p_move <-> r_stops) || !<>(!<>(p_sop U (p_sop || r_end_move)) U ((p_sop || r_stops) && !<>(p_sop U (p_sop || r_end_move)))))

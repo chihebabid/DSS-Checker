@@ -1,0 +1,1 @@
+(!p_move U (!p_move || (!p_move U p_started))) U ((!p_move -> <>p_moved) U p_sop)

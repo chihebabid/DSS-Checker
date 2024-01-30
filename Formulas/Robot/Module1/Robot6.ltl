@@ -1,0 +1,1 @@
+!<>((p_move || r_begin_move || (!r_end_move U (r_stops U (p_started || r_stops)))) U []p_started)

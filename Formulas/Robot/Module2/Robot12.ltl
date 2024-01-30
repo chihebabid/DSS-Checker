@@ -1,0 +1,1 @@
+(<>r_begin_move <-> <>r_starts) -> (r_end_move U !<>(true U r_starts))

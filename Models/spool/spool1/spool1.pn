@@ -1,0 +1,79 @@
+Module : 3
+Places
+	Marquage : 0;
+   Entered,WaitBag
+End
+Transitions
+	   GetK,GetB,Enter;
+End
+Input
+
+GetK [ Entered ]
+GetB [ WaitBag ]
+
+
+End
+Output
+GetK [ WaitBag ]
+Enter [  Entered ]
+End
+
+
+
+Places
+	Marquage : 0;
+   Undress, Dress, InBath
+   	Marquage : 10;
+   Cabins
+   Marquage : 15;
+   Bags
+End
+Transitions
+	   GetK,GetK2,RelK,GetB,RBag, RKey;
+End
+Input
+GetK [ Cabins ]
+GetB [ Bags ]
+RelK [ Undress ]
+GetK2 [ Cabins ]
+GetK2 [ InBath ]
+RBag [ Dress ]
+
+
+
+End
+Output
+GetB [ Undress ]
+RelK [ Cabins ]
+RelK [ InBath ]
+GetK2 [ Dress ]
+RBag [ Bags ]
+ RKey [ Cabins ]
+
+End
+
+
+
+Places
+	Marquage : 0;
+   Dressed
+   	Marquage : 20;
+   Out
+
+End
+Transitions
+	   RBag, RKey,Enter;
+Ends
+Input
+ RKey [ Dressed ]
+ Enter [ Out ]
+
+
+
+End
+Output
+RBag [ Dressed ]
+ RKey [ Out ]
+Sync
+	GetK,GetB,RBag,Enter,RKey
+End

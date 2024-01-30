@@ -1,0 +1,1 @@
+((GoLeft1) <-> (Eat0 <-> <>(GoLeft1))) U ((GoLeft1) U ((GoLeft1) || (<>Eat0 U Release0)))

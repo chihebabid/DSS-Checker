@@ -1,0 +1,1 @@
+p_move && (p_moved -> (p_sop U (!(p_move <-> <>p_sop) -> []r_begin_move)))

@@ -1,0 +1,1 @@
+((r_begin_move U (r_begin_move || !r_begin_move)) -> !(p_started <-> r_starts)) U ((r_stops U p_moved) || ((r_begin_move U (r_begin_move || !r_begin_move)) -> !(p_started <-> r_starts)))
