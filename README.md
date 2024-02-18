@@ -22,6 +22,7 @@ associated with the module.
 Options:
 `-h,--help                   Print this help message and exit`
 --file Path:FILE REQUIRED   Petri net model file
+--mc Path:FILE              LTL property file
 
 
 Algorithm:
@@ -32,3 +33,8 @@ Print:
 --dot-output                Save the output graph in a dot file
 --txt-output                Save the output graph in a formatted text file
 ```
+## Sample
+
+In order to check the LTL property contained in file `Formulas/ERK1.ltl` on the Petri net model of file `Models/ERK1/ERK1.pn`, one should copy these files in the same localisation of the executable and execute the following command:
+
+`./distributedstatespace --file ERK1.pn --mc ERK1.LTL`
