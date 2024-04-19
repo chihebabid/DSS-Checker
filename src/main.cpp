@@ -184,6 +184,7 @@ int main(int argc, char *argv[]) {
         start = clock();
         builder.build();
         finish = clock();
+
         cout << "DSS has been successfully built." << endl;
         duration = (double) (finish - start) / CLOCKS_PER_SEC;
         cout<< "construction duration" << duration <<endl;
