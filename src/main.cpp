@@ -204,15 +204,34 @@ int main(int argc, char *argv[]) {
             std::cout<<"Property will be checked against module #"<<index_module<<std::endl;
             auto moduleGraph {builder.getModuleGraph(index_module)};
             // build a twa graph of the RDSS
+            //**********************
+            // Convert demo_kripke into an explicit graph
+            spot::twa_graph_ptr k =
+                    spot::make_twa_graph(std::make_shared<DSSKripke>(my_bdd_dict,moduleGraph),
+                                         spot::twa::prop_set::all(), true);
 
-            auto k = std::make_shared<DSSKripke>(my_bdd_dict,moduleGraph);
-            //auto run=k->intersecting_run(af);
+
+
+
+
+             //l'appel initial: Find a run of or demo_kripke that intersects af
+            //auto k = std::make_shared<DSSKripke>(my_bdd_dict,moduleGraph);
+            auto run=k->intersecting_run(af);
             auto res = (k->intersecting_run(af) == 0);
             if (res)
                 cout << "\nProperty is verified..." << endl;
+
             else
-            cout << "\nProperty is violated."<< endl;
-                    //" by the following run..." << *run;
+            { cout << "\nProperty is violated by the following run:\n" << *run;
+
+
+
+                run->highlight(5); // 5 is a color number.
+                //spot::print_dot(std::cout, k, ".kA");
+                std::ofstream outfile("Example.dot");
+                spot::print_dot(outfile, k, ".kA");
+                outfile.close();
+            }
 
         }
          finish1 = clock();
