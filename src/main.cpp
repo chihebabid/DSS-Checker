@@ -102,7 +102,7 @@ spot::twa_graph_ptr formula2Automaton(const spot::formula &f, spot::bdd_dict_ptr
 //    spot::twa_graph_ptr af = spot::translator(bdd).run(f);
     cout << "Formula automata built." << endl;
     spot::print_dot(std::cout, af);
-
+    // Hello
     // save the generated automaton in a dot file
     if (save_dot) {
         saveGraph(af, "negated_formula.dot");
