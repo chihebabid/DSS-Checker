@@ -62,10 +62,7 @@ Formula negateFormula(const string &fileName) {
 
     cout << "Building negation of the formula ... ";
     spot::formula not_f = spot::formula::Not(pf.f);
-    //cout << "The negation of the Formula in SPIN format: ";
-    //print_spin_ltl(std::cout, not_f) << endl;
     cout << "done\n"
-
          << endl;
 
     return {not_f, transitionSet};
@@ -99,10 +96,9 @@ spot::twa_graph_ptr formula2Automaton(const spot::formula &f, spot::bdd_dict_ptr
     spot::translator tmp = spot::translator(bdd);
     tmp.set_type(spot::postprocessor::BA);
     spot::twa_graph_ptr af = tmp.run(f);
-    //  spot::twa_graph_ptr af = spot::translator(bdd).run(f);
+//    spot::twa_graph_ptr af = spot::translator(bdd).run(f);
     cout << "Formula automata built." << endl;
-    spot::print_dot(std::cout, af);
-    // Hello
+
     // save the generated automaton in a dot file
     if (save_dot) {
         saveGraph(af, "negated_formula.dot");
@@ -160,9 +156,6 @@ int main(int argc, char *argv[]) {
     clock_t start, finish;
     double duration;
 
-    clock_t start1, finish1;
-    double duration1;
-
     // DistributedState dss(petri);
     DistributedState *dss;
 
@@ -180,12 +173,7 @@ int main(int argc, char *argv[]) {
         start = clock();
         builder.build();
         finish = clock();
-
         cout << "DSS has been successfully built." << endl;
-        duration = (double) (finish - start) / CLOCKS_PER_SEC;
-        cout<< "construction duration" << duration <<endl;
-
-        auto start1 = clock();
         if (dot_output) builder.writeToFile(file_name + ".dot");
         if (txt_output) builder.outputTXT();
         if (property_file != "") {
@@ -199,52 +187,19 @@ int main(int argc, char *argv[]) {
             auto index_module {petri->getModule(negate_formula.propositions)};
             std::cout<<"Property will be checked against module #"<<index_module<<std::endl;
             auto moduleGraph {builder.getModuleGraph(index_module)};
-            // build a twa graph of the RDSS
-            //**********************
-            // Convert demo_kripke into an explicit graph
-            spot::twa_graph_ptr k =
-                    spot::make_twa_graph(std::make_shared<DSSKripke>(my_bdd_dict,moduleGraph),
-                                         spot::twa::prop_set::all(), true);
+            // build a twa graph of the SOG
 
-
-
-
-
-             //l'appel initial: Find a run of or demo_kripke that intersects af
-            //auto k = std::make_shared<DSSKripke>(my_bdd_dict,moduleGraph);
-            auto run=k->intersecting_run(af);
+            auto k = std::make_shared<DSSKripke>(my_bdd_dict,moduleGraph);
             auto res = (k->intersecting_run(af) == 0);
             if (res)
                 cout << "\nProperty is verified..." << endl;
-
             else
-            { cout << "\nProperty is violated by the following run:\n" << *run;
-
-
-
-                run->highlight(5); // 5 is a color number.
-                //spot::print_dot(std::cout, k, ".kA");
-                std::ofstream outfile("Example.dot");
-                spot::print_dot(outfile, k, ".kA");
-                outfile.close();
-            }
-
+                cout << "\nProperty is violated..." << endl;
         }
-         finish1 = clock();
-
-        duration1 = (double) (finish1 - start1) / CLOCKS_PER_SEC;
-
-        cout <<" verification time"<< duration1 << " seconds" << endl;
     }
-
-
-    //ModularSpace* espace_etat=petri->constructReducedStateSpace();
-
-
 
     duration = (double) (finish - start) / CLOCKS_PER_SEC;
     cout << duration << " seconds" << endl;
-
 
     if (dot_output && algorithm != "DSS") petri->writeToFile(file_name + ".dot");
     if (txt_output && algorithm != "DSS") petri->writeTextFile(file_name + ".txt");
