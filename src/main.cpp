@@ -99,7 +99,7 @@ spot::twa_graph_ptr formula2Automaton(const spot::formula &f, spot::bdd_dict_ptr
     spot::translator tmp = spot::translator(bdd);
     tmp.set_type(spot::postprocessor::BA);
     spot::twa_graph_ptr af = tmp.run(f);
-//    spot::twa_graph_ptr af = spot::translator(bdd).run(f);
+    //  spot::twa_graph_ptr af = spot::translator(bdd).run(f);
     cout << "Formula automata built." << endl;
     spot::print_dot(std::cout, af);
     // Hello
