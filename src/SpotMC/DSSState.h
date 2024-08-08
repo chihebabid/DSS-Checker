@@ -11,9 +11,6 @@
 
 class DSSState : public spot::state {
     SCC *m_scc;
-    /**
-     * Default constructor
-     */
 public:
     DSSState(SCC* scc) : m_scc(scc) {
 

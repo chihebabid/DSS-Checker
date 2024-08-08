@@ -11,12 +11,8 @@
 #include <spot/twaalgos/translate.hh>
 #include <spot/twaalgos/emptiness.hh>
 #include <spot/tl/apcollect.hh>
-#include <spot/ta/taproduct.hh>
-#include <spot/twa/twaproduct.hh>
-#include <spot/twaalgos/gtec/gtec.hh>
 #include "DSS/DSSBuilder.h"
 #include "SpotMC/DSSKripke.h"
-
 
 using namespace std;
 struct Formula {
@@ -241,8 +237,13 @@ int main(int argc, char *argv[]) {
         cout <<" verification time"<< duration1 << " seconds" << endl;
     }
 
+
     //ModularSpace* espace_etat=petri->constructReducedStateSpace();
 
+
+
+    duration = (double) (finish - start) / CLOCKS_PER_SEC;
+    cout << duration << " seconds" << endl;
 
 
     if (dot_output && algorithm != "DSS") petri->writeToFile(file_name + ".dot");
