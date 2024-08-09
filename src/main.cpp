@@ -13,7 +13,7 @@
 #include <spot/tl/apcollect.hh>
 #include "DSS/DSSBuilder.h"
 #include "SpotMC/DSSKripke.h"
-
+#include "SpotMC/ParseFormulaFile.h"
 using namespace std;
 
 
@@ -178,21 +178,24 @@ int main(int argc, char *argv[]) {
             bool dot_formula {false};
             // build automata of the negation of the formula
             Formula negate_formula {negateFormula(property_file)};
-            auto my_bdd_dict {spot::make_bdd_dict()};
-            spot::twa_graph_ptr af {formula2Automaton(negate_formula.f, my_bdd_dict, dot_formula)};
+            ParseFormulaFile parse_file{property_file};
+            while (parse_file.getNext(negate_formula)) {
+                auto my_bdd_dict{spot::make_bdd_dict()};
+                spot::twa_graph_ptr af{formula2Automaton(negate_formula.f, my_bdd_dict, dot_formula)};
 
-            // Get module index
-            auto index_module {petri->getModule(negate_formula.propositions)};
-            std::cout<<"Property will be checked against module #"<<index_module<<std::endl;
-            auto moduleGraph {builder.getModuleGraph(index_module)};
-            // build a twa graph of the SOG
+                // Get module index
+                auto index_module{petri->getModule(negate_formula.propositions)};
+                std::cout << "Property will be checked against module #" << index_module << std::endl;
+                auto moduleGraph{builder.getModuleGraph(index_module)};
+                // build a twa graph of the SOG
 
-            auto k = std::make_shared<DSSKripke>(my_bdd_dict,moduleGraph);
-            auto res = (k->intersecting_run(af) == 0);
-            if (res)
-                cout << "\nProperty is verified..." << endl;
-            else
-                cout << "\nProperty is violated..." << endl;
+                auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph);
+                auto res = (k->intersecting_run(af) == 0);
+                if (res)
+                    cout << "\nProperty is verified..." << endl;
+                else
+                    cout << "\nProperty is violated..." << endl;
+            }
         }
     }
 

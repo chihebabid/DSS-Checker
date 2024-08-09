@@ -23,6 +23,7 @@ bool ParseFormulaFile::getNext(Formula &f) {
         string input;
         set<string> transitionSet;
         getline(*pFile, input);
+        if (input.empty()) return false;
         cout <<"        Loaded formula: " << input << endl;
         spot::parsed_formula pf = spot::parse_infix_psl(input);
         if (pf.format_errors(std::cerr))
@@ -30,7 +31,7 @@ bool ParseFormulaFile::getNext(Formula &f) {
         spot::formula fo = pf.f;
         if (!fo.is_ltl_formula()) {
             std::cerr << "Only LTL formulas are supported.\n";
-            exit(0);
+            return false;
         }
         spot::atomic_prop_set *p_list = spot::atomic_prop_collect(fo, nullptr);
         for (const auto &i: *p_list) {
@@ -44,6 +45,7 @@ bool ParseFormulaFile::getNext(Formula &f) {
         cout << "done\n"
              << endl;
         f= {not_f, transitionSet};
+        return true;
     }
     return false;
 }
