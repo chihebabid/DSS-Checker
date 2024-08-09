@@ -15,10 +15,7 @@
 #include "SpotMC/DSSKripke.h"
 
 using namespace std;
-struct Formula {
-    spot::formula f;
-    set<string> propositions;
-};
+
 
 /**
  * Parse a file  containing a LTL formula and return its negation
@@ -173,6 +170,7 @@ int main(int argc, char *argv[]) {
         start = clock();
         builder.build();
         finish = clock();
+        duration = (double) (finish - start) / CLOCKS_PER_SEC;
         cout << "DSS has been successfully built." << endl;
         if (dot_output) builder.writeToFile(file_name + ".dot");
         if (txt_output) builder.outputTXT();
@@ -198,8 +196,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    duration = (double) (finish - start) / CLOCKS_PER_SEC;
-    cout << duration << " seconds" << endl;
+    cout<<"DSS building duration: "<< duration << " seconds" << endl;
 
     if (dot_output && algorithm != "DSS") petri->writeToFile(file_name + ".dot");
     if (txt_output && algorithm != "DSS") petri->writeTextFile(file_name + ".txt");

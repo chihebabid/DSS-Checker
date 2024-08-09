@@ -5,6 +5,7 @@
 #ifndef DISTRIBUTEDSTATESPACE_MISC_H
 #define DISTRIBUTEDSTATESPACE_MISC_H
 #include <vector>
+#include <tl/formula.hh>
 #include "ListMarquage.h"
 #include "Fusion.h"
 #include "ProductSCC.h"
@@ -87,5 +88,8 @@ private:
 };
 
 
-
+struct Formula {
+    spot::formula f;
+    set<string> propositions;
+};
 #endif //DISTRIBUTEDSTATESPACE_MISC_H
