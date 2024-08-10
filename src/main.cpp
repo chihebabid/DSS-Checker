@@ -89,12 +89,12 @@ void saveGraph(spot::twa_graph_ptr &graph, const string &filename, const char *o
  * @return spot::twa_graph_ptr
  */
 spot::twa_graph_ptr formula2Automaton(const spot::formula &f, spot::bdd_dict_ptr bdd, bool save_dot = false) {
-    cout << "\nBuilding automata for not(formula)\n";
+    cout << "\tBuilding automata for not(formula) ... ";
     spot::translator tmp = spot::translator(bdd);
     tmp.set_type(spot::postprocessor::BA);
     spot::twa_graph_ptr af = tmp.run(f);
 //    spot::twa_graph_ptr af = spot::translator(bdd).run(f);
-    cout << "Formula automata built." << endl;
+    cout << "done\n";
 
     // save the generated automaton in a dot file
     if (save_dot) {
@@ -185,21 +185,25 @@ int main(int argc, char *argv[]) {
 
                 // Get module index
                 auto index_module{petri->getModule(negate_formula.propositions)};
-                std::cout << "Property will be checked against module #" << index_module << std::endl;
+                std::cout << "\tProperty will be checked against module #" << index_module << std::endl;
                 auto moduleGraph{builder.getModuleGraph(index_module)};
                 // build a twa graph of the SOG
 
                 auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph);
-                auto res = (k->intersecting_run(af) == 0);
+                auto start_interset{clock()};
+                auto res{(k->intersecting_run(af) == 0)};
+                auto finish_intersect{clock()};
                 if (res)
-                    cout << "\nProperty is verified..." << endl;
+                    cout << "\tProperty is verified...\n";
                 else
-                    cout << "\nProperty is violated..." << endl;
+                    cout << "\tProperty is violated...\n";
+                auto duration_intersect {(double) (finish - start) / CLOCKS_PER_SEC};
+                cout<<"\tVerification duration: "<<duration_intersect<<'\n';
             }
         }
     }
 
-    cout<<"DSS building duration: "<< duration << " seconds" << endl;
+    cout<<"\nDSS building duration: "<< duration << " seconds" << endl;
 
     if (dot_output && algorithm != "DSS") petri->writeToFile(file_name + ".dot");
     if (txt_output && algorithm != "DSS") petri->writeTextFile(file_name + ".txt");

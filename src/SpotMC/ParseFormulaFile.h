@@ -13,9 +13,11 @@ using namespace std;
 
 class ParseFormulaFile {
     unique_ptr<ifstream> pFile {nullptr};
+    uint32_t mFormulaCount {};
 public:
     ParseFormulaFile(const string &fileName);
     bool getNext(Formula &f);
+    uint32_t getFormulaCount() const;
     ~ParseFormulaFile();
 };
 

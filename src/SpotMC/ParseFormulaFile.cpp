@@ -24,10 +24,12 @@ bool ParseFormulaFile::getNext(Formula &f) {
         set<string> transitionSet;
         getline(*pFile, input);
         if (input.empty()) return false;
-        cout <<"        Loaded formula: " << input << endl;
+        cout <<"\n***** Property#"<<mFormulaCount<<"\n\tChecking formula: " << input << endl;
         spot::parsed_formula pf = spot::parse_infix_psl(input);
-        if (pf.format_errors(std::cerr))
+        if (pf.format_errors(std::cerr)) {
+            std::cerr << "Error in the formula format!\n";
             return false;
+        }
         spot::formula fo = pf.f;
         if (!fo.is_ltl_formula()) {
             std::cerr << "Only LTL formulas are supported.\n";
@@ -37,15 +39,19 @@ bool ParseFormulaFile::getNext(Formula &f) {
         for (const auto &i: *p_list) {
             transitionSet.insert(i.ap_name());
         }
-        cout << "Formula in SPIN format: ";
+        cout << "\tFormula in SPIN format: ";
         print_spin_ltl(std::cout, fo) << endl;
-
-        cout << "Building negation of the formula ... ";
+        cout << "\tBuilding negation of the formula ... ";
         spot::formula not_f = spot::formula::Not(pf.f);
-        cout << "done\n"
-             << endl;
-        f= {not_f, transitionSet};
+        cout << "done\n";
+        ++mFormulaCount;
+        f= {not_f, std::move(transitionSet)};
         return true;
     }
     return false;
+}
+
+
+uint32_t ParseFormulaFile::getFormulaCount() const {
+    return mFormulaCount;
 }
