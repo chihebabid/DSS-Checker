@@ -197,7 +197,7 @@ int main(int argc, char *argv[]) {
                     cout << "\tProperty is verified...\n";
                 else
                     cout << "\tProperty is violated...\n";
-                auto duration_intersect {(double) (finish - start) / CLOCKS_PER_SEC};
+                auto duration_intersect {(double) (start_interset - finish_intersect) / CLOCKS_PER_SEC};
                 cout<<"\tVerification duration: "<<duration_intersect<<'\n';
             }
         }
