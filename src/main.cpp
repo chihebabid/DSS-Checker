@@ -177,7 +177,7 @@ int main(int argc, char *argv[]) {
         if (property_file != "") {
             bool dot_formula {false};
             // build automata of the negation of the formula
-            Formula negate_formula {negateFormula(property_file)};
+            Formula negate_formula;
             ParseFormulaFile parse_file{property_file};
             while (parse_file.getNext(negate_formula)) {
                 auto my_bdd_dict{spot::make_bdd_dict()};
