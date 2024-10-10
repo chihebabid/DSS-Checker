@@ -179,8 +179,9 @@ int main(int argc, char *argv[]) {
             // build automata of the negation of the formula
             Formula negate_formula;
             ParseFormulaFile parse_file{property_file};
+            auto my_bdd_dict{spot::make_bdd_dict()};
             while (parse_file.getNext(negate_formula)) {
-                auto my_bdd_dict{spot::make_bdd_dict()};
+
                 spot::twa_graph_ptr af{formula2Automaton(negate_formula.f, my_bdd_dict, dot_formula)};
 
                 // Get module index
@@ -190,23 +191,20 @@ int main(int argc, char *argv[]) {
                 // build a twa graph of the SOG
 
                 auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph);
-                auto start_interset{clock()};
+                auto start_intersect{clock()};
                 auto res{(k->intersecting_run(af) == 0)};
                 auto finish_intersect{clock()};
                 if (res)
                     cout << "\tProperty is verified...\n";
                 else
                     cout << "\tProperty is violated...\n";
-                auto duration_intersect {(double) (start_interset - finish_intersect) / CLOCKS_PER_SEC};
+                auto duration_intersect {(double) (finish_intersect - start_intersect) / CLOCKS_PER_SEC};
                 cout<<"\tVerification duration: "<<duration_intersect<<'\n';
             }
         }
     }
-
     cout<<"\nDSS building duration: "<< duration << " seconds" << endl;
-
     if (dot_output && algorithm != "DSS") petri->writeToFile(file_name + ".dot");
     if (txt_output && algorithm != "DSS") petri->writeTextFile(file_name + ".txt");
-
     return 0;
 }
