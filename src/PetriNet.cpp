@@ -95,7 +95,7 @@ vector<Transition *> PetriNet::getListeTransitionsFranchissables() {
 
 void PetriNet::tirer(Transition &t) {
     Transition *transition = getTransitionAdresse(t.getCode());
-    if (transition->isFranchissable()) transition->tirer();
+    if (transition->isFranchissable()) transition->fire();
 }
 
 

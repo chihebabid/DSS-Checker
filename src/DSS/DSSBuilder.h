@@ -19,7 +19,7 @@ public:
 
     void outputTXT();
 
-    ModuleSS* getModuleGraph(const int index) const;
+    ModuleSS* getModuleGraph(const size_t index) const;
 
 private:
     string getProductSCCName(ProductSCC *pss);

@@ -60,7 +60,7 @@ public:
 private:
     vector<PetriNet *> m_modules;
     DistributedState *m_dss;
-    vector<Fusion *> m_fusions;
+    vector<TransitionFusionSet *> m_fusions;
 };
 
 #endif // !defined(AFX_MODULARPETRINET_H__D284E8F0_4D61_4B06_B64D_CD07F031C825__INCLUDED_)

@@ -33,7 +33,7 @@ void ModularPetriNet::addModule(PetriNet *petri) {
 }
 
 void ModularPetriNet::addSync(const string transition_name) {
-    Fusion *fusion = new Fusion();
+    TransitionFusionSet *fusion = new TransitionFusionSet();
     fusion->setName(transition_name);
     for (const auto & petri : m_modules) {
         Transition *transition = petri->getTransitionAdresse(transition_name);
@@ -91,8 +91,8 @@ DistributedState *ModularPetriNet::buildDSS() {
                 for (int module = 0; module < getModulesCount(); module++) {
                     m_modules[module]->setMarquage(global_state->at(module));
                 }
-                Fusion *fusion = elt.m_fusion;
-                fusion->tirer();
+                TransitionFusionSet *fusion = elt.m_fusion;
+                fusion->fire();
 
                 // Build obtained destination Meta-states and check whether they exist or not
                 MetaState *dest_ms;
@@ -188,7 +188,7 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
         /************************************************/
         /**Check whether a fusion set is enabled or not**/
         /************************************************/
-        Fusion *fusion = m_fusions.at(index_fusion);
+        TransitionFusionSet *fusion = m_fusions.at(index_fusion);
         bool canBeActive = true;
         for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {
@@ -249,7 +249,7 @@ void ModularPetriNet::extractEnabledFusion(ProductSCC *product,
         /************************************************/
         /**Check whether a fusion set is enabled or not**/
         /************************************************/
-        Fusion *fusion = m_fusions.at(index_fusion);
+        TransitionFusionSet *fusion = m_fusions.at(index_fusion);
         bool canBeActive = true;
         for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {

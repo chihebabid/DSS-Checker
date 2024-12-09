@@ -12,9 +12,9 @@ public:
 
     bool operator==(const ProductSCC &product);
 
-    ProductSCC &operator=(const ProductSCC &product);
 
-    SCC *getSCC(const int pos);
+
+    SCC *getSCC(const size_t pos);
 
 private:
     vector<SCC *> m_product;

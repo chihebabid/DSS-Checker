@@ -14,13 +14,13 @@ using std::string;
 
 class Node  {
 public:
-    void setName(const string name);
+    void setName(const string& name);
 
     string getName() const;
 
-    Node();
+    Node()=default;
 
-    virtual ~Node();
+    virtual ~Node()=default;
 
 protected:
     string m_name;

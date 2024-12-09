@@ -6,19 +6,15 @@ void ProductSCC::addSCC(SCC *scc) {
 
 
 bool ProductSCC::operator==(const ProductSCC &product) {
-    bool result = true;
-    for (int module = 0; module < m_product.size() && result; module++) {
-        result = m_product.at(module)->isEqual(*product.m_product.at(module));
+    bool result {true};
+    for (size_t module {}; module < m_product.size() && result; ++module) {
+        result = m_product[module]->isEqual(*product.m_product[module]);
     }
     return result;
 }
 
-SCC *ProductSCC::getSCC(const int pos) {
-    return m_product.at(pos);
+SCC *ProductSCC::getSCC(const size_t pos) {
+    return m_product[pos];
 }
 
-ProductSCC &ProductSCC::operator=(const ProductSCC &product) {
-    if (&product == this) return *this;
-    this->m_product = product.m_product;
-    return *this;
-}
+

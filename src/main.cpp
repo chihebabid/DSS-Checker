@@ -2,8 +2,6 @@
 #include "ConstructPetriFromFile.h"
 #include "time.h"
 #include <sys/wait.h>
-#include <unistd.h>
-#include <spot/misc/version.hh>
 #include <spot/twaalgos/dot.hh>
 #include <CLI11.hpp>
 #include <spot/tl/parse.hh>
@@ -109,7 +107,7 @@ spot::twa_graph_ptr formula2Automaton(const spot::formula &f, spot::bdd_dict_ptr
 int main(int argc, char *argv[]) {
     CLI::App app{"DSS-Checker : Distributed State Space Checker"};
 
-    string file_name = "";
+    string file_name;
     app.add_option("--file", file_name, "Petri net model file")
             ->type_name("Path")
             ->required()
@@ -170,7 +168,7 @@ int main(int argc, char *argv[]) {
         start = clock();
         builder.build();
         finish = clock();
-        duration = (double) (finish - start) / CLOCKS_PER_SEC;
+        duration = static_cast<double> (finish - start) / CLOCKS_PER_SEC;
         cout << "DSS has been successfully built." << endl;
         if (dot_output) builder.writeToFile(file_name + ".dot");
         if (txt_output) builder.outputTXT();
@@ -192,13 +190,13 @@ int main(int argc, char *argv[]) {
 
                 auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph);
                 auto start_intersect{clock()};
-                auto res{(k->intersecting_run(af) == 0)};
+                auto res{(k->intersecting_run(af) == nullptr)};
                 auto finish_intersect{clock()};
                 if (res)
                     cout << "\tProperty is verified...\n";
                 else
                     cout << "\tProperty is violated...\n";
-                auto duration_intersect {(double) (finish_intersect - start_intersect) / CLOCKS_PER_SEC};
+                auto duration_intersect {static_cast<double>(finish_intersect - start_intersect) / CLOCKS_PER_SEC};
                 cout<<"\tVerification duration: "<<duration_intersect<<'\n';
             }
         }

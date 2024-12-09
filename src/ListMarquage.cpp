@@ -9,13 +9,6 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ListMarquage::ListMarquage() {
-    m_liste.clear();
-}
-
-ListMarquage::~ListMarquage() {
-    m_liste.clear();
-}
 
 bool ListMarquage::operator==(ListMarquage &listemarquage) {
 

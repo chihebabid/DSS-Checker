@@ -13,10 +13,11 @@
 #include "Node.h"
 
 
-class Fusion : public Node {
+class TransitionFusionSet : public Node {
 public:
-    Fusion()=default;
-    virtual ~Fusion()=default;
+    TransitionFusionSet()=default;
+
+    ~TransitionFusionSet() override=default;
 
     bool participatePartially(const int index_module);
 
@@ -24,9 +25,9 @@ public:
 
     bool participate(const int index_module);
 
-    void tirer();
+    void fire();
 
-    int getCountTransitionsLocales();
+    int getLocalTransitionsCount();
 
     string getFusionName();
 

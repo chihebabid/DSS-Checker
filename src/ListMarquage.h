@@ -17,6 +17,8 @@ using std::vector;
 
 class ListMarquage {
 public:
+    ListMarquage()=default;
+    virtual ~ListMarquage()=default;
     Marking pop();
 
     void addGroupe(ListMarquage &groupe);
@@ -29,7 +31,7 @@ public:
 
     int getCount() { return m_liste.size(); }
 
-    Marking *getMarquage(const int index) { return &m_liste.at(index); }
+    Marking *getMarquage(const int index) { return &m_liste[index]; }
 
     void addMarquage(Marking *marquage) { if (!existMarquage(marquage)) m_liste.push_back(*marquage); }
 
@@ -39,9 +41,7 @@ public:
 
     ListMarquage &operator=(const ListMarquage &elt);
 
-    ListMarquage();
 
-    virtual ~ListMarquage();
 
 private:
     vector<Marking> m_liste;

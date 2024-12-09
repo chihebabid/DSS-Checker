@@ -14,7 +14,9 @@
 
 class NodeSGSimplified {
 public:
-    NodeSGSimplified(const NodeSGSimplified &noeud);
+    NodeSGSimplified(const NodeSGSimplified &)=default;
+
+    NodeSGSimplified& operator=(const NodeSGSimplified &)=default;
 
     void addMarquage(Marking &marquage);
 
@@ -24,11 +26,9 @@ public:
 
     bool operator==(NodeSGSimplified &marq);
 
-    NodeSGSimplified &operator=(const NodeSGSimplified &val);
+    NodeSGSimplified()=default;
 
-    NodeSGSimplified();
-
-    virtual ~NodeSGSimplified();
+    virtual ~NodeSGSimplified()=default;
 
     vector<Marking> m_list;
 protected:

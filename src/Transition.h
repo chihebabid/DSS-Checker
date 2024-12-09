@@ -17,7 +17,7 @@
 
 class Transition : public Node {
 public:
-    inline int getPlacesEntreesCount() {
+    inline int getInputPlacesCount() const {
         return ml_input_places.size();
     }
 
@@ -33,7 +33,7 @@ public:
 
     void setSync(const bool enable);
 
-    inline bool isSync() {
+    inline bool isSync() const {
         return m_sync;
     }
 
@@ -41,9 +41,9 @@ public:
 
     void addPlaceEntree(Place *place, int poids);
 
-    inline void tirer() {
+    inline void fire() {
         // Add tokens to output places
-        size_t index {0};
+        size_t index {};
         for (auto & o_place : ml_output_places) {
             o_place->addTokens(m_poids_sorties[index]);
             ++index;
@@ -56,7 +56,7 @@ public:
         }
     }
 
-    bool isFranchissableLocal();
+    bool isLocallyFirable();
 
     Transition()=default;
 

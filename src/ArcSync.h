@@ -9,7 +9,7 @@
 #define ARCSYNC_H_
 
 #include "ProductSCC.h"
-#include "Fusion.h"
+#include "TransitionFusionSet.h"
 
 class ProductSCC;
 
@@ -18,17 +18,17 @@ public:
     ArcSync()=default;
     virtual ~ArcSync()=default;
 
-    Fusion *getFusion();
+    TransitionFusionSet *getFusion();
 
     void setDestination(MetaState *destination);
 
-    void setData(ProductSCC source, Fusion *transition, MetaState *destination);
+    void setData(ProductSCC source, TransitionFusionSet *transition, MetaState *destination);
 
     MetaState *getMetaStateDest();
 
     ProductSCC *getStartProduct();
 private:
-    Fusion *m_fusion;
+    TransitionFusionSet *m_fusion;
     ProductSCC m_source;
     MetaState *m_destination;
 };

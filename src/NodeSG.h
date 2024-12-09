@@ -20,7 +20,7 @@ using std::vector;
 
 class ArcSG;
 
-class Fusion;
+class TransitionFusionSet;
 
 class NodeSG : public NodeSGSimplified {
 

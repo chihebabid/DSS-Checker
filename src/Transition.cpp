@@ -7,7 +7,7 @@
 
 
 
-bool Transition::isFranchissableLocal() {
+bool Transition::isLocallyFirable() {
     for (int i = 0; i < ml_input_places.size(); i++) {
         if (ml_input_places[i]->getTokens() < m_poids_entrees.at(i)) return false;
 
@@ -35,7 +35,7 @@ void Transition::setSync(const bool enable) {
 
 bool Transition::isFranchissable() {
     if (isSync()) return false;
-    return isFranchissableLocal();
+    return isLocallyFirable();
 }
 
 ////////////////////////////////////

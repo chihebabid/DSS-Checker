@@ -7,7 +7,7 @@
 #include <vector>
 #include <tl/formula.hh>
 #include "ListMarquage.h"
-#include "Fusion.h"
+#include "TransitionFusionSet.h"
 #include "ProductSCC.h"
 
 
@@ -39,7 +39,7 @@ public:
     virtual ~PElement_dss()=default;
 
     ListGlobalStates m_gs;
-    Fusion *m_fusion;
+    TransitionFusionSet *m_fusion;
 };
 
 /***********************************************************************/

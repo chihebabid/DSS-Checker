@@ -1,6 +1,6 @@
 #ifndef SCC_H
 #define SCC_H
-
+#include <cstdint>
 #include "Marking.h"
 #include "MetaState.h"
 
@@ -31,13 +31,13 @@ class SCC {
 public:
     SCC();
     virtual ~SCC()=default;
-    Marking *existState(Marking *m);
-    long getCount();
+    Marking *findMarking(Marking *m);
+    size_t getCount() const;
     void addState(Marking *m);
     vector<Marking *> *getListStates();
     bool isEqual(const SCC &scc);
-    uint32_t getId() const;
-    MetaState * getMetaState() const;
+    [[nodiscard]] uint32_t getId() const;
+    [[nodiscard]] MetaState * getMetaState() const;
     void setMetaState(MetaState* ms);
     std::vector<std::pair<SCC * ,Transition*>>::iterator beginSucc() {
         return m_iterator_succ.begin();

@@ -45,8 +45,8 @@ add_executable(distributedstatespace main.cpp
         Transition.h
         ListMarquage.cpp
         ListMarquage.h
-        Fusion.cpp
-        Fusion.h
+        TransitionFusionSet.cpp
+        TransitionFusionSet.h
         NodeSGSimplified.cpp
         NodeSGSimplified.h
         ArcSG.cpp

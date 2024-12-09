@@ -57,8 +57,8 @@ void DSSBuilder::buildInitialMS() {
                 for (int module = 0; module < mptrMPNet->getModulesCount(); ++module) {
                     mptrMPNet->getModule(module)->setMarquage(global_state->at(module));
                 }
-                Fusion *fusion = elt.m_fusion;
-                fusion->tirer();
+                TransitionFusionSet *fusion = elt.m_fusion;
+                fusion->fire();
 
                 // Build obtained destination Meta-states and check whether they exist or not
                 MetaState *dest_ms;
@@ -269,6 +269,6 @@ void DSSBuilder::outputTXT() {
     cout << "#Sync edges:" << sumSyncEdges << endl;
 }
 
-ModuleSS* DSSBuilder::getModuleGraph(const int index) const {
+ModuleSS* DSSBuilder::getModuleGraph(const size_t index) const {
     return mlModuleSS[index];
 }

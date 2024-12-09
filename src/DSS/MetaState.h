@@ -31,15 +31,15 @@ public:
     void addSyncArc(ArcSync *sync_arc);
     uint32_t getArcCount();
     bool operator==(MetaState &ms);
-    uint32_t getId() const;
+    [[nodiscard]] uint32_t getId() const;
     Marking *existMarking(Marking *marq);
     Marking *insertMarking(Marking *m);
     void computeSCCTarjan();
     void setIdModule(const size_t id) { m_id_module = id;}
-    size_t getIdModule() const { return m_id_module;}
+    [[nodiscard]] size_t getIdModule() const { return m_id_module;}
 private:
     size_t m_id_module;
-    ProductSCC *m_name;
+    ProductSCC *m_name {nullptr};
     vector<ArcSync *> mArcs;
     uint32_t m_id;
     static uint32_t m_Counter;

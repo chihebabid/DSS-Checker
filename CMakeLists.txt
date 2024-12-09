@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.5)
 
 project(distributedstatespace C CXX)
 
@@ -49,7 +49,6 @@ set(THIRD_PARTY_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/third-party)
 # CLI library
 add_library(cli11 INTERFACE)
 target_include_directories(cli11 INTERFACE "${THIRD_PARTY_INCLUDE_DIR}/CLI11")
-
 
 # add source folder
 include_directories(src)

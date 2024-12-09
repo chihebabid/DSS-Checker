@@ -13,13 +13,13 @@
 
 #include "NodeSG.h"
 #include "NodeSGSimplified.h"
-#include "Fusion.h"
+#include "TransitionFusionSet.h"
 
 class NodeSG;
 
 class ArcSG {
 public:
-    Fusion *getFusion();
+    TransitionFusionSet *getFusion();
 
     ArcSG(const ArcSG &val);
 
@@ -36,7 +36,7 @@ public:
     virtual ~ArcSG();
 
 private:
-    Fusion *m_fusion;
+    TransitionFusionSet *m_fusion;
     NodeSG *m_destination;
     NodeSGSimplified m_marquage_depart;
 
@@ -44,7 +44,7 @@ private:
 };
 
 
-inline Fusion *ArcSG::getFusion() {
+inline TransitionFusionSet *ArcSG::getFusion() {
     return m_fusion;
 }
 

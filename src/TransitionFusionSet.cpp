@@ -3,29 +3,29 @@
 //////////////////////////////////////////////////////////////////////
 
 #include "Transition.h"
-#include "Fusion.h"
+#include "TransitionFusionSet.h"
 
-void Fusion::tirer() {
-    for (int i = 0; i < m_transitions.size(); i++) m_transitions[i]->tirer();
+void TransitionFusionSet::fire() {
+    for (int i = 0; i < m_transitions.size(); i++) m_transitions[i]->fire();
 }
 
 
-void Fusion::addTransition(Transition *transition) {
+void TransitionFusionSet::addTransition(Transition *transition) {
     m_transitions.push_back(transition);
 }
 
-bool Fusion::isFranchissable() {
+bool TransitionFusionSet::isFranchissable() {
     bool franchissable = true;
     for (int i = 0; i < m_transitions.size() && franchissable; i++)
-        franchissable = m_transitions[i]->isFranchissableLocal();
+        franchissable = m_transitions[i]->isLocallyFirable();
     return franchissable;
 }
 
-string Fusion::getFusionName() {
+string TransitionFusionSet::getFusionName() {
     return m_transitions[0]->getName();
 }
 
-int Fusion::getCountTransitionsLocales() {
+int TransitionFusionSet::getLocalTransitionsCount() {
     return m_transitions.size();
 }
 
@@ -33,10 +33,10 @@ int Fusion::getCountTransitionsLocales() {
 /////////////////////////////////////////////////////////////////////
 // Indiquer si le module 'index_module' participe � la communication
 ///////////////////////////////////////////////////////////////////////
-bool Fusion::participatePartially(const int index_module) {
+bool TransitionFusionSet::participatePartially(const int index_module) {
     for (int i = 0; i < m_transitions.size(); i++) {
         if (m_transitions[i]->getPetri() == index_module)
-            if (m_transitions[i]->getPlacesEntreesCount() > 0) {
+            if (m_transitions[i]->getInputPlacesCount() > 0) {
                 return true;
             }
     }
@@ -46,7 +46,7 @@ bool Fusion::participatePartially(const int index_module) {
 /////////////////////////////////////////////////////////////////////
 // Indiquer si le module 'index_module' participe � la communication
 ///////////////////////////////////////////////////////////////////////
-bool Fusion::participate(const int index_module) {
+bool TransitionFusionSet::participate(const int index_module) {
 
     for (int i = 0; i < m_transitions.size(); i++) {
         if (m_transitions[i]->getPetri() == index_module) {
@@ -57,16 +57,16 @@ bool Fusion::participate(const int index_module) {
 }
 
 
-bool Fusion::isFranchissableLocal(int module) {
+bool TransitionFusionSet::isFranchissableLocal(int module) {
     bool result = false;
     for (int i = 0; i < m_transitions.size() && !result; i++) {
         if (m_transitions[i]->getPetri() == module) {
-            return m_transitions.at(i)->isFranchissableLocal();
+            return m_transitions.at(i)->isLocallyFirable();
         }
     }
     return false;
 }
 
-Transition *Fusion::getTransitionOfModule(int module) const{
+Transition *TransitionFusionSet::getTransitionOfModule(int module) const{
     return m_transitions[module];
 }

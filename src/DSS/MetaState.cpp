@@ -90,7 +90,7 @@ void MetaState::computeStrongConnectedComponents(Marking *v) {
 
     // Consider successors of v
 
-    for (auto elt: v->getListSucc()) {
+    for (const auto & elt: v->getListSucc()) {
         Marking *w = elt.second;
         if (w->index == -1) {
             computeStrongConnectedComponents(w);
