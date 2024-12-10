@@ -20,7 +20,7 @@ class MetaGraph {
 public:
 
 
-    MetaGraph();
+    MetaGraph()=default;
 
     void addMetaState(MetaState *ms);
 

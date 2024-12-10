@@ -46,20 +46,11 @@ public:
 
         if (m_vector.size() != newvec.m_vector.size()) return false;
         for (unsigned int i = 0; i < m_vector.size(); i++)
-            if (m_vector.at(i) != newvec.m_vector.at(i)) return false;
+            if (m_vector[i] != newvec.m_vector[i]) return false;
         return true;
     }
 
-    bool operator==(const Marking *newvec) const {
-        if (this->m_vide == true && newvec->m_vide == true) {
-            return true;
-        } else if ((this->m_vide) == (!newvec->m_vide)) return false;
 
-        if (m_vector.size() != newvec->m_vector.size()) return false;
-        for (unsigned int i = 0; i < m_vector.size(); i++)
-            if (m_vector.at(i) != newvec->m_vector.at(i)) return false;
-        return true;
-    }
 
     void add8BitsValue(const Octet val);
 

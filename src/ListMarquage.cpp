@@ -15,24 +15,13 @@ bool ListMarquage::operator==(ListMarquage &listemarquage) {
     if (listemarquage.m_liste.size() == m_liste.size()) {
 
         for (int i = 0; i < m_liste.size(); i++) {
-            if (!(existMarquage(&listemarquage.m_liste.at(i)))) return false;
+            if (!(existMarquage(&listemarquage.m_liste[i]))) return false;
         }
         return true;
     }
     return false;
 }
 
-
-ListMarquage &ListMarquage::operator=(const ListMarquage &elt) {
-    if (this == &elt) return *this;
-    m_liste = elt.m_liste;
-    return *this;
-}
-
-
-ListMarquage::ListMarquage(const ListMarquage &elt) {
-    m_liste = elt.m_liste;
-}
 
 void ListMarquage::addGroupe(ListMarquage &groupe) {
     for (int i = 0; i < groupe.getCount(); i++)

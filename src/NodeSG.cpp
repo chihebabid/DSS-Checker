@@ -9,12 +9,12 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-NodeSG::NodeSG() {
-    m_arcs = new vector<ArcSG *>();
+NodeSG::NodeSG():m_arcs(new vector<ArcSG *>()) {
+
 }
 
 NodeSG::~NodeSG() {
-    delete m_arcs;
+    if (m_arcs) delete m_arcs;
 }
 
 

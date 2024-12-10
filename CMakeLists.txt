@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 # compiler flags
 if (CMAKE_COMPILER_IS_GNUCC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive -std=c++17")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fpermissive -std=c++17")
 endif ()
 
 # build spot if it is not installed on the system

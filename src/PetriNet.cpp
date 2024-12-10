@@ -42,7 +42,7 @@ Place *PetriNet::getPlaceAdresse(string placename) {
     int indice = -1;
     for (int i = 0; i < m_places.size() && indice == -1; i++)
         if (placename == m_places[i].getName()) indice = i;
-    if (indice == -1) printf("Place introuvable : libell� d'une place in�xistante!\n");
+    if (indice == -1) printf("Place not found!\n");
     return &m_places[indice];
 }
 
@@ -66,8 +66,8 @@ Place PetriNet::getPlace(const int index) {
 ////////////////////////////////
 Marking PetriNet::getMarquage() {
     Marking vecteur;
-    for (int i = 0; i < m_places.size(); i++) {
-        vecteur.add8BitsValue(m_places[i].getTokens());
+    for (const auto & place : m_places) {
+        vecteur.add8BitsValue(place.getTokens());
     }
 
     return vecteur;
@@ -236,7 +236,7 @@ MetaState *PetriNet::getMetaState(Marking marquage) {
             if (!old_state) current_elt.marquage->addSucc(transition, new_state);
             else {
                 delete new_state;
-                new_state = NULL;
+                new_state = nullptr;
                 current_elt.marquage->addSucc(transition, old_state);
 
             }

@@ -6,7 +6,8 @@
 #include "TransitionFusionSet.h"
 
 void TransitionFusionSet::fire() {
-    for (int i = 0; i < m_transitions.size(); i++) m_transitions[i]->fire();
+    for (const auto & transition :m_transitions)
+        transition->fire();
 }
 
 
@@ -34,9 +35,9 @@ int TransitionFusionSet::getLocalTransitionsCount() {
 // Indiquer si le module 'index_module' participe � la communication
 ///////////////////////////////////////////////////////////////////////
 bool TransitionFusionSet::participatePartially(const int index_module) {
-    for (int i = 0; i < m_transitions.size(); i++) {
-        if (m_transitions[i]->getPetri() == index_module)
-            if (m_transitions[i]->getInputPlacesCount() > 0) {
+    for (const auto & transition : m_transitions) {
+        if (transition->getPetri() == index_module)
+            if (transition->getInputPlacesCount() > 0) {
                 return true;
             }
     }
@@ -48,8 +49,8 @@ bool TransitionFusionSet::participatePartially(const int index_module) {
 ///////////////////////////////////////////////////////////////////////
 bool TransitionFusionSet::participate(const int index_module) {
 
-    for (int i = 0; i < m_transitions.size(); i++) {
-        if (m_transitions[i]->getPetri() == index_module) {
+    for (const auto & transition :  m_transitions) {
+        if (transition->getPetri() == index_module) {
             return true;
         }
     }
@@ -58,10 +59,9 @@ bool TransitionFusionSet::participate(const int index_module) {
 
 
 bool TransitionFusionSet::isFranchissableLocal(int module) {
-    bool result = false;
-    for (int i = 0; i < m_transitions.size() && !result; i++) {
-        if (m_transitions[i]->getPetri() == module) {
-            return m_transitions.at(i)->isLocallyFirable();
+    for (const auto & transition :  m_transitions) {
+        if (transition->getPetri() == module) {
+            return transition->isLocallyFirable();
         }
     }
     return false;

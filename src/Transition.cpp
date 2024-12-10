@@ -9,7 +9,7 @@
 
 bool Transition::isLocallyFirable() {
     for (int i = 0; i < ml_input_places.size(); i++) {
-        if (ml_input_places[i]->getTokens() < m_poids_entrees.at(i)) return false;
+        if (ml_input_places[i]->getTokens() < m_poids_entrees[i]) return false;
 
     }
     return true;

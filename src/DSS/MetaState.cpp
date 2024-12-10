@@ -25,7 +25,7 @@ vector<SCC *> *MetaState::getListSCCs() {
 
 SCC *MetaState::findSCC(Marking *state) {
     for (int i = 0; i < ml_scc.size(); i++) {
-        vector<Marking *> *list_states = ml_scc.at(i)->getListStates();
+        vector<Marking *> *list_states = ml_scc[i]->getListStates();
         if (std::find(list_states->begin(), list_states->end(), state) != list_states->end()) return ml_scc.at(i);
     }
     return nullptr;
@@ -114,11 +114,11 @@ void MetaState::computeStrongConnectedComponents(Marking *v) {
 }
 
 Marking *MetaState::existMarking(Marking *marq) {
-    bool result = false;
     int i ;
-    for (i = 0; i < m_nodes.size() && !result; ++i)
-        result = (*m_nodes.at(i) == *marq);
-    return result ? m_nodes.at(i - 1) : nullptr;
+    for (const auto &elt: m_nodes) {
+            if (*elt == *marq) return elt;
+    }
+    return nullptr;
 }
 
 Marking *MetaState::insertMarking(Marking *m) {
@@ -132,11 +132,11 @@ void MetaState::computeSCCTarjan() {
     m_index = 0;
 
     for (int i = 0; i < m_nodes.size(); i++) {
-        m_nodes.at(i)->onstack = false;
-        m_nodes.at(i)->index = -1;
-        m_nodes.at(i)->lowlink = 0;
+        m_nodes[i]->onstack = false;
+        m_nodes[i]->index = -1;
+        m_nodes[i]->lowlink = 0;
     }
 
     for (int i = 0; i < m_nodes.size(); i++)
-        if (m_nodes.at(i)->index == -1) computeStrongConnectedComponents(m_nodes.at(i));
+        if (m_nodes[i]->index == -1) computeStrongConnectedComponents(m_nodes[i]);
 }

@@ -9,28 +9,23 @@
 
 //#define ListLocalStates vector<Marking*>*
 
-MetaGraph::MetaGraph() {
-    ml_metastate.clear();
 
-}
 
 MetaGraph::~MetaGraph() {
 
 }
 
 void MetaGraph::addMetaState(MetaState *ms) {
-
     ml_metastate.push_back(ms);
 }
 
 vector<Marking*> MetaGraph::getListLocalStates(ProductSCC *productscc) {
-    bool result = false;
     vector<Marking *> list_local_states;
-    for (int i = 0; i < ml_metastate.size() && !result; i++) {
-        MetaState *ms = ml_metastate.at(i);
+    for (int i = 0; i < ml_metastate.size(); i++) {
+        MetaState *ms = ml_metastate[i];
         if (ms->getSCCProductName() == productscc) {
             list_local_states = ms->getListMarkings();
-            result = true;
+            break;
         }
     }
     return list_local_states;
@@ -39,9 +34,9 @@ vector<Marking*> MetaGraph::getListLocalStates(ProductSCC *productscc) {
 MetaState *MetaGraph::findMetaStateByProductSCC(ProductSCC *productscc) {
 
     for (unsigned int i = 0; i < ml_metastate.size(); i++) {
-        if (*ml_metastate.at(i)->getSCCProductName() == *productscc) return ml_metastate.at(i);
+        if (*ml_metastate[i]->getSCCProductName() == *productscc) return ml_metastate[i];
     }
-    return NULL;
+    return nullptr;
 }
 
 int MetaGraph::getMetaStateCount() {
@@ -49,5 +44,5 @@ int MetaGraph::getMetaStateCount() {
 }
 
 MetaState *MetaGraph::getMetaState(const int pos) {
-    return ml_metastate.at(pos);
+    return ml_metastate[pos];
 }

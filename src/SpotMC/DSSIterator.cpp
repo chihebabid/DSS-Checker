@@ -11,9 +11,7 @@ DSSIterator::DSSIterator(SCC *scc, bdd cnd) : m_scc(scc), kripke_succ_iterator(c
     // Transitions inside a SCC
     for (const auto &source: *(scc->getListStates())) {
         auto lsucc = source->getListSucc();
-        for (const auto &elt: lsucc) {
-            Transition *t = elt.first;
-            Marking *m = elt.second;
+        for (const auto &[t,m]: lsucc) {
             m_lsucc.emplace_back(m->getSCCContainer(), t);
         }
     }
@@ -30,7 +28,7 @@ bool DSSIterator::first() {
 }
 
 bool DSSIterator::next() {
-    m_current_edge++;
+    ++m_current_edge;
     return m_current_edge < m_lsucc.size();          // More successors?
 }
 

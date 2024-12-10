@@ -84,29 +84,29 @@ void DSSBuilder::buildInitialMS() {
                 ProductSCC startProduct;
                 for (int i = 0; i < global_state->size(); i++) {
                     MetaState *_source_ms = elt.getMetaState(i);
-                    SCC *_scc = _source_ms->findSCC(global_state->at(i));
+                    SCC *_scc = _source_ms->findSCC((*global_state)[i]);
                     startProduct.addSCC(_scc);
                 }
                 // Check whether the computed product SCC exists or not
 
                 vector<MetaState *> list_dest_metatstates;
                 bool exist = false;
-                for (int module = 0; module < mptrMPNet->getModulesCount(); module++) {
+                for (int module = 0; module < mptrMPNet->getModulesCount(); ++module) {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
                     if (!mlModuleSS[module]->findMetaStateByProductSCC(*dest_productscc)) {
                         auto *arc_sync = new ArcSync();
                         MetaState *source_ms = elt.getMetaState(module);
-                        arc_sync->setData(startProduct, fusion, dest_list_metatstates.at(module));
+                        arc_sync->setData(startProduct, fusion, dest_list_metatstates[module]);
                         source_ms->addSyncArc(arc_sync);
                         //dest_list_metatstates.at(module)->addSyncArc(arc_sync);
-                        mlModuleSS[module]->insertMS(dest_list_metatstates.at(module));
+                        mlModuleSS[module]->insertMS(dest_list_metatstates[module]);
 
                         //m_modules[module]->printMetaStateEx(
                         //		dest_list_metatstates.at(module));
                         dest_list_metatstates.at(module)->setSCCProductName(dest_productscc);
-                        list_dest_metatstates.push_back(dest_list_metatstates.at(module));
+                        list_dest_metatstates.push_back(dest_list_metatstates[module]);
                     } else {
                         exist = true;
                         auto *arc_sync = new ArcSync();

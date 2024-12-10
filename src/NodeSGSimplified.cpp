@@ -17,7 +17,7 @@
 
 bool NodeSGSimplified::operator==(NodeSGSimplified &marq) {
     for (int i {}; i < marq.m_list.size(); ++i) {
-        if (!(m_list.at(i) == marq.m_list.at(i))) return false;
+        if (!(m_list[i] == marq.m_list[i])) return false;
     }
     return true;
 }

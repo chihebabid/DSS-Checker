@@ -19,7 +19,7 @@ public:
 
     void setTokens(const uint32_t value);
 
-    uint32_t getTokens();
+    uint32_t getTokens() const;
 
     Place()=default;
 

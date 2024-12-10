@@ -17,7 +17,7 @@ bool SCC::isEqual(const SCC &scc) {
     if (scc.m_list.size() != this->m_list.size()) return false;
     if (this->m_list.empty()) return true;
     //assert (this->m_list.size()!=0);
-    if (findMarking(scc.m_list.at(0))) return true;
+    if (findMarking(scc.m_list[0])) return true;
     return false;
 }
 

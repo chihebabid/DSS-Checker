@@ -21,9 +21,9 @@ class ArcSG {
 public:
     TransitionFusionSet *getFusion();
 
-    ArcSG(const ArcSG &val);
+    ArcSG(const ArcSG &val)=default;
 
-    ArcSG &operator=(const ArcSG &val);
+    ArcSG &operator=(const ArcSG &val)=default;
 
     bool operator==(ArcSG &arc);
 
@@ -31,9 +31,9 @@ public:
 
     NodeSG *getNodeSGDest();
 
-    ArcSG();
+    ArcSG()=default;
 
-    virtual ~ArcSG();
+    virtual ~ArcSG()=default;
 
 private:
     TransitionFusionSet *m_fusion;

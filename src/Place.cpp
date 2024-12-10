@@ -10,7 +10,7 @@
 //////////////////////////////////////////////////////////////////////
 
 
-uint32_t Place::getTokens() {
+uint32_t Place::getTokens() const {
     return m_nb_tokens;
 }
 

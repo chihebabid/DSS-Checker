@@ -9,13 +9,7 @@
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-ArcSG::ArcSG() {
 
-}
-
-ArcSG::~ArcSG() {
-
-}
 
 
 NodeSG *ArcSG::getNodeSGDest() {
@@ -32,17 +26,4 @@ bool ArcSG::operator==(ArcSG &arc) {
 }
 
 
-ArcSG &ArcSG::operator=(const ArcSG &val) {
-    m_destination = val.m_destination;
-    m_marquage_depart = val.m_marquage_depart;
-    m_fusion = val.m_fusion;
-    return *this;
-}
-
-ArcSG::ArcSG(const ArcSG &val) {
-    m_destination = val.m_destination;
-    m_marquage_depart = val.m_marquage_depart;
-    m_fusion = val.m_fusion;
-
-}
 

@@ -7,14 +7,11 @@
 
 #include "DistributedState.h"
 
-DistributedState::DistributedState(ModularPetriNet *petri) {
-    m_petri = petri;
+DistributedState::DistributedState(ModularPetriNet *petri):m_petri(petri) {
 
 }
 
-DistributedState::~DistributedState() {
 
-}
 
 
 

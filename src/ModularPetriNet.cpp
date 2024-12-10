@@ -14,9 +14,8 @@ Marking MARQUAGE_VIDE;
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-ModularPetriNet::ModularPetriNet() {
+ModularPetriNet::ModularPetriNet():m_dss(nullptr) {
     MARQUAGE_VIDE.setVide(true);
-    m_dss = nullptr;
 }
 
 ModularPetriNet::~ModularPetriNet() {
@@ -139,7 +138,7 @@ DistributedState *ModularPetriNet::buildDSS() {
 
                     // Setting name for meta-states
                     for (int i = 0; i < getModulesCount(); i++) {
-                        dest_list_metatstates.at(i)->setSCCProductName(
+                        dest_list_metatstates[i]->setSCCProductName(
                                 dest_productscc);
                     }
                     ListProductFusion new_list_fusions;
@@ -245,11 +244,11 @@ void ModularPetriNet::extractEnabledFusion(ProductSCC *product,
                                            vector<Element_dss> &list_elt) {
     vector<ListLocalStates> states_enabling_fusion;
 
-    for (int index_fusion = 0; index_fusion < m_fusions.size(); index_fusion++) {
+    for (const auto & fusion : m_fusions) {
         /************************************************/
         /**Check whether a fusion set is enabled or not**/
         /************************************************/
-        TransitionFusionSet *fusion = m_fusions.at(index_fusion);
+
         bool canBeActive = true;
         for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {

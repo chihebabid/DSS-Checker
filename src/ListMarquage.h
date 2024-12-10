@@ -23,7 +23,8 @@ public:
 
     void addGroupe(ListMarquage &groupe);
 
-    ListMarquage(const ListMarquage &elt);
+    ListMarquage(const ListMarquage &elt)=default;
+    ListMarquage &operator=(const ListMarquage &elt)=default;
 
     Marking *getLastMarquage() {
         return &m_liste.back();
@@ -39,7 +40,7 @@ public:
 
     bool operator==(ListMarquage &marquage);
 
-    ListMarquage &operator=(const ListMarquage &elt);
+
 
 
 

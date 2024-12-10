@@ -23,7 +23,7 @@ public:
 
     void addMetaState(MetaState *ms, int module);
 
-    virtual ~DistributedState();
+    virtual ~DistributedState()=default;
 
     vector<Marking *> getLocalStates(ProductSCC *productscc, const int module);
 
