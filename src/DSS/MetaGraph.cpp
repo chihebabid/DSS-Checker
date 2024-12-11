@@ -4,12 +4,8 @@
  *  Created on: 17 sept. 2015
  *      Author: LIP2
  */
-#include <iostream>
+
 #include "MetaGraph.h"
-
-//#define ListLocalStates vector<Marking*>*
-
-
 
 MetaGraph::~MetaGraph() {
 
@@ -21,8 +17,7 @@ void MetaGraph::addMetaState(MetaState *ms) {
 
 vector<Marking*> MetaGraph::getListLocalStates(ProductSCC *productscc) {
     vector<Marking *> list_local_states;
-    for (int i = 0; i < ml_metastate.size(); i++) {
-        MetaState *ms = ml_metastate[i];
+    for (const auto &ms : ml_metastate) {
         if (ms->getSCCProductName() == productscc) {
             list_local_states = ms->getListMarkings();
             break;
@@ -33,8 +28,8 @@ vector<Marking*> MetaGraph::getListLocalStates(ProductSCC *productscc) {
 
 MetaState *MetaGraph::findMetaStateByProductSCC(ProductSCC *productscc) {
 
-    for (unsigned int i = 0; i < ml_metastate.size(); i++) {
-        if (*ml_metastate[i]->getSCCProductName() == *productscc) return ml_metastate[i];
+    for (auto &ms : ml_metastate) {
+        if (*(ms->getSCCProductName()) == *productscc) return ms;
     }
     return nullptr;
 }

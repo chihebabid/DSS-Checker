@@ -17,7 +17,7 @@ DistributedState::DistributedState(ModularPetriNet *petri):m_petri(petri) {
 
 
 MetaGraph *DistributedState::getMetaGraph(const int index) {
-    return ml_metagraph.at(index);
+    return ml_metagraph[index];
 }
 
 void DistributedState::setNombreModules(const int n) {

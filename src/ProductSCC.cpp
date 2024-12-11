@@ -1,7 +1,7 @@
 #include "ProductSCC.h"
 
 void ProductSCC::addSCC(SCC *scc) {
-    m_product.push_back(scc);
+    m_product.emplace_back(scc);
 }
 
 

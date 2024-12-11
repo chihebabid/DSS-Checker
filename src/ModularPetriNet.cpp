@@ -9,13 +9,13 @@
 #include "ArcSync.h"
 
 
-Marking MARQUAGE_VIDE;
+//Marking MARQUAGE_VIDE;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 ModularPetriNet::ModularPetriNet():m_dss(nullptr) {
-    MARQUAGE_VIDE.setVide(true);
+    //MARQUAGE_VIDE.setVide(true);
 }
 
 ModularPetriNet::~ModularPetriNet() {
@@ -81,7 +81,7 @@ DistributedState *ModularPetriNet::buildDSS() {
         list_fusions = stack_fusion.back();
         stack_fusion.pop_back();
         for (int i = 0; i < list_fusions.size(); i++) {
-            Element_dss elt = list_fusions.at(i);
+            Element_dss elt = list_fusions[i];
             for (int index_global_state = 0;
                  index_global_state < elt.m_gs->size();
                  index_global_state++) {
@@ -192,7 +192,7 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
         for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {
                 canBeActive = false;
-                auto list_states = list_ms.at(j)->getListMarkings(); //  m_dss->getLocalStates(product,j);
+                auto list_states = list_ms[j]->getListMarkings(); //  m_dss->getLocalStates(product,j);
                 for (int index = 0; index < list_states.size() && !canBeActive; index++) {
                     m_modules[j]->setMarquage(list_states[index]);
                     if (fusion->isFranchissableLocal(j)) {

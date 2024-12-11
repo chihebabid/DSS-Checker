@@ -55,7 +55,7 @@ void DSSBuilder::buildInitialMS() {
             for (int index_global_state = 0; index_global_state < elt.m_gs->size(); index_global_state++) {
                 vector<Marking *> *global_state = elt.m_gs->at(index_global_state);
                 for (int module = 0; module < mptrMPNet->getModulesCount(); ++module) {
-                    mptrMPNet->getModule(module)->setMarquage(global_state->at(module));
+                    mptrMPNet->getModule(module)->setMarquage((*global_state)[module]);
                 }
                 TransitionFusionSet *fusion = elt.m_fusion;
                 fusion->fire();
@@ -213,8 +213,9 @@ void DSSBuilder::writeToFile(const string &filename) {
 
 string DSSBuilder::getProductSCCName(ProductSCC *pss) {
     string res;
+    PetriNet *petri {};
     for (int module = 0; module < mptrMPNet->getModulesCount(); ++module) {
-        PetriNet *petri = mptrMPNet->getModule(module);
+        petri = mptrMPNet->getModule(module);
         res += petri->getSCCName(pss->getSCC(module));
     }
     return res;

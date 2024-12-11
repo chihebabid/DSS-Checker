@@ -23,8 +23,6 @@ void Transition::addPlaceEntree(Place *place, int poids) {
 
 void Transition::addPlaceSortie(Place *place, int poids) {
     ml_output_places.push_back({place,poids});
-    //m_poids_sorties.push_back(poids);
-
 }
 
 

@@ -39,8 +39,6 @@ private:
     TransitionFusionSet *m_fusion;
     NodeSG *m_destination;
     NodeSGSimplified m_marquage_depart;
-
-
 };
 
 

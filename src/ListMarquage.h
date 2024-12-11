@@ -40,10 +40,6 @@ public:
 
     bool operator==(ListMarquage &marquage);
 
-
-
-
-
 private:
     vector<Marking> m_liste;
 

@@ -37,7 +37,7 @@ protected:
 
 
 inline void NodeSGSimplified::setVide(const int index) {
-    m_list[index].setVide(true);
+    //m_list[index].setVide(true);
 }
 
 

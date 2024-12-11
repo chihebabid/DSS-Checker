@@ -27,7 +27,7 @@ class NodeSG : public NodeSGSimplified {
 public:
     vector<ListMarquage *> m_equiv;
 
-    inline ArcSG *getArc(const int index) { return m_arcs->at(index); }
+    inline ArcSG *getArc(const int index) { return (*m_arcs)[index]; }
 
     vector<ArcSG *> *m_arcs;
 

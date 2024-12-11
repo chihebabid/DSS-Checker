@@ -18,28 +18,9 @@ struct PElement {
 #define ListLocalStates vector<Marking*>*
 #define ListGlobalStates vector<ListLocalStates>*
 
-class PElement_dss {
-public:
-    PElement_dss() {
-        m_gs = nullptr;
-        m_fusion = nullptr;
-    }
-
-    PElement_dss(const PElement_dss &elt) {
-        this->m_fusion = elt.m_fusion;
-        this->m_gs = elt.m_gs;
-    }
-
-    virtual PElement_dss &operator=(const PElement_dss &elt) {
-        this->m_gs = elt.m_gs;
-        this->m_fusion = elt.m_fusion;
-        return *this;
-    }
-
-    virtual ~PElement_dss()=default;
-
-    ListGlobalStates m_gs;
-    TransitionFusionSet *m_fusion;
+struct PElement_dss {
+    ListGlobalStates m_gs {nullptr};
+    TransitionFusionSet *m_fusion {nullptr};
 };
 
 /***********************************************************************/
@@ -48,8 +29,8 @@ struct element_t {
     vector<Transition *> liste_transitions;
 };
 /*************************************************************************/
-class Element_dss : public PElement_dss {
-public:
+struct Element_dss : public PElement_dss {
+
     ProductSCC *m_product {nullptr};
 };
 /**********************************************************************************/

@@ -50,7 +50,7 @@ private:
     vector<Marking *> m_list;
     static uint32_t mCounter;
     uint32_t mId;
-    MetaState *m_parentMetaState;
+    MetaState *m_parentMetaState {nullptr};
     IteratorSucc m_iterator_succ {this};
 };
 

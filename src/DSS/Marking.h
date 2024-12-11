@@ -13,7 +13,7 @@
 #include <vector>
 #include <iostream>
 #include <bitset>
-
+#include "MarkingArray.h"
 class Transition;
 
 class SCC;
@@ -27,12 +27,6 @@ public:
     int index; // Used in Tarjan algorithm
     int lowlink; // Used in Tarjan algorithm
     bool onstack; // Used in Tarjan algorithm
-    void setVide(bool v);
-
-    inline bool isVide() const {
-        return m_vide;
-    }
-
     Marking &operator=(const Marking &newvec);
 
     Marking(const Marking &value);
@@ -40,43 +34,33 @@ public:
     Octet get8BitsValue(const int index);
 
     bool operator==(const Marking &newvec) const {
-        if (this->m_vide == true && newvec.m_vide == true) {
-            return true;
-        } else if ((this->m_vide) == (!newvec.m_vide)) return false;
-
-        if (m_vector.size() != newvec.m_vector.size()) return false;
-        for (unsigned int i = 0; i < m_vector.size(); i++)
-            if (m_vector[i] != newvec.m_vector[i]) return false;
-        return true;
+        return m_data==newvec.m_data;
     }
 
 
 
-    void add8BitsValue(const Octet val);
+    void add8BitsValue(const Octet val,const int index);
 
     void addSucc(Transition *, Marking *);
 
     vector<pair<Transition *, Marking *>> &getListSucc();
 
-    Marking();
-
-    virtual ~Marking();
+    Marking(const size_t);
+    ~Marking();
 
     SCC *getSCCContainer() const;
     void setSCCContainer(SCC *c);
     friend ostream &operator<<(ostream &stream, const Marking &);
 
 private:
-    bool m_vide;
-    VecCar m_vector;
+    MarkingArray m_data;
     vector<pair<Transition *, Marking *>> ml_succ;
     SCC *m_sccContainer;
-
 };
 
-inline void Marking::setVide(bool v) {
-    m_vide = v;
-}
+
+
+
 
 
 #endif // !defined(AFX_BITSVECTOR_H__FCB7EB69_05AC_41F8_9A21_7807D91657A0__INCLUDED_)

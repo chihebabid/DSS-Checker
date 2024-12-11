@@ -72,7 +72,9 @@ add_executable(distributedstatespace main.cpp
         SpotMC/DSSState.h
         misc.h
         SpotMC/ParseFormulaFile.cpp
-        SpotMC/ParseFormulaFile.h)
+        SpotMC/ParseFormulaFile.h
+        DSS/MarkingArray.cpp
+        DSS/MarkingArray.h)
 
 target_link_libraries(distributedstatespace
         bddx

@@ -6,9 +6,9 @@
 #include "Transition.h"
 
 DSSIterator::DSSIterator(SCC *scc, bdd cnd) : m_scc(scc), kripke_succ_iterator(cnd) {
-    auto ms{m_scc->getMetaState()};
 
-    // Transitions inside a SCC
+
+    // Transitions inside an SCC
     for (const auto &source: *(scc->getListStates())) {
         auto lsucc = source->getListSucc();
         for (const auto &[t,m]: lsucc) {

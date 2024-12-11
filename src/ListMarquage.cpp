@@ -11,9 +11,7 @@
 
 
 bool ListMarquage::operator==(ListMarquage &listemarquage) {
-
     if (listemarquage.m_liste.size() == m_liste.size()) {
-
         for (int i = 0; i < m_liste.size(); i++) {
             if (!(existMarquage(&listemarquage.m_liste[i]))) return false;
         }
@@ -29,7 +27,7 @@ void ListMarquage::addGroupe(ListMarquage &groupe) {
 }
 
 Marking ListMarquage::pop() {
-    Marking marq = m_liste.back();
+    Marking marq {m_liste.back()};
     m_liste.pop_back();
     return marq;
 }

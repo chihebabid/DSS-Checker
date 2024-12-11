@@ -16,10 +16,9 @@ void TransitionFusionSet::addTransition(Transition *transition) {
 }
 
 bool TransitionFusionSet::isFranchissable() {
-    bool franchissable = true;
-    for (int i = 0; i < m_transitions.size() && franchissable; i++)
-        franchissable = m_transitions[i]->isLocallyFirable();
-    return franchissable;
+    for (const auto transition : m_transitions)
+        if (!transition->isLocallyFirable()) return false;
+    return true;
 }
 
 string TransitionFusionSet::getFusionName() {

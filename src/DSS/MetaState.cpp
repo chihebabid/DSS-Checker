@@ -114,7 +114,6 @@ void MetaState::computeStrongConnectedComponents(Marking *v) {
 }
 
 Marking *MetaState::existMarking(Marking *marq) {
-    int i ;
     for (const auto &elt: m_nodes) {
             if (*elt == *marq) return elt;
     }
@@ -130,13 +129,13 @@ Marking *MetaState::insertMarking(Marking *m) {
 
 void MetaState::computeSCCTarjan() {
     m_index = 0;
-
-    for (int i = 0; i < m_nodes.size(); i++) {
-        m_nodes[i]->onstack = false;
-        m_nodes[i]->index = -1;
-        m_nodes[i]->lowlink = 0;
+    for (auto & node : m_nodes) {
+        node->onstack = false;
+        node->index = -1;
+        node->lowlink = 0;
     }
 
-    for (int i = 0; i < m_nodes.size(); i++)
-        if (m_nodes[i]->index == -1) computeStrongConnectedComponents(m_nodes[i]);
+    for (auto & node : m_nodes) {
+        if (node->index == -1) computeStrongConnectedComponents(node);
+    }
 }

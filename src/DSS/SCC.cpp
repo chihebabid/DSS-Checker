@@ -8,7 +8,7 @@ SCC::SCC() {
 
 
 Marking *SCC::findMarking(Marking *m) {
-    auto it{std::find_if(m_list.begin(), m_list.end(), [m](Marking *elt) { return *m == *elt; })};
+    auto it{std::find_if(m_list.begin(), m_list.end(), [m](const Marking *elt) { return *m == *elt; })};
     return it == m_list.end() ? nullptr : *it;
 }
 

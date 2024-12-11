@@ -8,8 +8,7 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-
-Marking::Marking() : m_vide(false), m_sccContainer(nullptr) {
+Marking::Marking(const size_t size) : m_sccContainer(nullptr),m_data(size) {
 
 }
 
@@ -18,27 +17,23 @@ Marking::~Marking() {
 }
 
 
-void Marking::add8BitsValue(const Octet val) {
-    m_vector.push_back(val);
+void Marking::add8BitsValue(const Octet val,const int index) {
+    m_data[index]=val;
 }
 
 
 Octet Marking::get8BitsValue(const int index) {
-    return m_vector[index].to_ulong();
+    return m_data[index];
 }
 
-Marking::Marking(const Marking &value) {
-
-    m_vide = value.m_vide;
-    m_vector = value.m_vector;
+Marking::Marking(const Marking &value):m_data(value.m_data) {
 
 }
 
 
 Marking &Marking::operator=(const Marking &newvec) {
     if (this == &newvec) return *this;
-    this->m_vide = newvec.m_vide;
-    this->m_vector = newvec.m_vector;
+    this->m_data = newvec.m_data;
     return *this;
 }
 
