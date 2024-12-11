@@ -13,7 +13,10 @@
 #include "Node.h"
 #include "Place.h"
 #include "PetriNet.h"    // Added by ClassView
-
+struct transition_t {
+    Place *place;
+    int poids {};
+};
 
 class Transition : public Node {
 public:
@@ -43,33 +46,33 @@ public:
 
     inline void fire() {
         // Add tokens to output places
-        size_t index {};
+
         for (auto & o_place : ml_output_places) {
-            o_place->addTokens(m_poids_sorties[index]);
-            ++index;
+            o_place.place->addTokens(o_place.poids);
         }
         // Sub tokens from input places
-        index=0;
+
         for (auto & in_place : ml_input_places) {
-            in_place->subTokens(m_poids_entrees[index]);
-            ++index;
+            in_place.place->subTokens(in_place.poids);
         }
     }
 
     bool isLocallyFirable();
 
     Transition()=default;
-
+    Transition(const Transition &o)=default;
+    Transition& operator=(const Transition&)=delete;
+    Transition(Transition &&)=delete;
     virtual ~Transition()=default;
 
 private:
     int m_petri_num;
     int m_code;
     bool m_sync {false};
-    vector<Place *> ml_input_places;
-    vector<Place *> ml_output_places;
+    vector<transition_t> ml_input_places;
+    vector<transition_t> ml_output_places;
     vector<int> m_poids_entrees;
-    vector<int> m_poids_sorties;
+
 };
 
 #endif // !defined(AFX_TRANSITION_H__AD708264_D0C2_490C_967C_95F9B5F7195D__INCLUDED_)

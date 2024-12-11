@@ -17,14 +17,14 @@ spot::state* DSSKripke::get_init_state() const {
 DSSIterator* DSSKripke::succ_iter(const spot::state* s) const {
     auto ss = static_cast<const DSSState*>(s);
     auto scc=ss->getSCC();
-
     bdd cond = state_condition(ss);
     return new DSSIterator(scc,cond);
-
 }
+
 std::string DSSKripke::format_state(const spot::state* s) const {
     return "";
 }
+
 bdd DSSKripke::state_condition(const spot::state* s) const {
     return bddtrue;
 }

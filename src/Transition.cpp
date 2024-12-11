@@ -8,23 +8,22 @@
 
 
 bool Transition::isLocallyFirable() {
-    for (int i = 0; i < ml_input_places.size(); i++) {
-        if (ml_input_places[i]->getTokens() < m_poids_entrees[i]) return false;
-
+    for (auto & i_place : ml_input_places) {
+        if (i_place.place->getTokens() < i_place.poids) return false;
     }
     return true;
 }
 
 
 void Transition::addPlaceEntree(Place *place, int poids) {
-    ml_input_places.push_back(place);
-    m_poids_entrees.push_back(poids);
+    ml_input_places.push_back({place,poids});
+
 
 }
 
 void Transition::addPlaceSortie(Place *place, int poids) {
-    ml_output_places.push_back(place);
-    m_poids_sorties.push_back(poids);
+    ml_output_places.push_back({place,poids});
+    //m_poids_sorties.push_back(poids);
 
 }
 

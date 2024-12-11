@@ -43,6 +43,7 @@ DSSState *DSSIterator::dst() const {
 bdd DSSIterator::cond() const {
     spot::formula f = spot::formula::ap(m_lsucc[m_current_edge].second->getName());
     spot::bdd_dict *p = m_dict_ptr->get();
+    if (p->var_map.find(f)==p->var_map.end()) return bdd_false();
     bdd result = bdd_ithvar((p->var_map.find(f))->second);
     return result & spot::kripke_succ_iterator::cond();
 }
