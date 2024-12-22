@@ -187,7 +187,7 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
         /************************************************/
         /**Check whether a fusion set is enabled or not**/
         /************************************************/
-        TransitionFusionSet *fusion = m_fusions.at(index_fusion);
+        TransitionFusionSet *fusion = m_fusions[index_fusion];
         bool canBeActive = true;
         for (int j = 0; j < getModulesCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {
@@ -212,12 +212,12 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
             for (int j = 0; j < getModulesCount(); j++) {
                 auto list_states = list_ms[j]->getListMarkings();
                 // states_enabling_fusion.at(j)= NULL;
-                states_enabling_fusion.at(j) = new vector<Marking *>();
+                states_enabling_fusion[j] = new vector<Marking *>();
                 if (fusion->participate(j)) {
                     for (int index = 0; index < list_states.size(); index++) {
-                        m_modules.at(j)->setMarquage(list_states[index]);
+                        m_modules[j]->setMarquage(list_states[index]);
                         if (fusion->isFranchissableLocal(j)) {
-                            states_enabling_fusion.at(j)->push_back(list_states[index]);
+                            states_enabling_fusion[j]->push_back(list_states[index]);
                         }
 
                     }
