@@ -86,8 +86,8 @@ void PetriNet::setMarquage(Marking *marquage) {
 vector<Transition *> PetriNet::getListeTransitionsFranchissables() {
     vector<Transition *> liste_transitions;
     for (int i = 0; i < ml_transitions.size(); i++)
-        if (ml_transitions.at(i).isFranchissable()) {
-            liste_transitions.push_back(&ml_transitions.at(i));
+        if (ml_transitions[i].isFranchissable()) {
+            liste_transitions.push_back(&ml_transitions[i]);
         }
 
     return liste_transitions;

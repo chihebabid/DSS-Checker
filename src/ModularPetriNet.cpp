@@ -187,10 +187,7 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
         }
 
         if (canBeActive) {
-            //////////////////////////////////////////////////////////////////////////
-            // Déterminer tous les marquages locaux activant la fusion de transitions
-            //////////////////////////////////////////////////////////////////////////
-
+            // Compute local markings that enable the transition fusion set
             states_enabling_fusion.resize(getModulesCount());
             for (int j = 0; j < getModulesCount(); j++) {
                 auto list_states = list_ms[j]->getListMarkings();
