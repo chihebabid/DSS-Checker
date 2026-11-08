@@ -9,7 +9,9 @@
 
 bool Transition::isLocallyFirable() {
     for (auto & i_place : m_input_places) {
-        if (i_place.place->getTokens() < i_place.weight) return false;
+        if (i_place.place->getTokens() < i_place.weight) {
+            return false
+        }
     }
     return true;
 }
