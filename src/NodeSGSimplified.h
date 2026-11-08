@@ -18,13 +18,13 @@ public:
 
     NodeSGSimplified& operator=(const NodeSGSimplified &)=default;
 
-    void addMarquage(Marking &marquage);
+    void addMarking(Marking &marking);
 
-    Marking *getMarquage(const int index) { return &m_list[index]; }
+    Marking *getMarking(const int index) { return &m_list[index]; }
 
-    void setVide(const int index);
+    void setEmpty(const int index);
 
-    bool operator==(NodeSGSimplified &marq);
+    bool operator==(NodeSGSimplified &other);
 
     NodeSGSimplified()=default;
 
@@ -36,8 +36,8 @@ protected:
 };
 
 
-inline void NodeSGSimplified::setVide(const int index) {
-    //m_list[index].setVide(true);
+inline void NodeSGSimplified::setEmpty(const int index) {
+    //m_list[index].setEmpty(true);
 }
 
 

@@ -19,7 +19,7 @@ public:
 
     DistributedState(ModularPetriNet *petri);
 
-    void setNombreModules(const int n);
+    void setModuleCount(const int n);
 
     void addMetaState(MetaState *ms, int module);
 
@@ -29,7 +29,7 @@ public:
 
 private:
     ModularPetriNet *m_petri;
-    vector<MetaGraph *> ml_metagraph;
+    vector<MetaGraph *> m_metagraphs;
 
 };
 

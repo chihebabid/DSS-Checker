@@ -12,7 +12,7 @@ typedef vector<PElement> PStack;
 //////////////////////////////////
 // Renvoyer le nombre de places
 //////////////////////////////////
-int PetriNet::getPlacesCount() {
+int PetriNet::getPlaceCount() {
     return m_places.size();
 }
 
@@ -22,15 +22,15 @@ int PetriNet::getPlacesCount() {
 //////////////////////////////////
 // Ajouter une liste de places
 //////////////////////////////////
-void PetriNet::addListPlaces(vector<Place> liste_places) {
-    for (int i = 0; i < liste_places.size(); i++)
-        m_places.push_back(liste_places[i]);
+void PetriNet::addListPlaces(vector<Place> places) {
+    for (int i = 0; i < places.size(); i++)
+        m_places.push_back(places[i]);
 }
 
-void PetriNet::addListTransitions(vector<Transition> liste_transitions) {
-    for (unsigned int i = 0; i < liste_transitions.size(); i++) {
-        liste_transitions[i].setPetri(this->getNumero());
-        ml_transitions.push_back(liste_transitions[i]);
+void PetriNet::addListTransitions(vector<Transition> transitions) {
+    for (unsigned int i = 0; i < transitions.size(); i++) {
+        transitions[i].setPetri(this->getNumber());
+        m_transitions.push_back(transitions[i]);
     }
 }
 
@@ -38,23 +38,23 @@ void PetriNet::addListTransitions(vector<Transition> liste_transitions) {
 ////////////////////////////////////////////
 //  Retourner l'a&dresse d'une place
 ////////////////////////////////////////////
-Place *PetriNet::getPlaceAdresse(string placename) {
-    int indice = -1;
-    for (int i = 0; i < m_places.size() && indice == -1; i++)
-        if (placename == m_places[i].getName()) indice = i;
-    if (indice == -1) printf("Place not found!\n");
-    return &m_places[indice];
+Place *PetriNet::getPlaceAddress(string placename) {
+    int index = -1;
+    for (int i = 0; i < m_places.size() && index == -1; i++)
+        if (placename == m_places[i].getName()) index = i;
+    if (index == -1) printf("Place not found!\n");
+    return &m_places[index];
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Retourner un pointeur sur une transition ayant le code pass� en param�tre //
 ///////////////////////////////////////////////////////////////////////////////
-Transition *PetriNet::getTransitionAdresse(const int code) {
-    int indice = -1;
-    for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
-        if (code == ml_transitions[i].getCode()) indice = i;
+Transition *PetriNet::getTransitionAddress(const int code) {
+    int index = -1;
+    for (int i = 0; i < m_transitions.size() && index == -1; i++) {
+        if (code == m_transitions[i].getCode()) index = i;
     }
-    return &ml_transitions[indice];
+    return &m_transitions[index];
 }
 
 Place PetriNet::getPlace(const int index) {
@@ -64,53 +64,53 @@ Place PetriNet::getPlace(const int index) {
 ////////////////////////////////
 // Renvoyer le marquage courant
 ////////////////////////////////
-Marking PetriNet::getMarquage() {
-    Marking vecteur {m_places.size()};
+Marking PetriNet::getMarking() {
+    Marking marking {m_places.size()};
     for (int i = 0; i < m_places.size(); i++) {
-        vecteur.add8BitsValue(m_places[i].getTokens(),i);
+        marking.add8BitsValue(m_places[i].getTokens(),i);
     }
 
-    return vecteur;
+    return marking;
 }
 
-void PetriNet::setMarquage(Marking *marquage) {
+void PetriNet::setMarking(Marking *marking) {
 
     for (int i = 0; i < m_places.size(); i++) {
-        m_places[i].setTokens(marquage->get8BitsValue(i));
+        m_places[i].setTokens(marking->get8BitsValue(i));
     }
 }
 
 ///////////////////////////////////////////////////////////////
 // Renvoyer les libell�s des transitions franchissables
 ///////////////////////////////////////////////////////////////
-vector<Transition *> PetriNet::getListeTransitionsFranchissables() {
-    vector<Transition *> liste_transitions;
-    for (int i = 0; i < ml_transitions.size(); i++)
-        if (ml_transitions[i].isFranchissable()) {
-            liste_transitions.push_back(&ml_transitions[i]);
+vector<Transition *> PetriNet::getListFirableTransitions() {
+    vector<Transition *> transitions;
+    for (int i = 0; i < m_transitions.size(); i++)
+        if (m_transitions[i].isFirable()) {
+            transitions.push_back(&m_transitions[i]);
         }
 
-    return liste_transitions;
+    return transitions;
 }
 
-void PetriNet::tirer(Transition &t) {
-    Transition *transition = getTransitionAdresse(t.getCode());
-    if (transition->isFranchissable()) transition->fire();
+void PetriNet::fire(Transition &t) {
+    Transition *transition = getTransitionAddress(t.getCode());
+    if (transition->isFirable()) transition->fire();
 }
 
 
-int PetriNet::addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids) {
+int PetriNet::addInputPlaces(string transition_name, vector<string> input_places, vector<int> weights) {
     // Localisation de l'indice de la transition
-    int indice = -1;
-    for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
-        if (ml_transitions[i].getName() == nom_transition)
-            indice = i;
+    int index = -1;
+    for (int i = 0; i < m_transitions.size() && index == -1; i++) {
+        if (m_transitions[i].getName() == transition_name)
+            index = i;
     }
-    if (indice != -1) {
+    if (index != -1) {
         // Ajout de places d'entr�e
         //printf("Places d'entr�e\n");
-        for (int i = 0; i < liste_places_entrees.size(); i++) {
-            ml_transitions[indice].addPlaceEntree(getPlaceAdresse(liste_places_entrees[i]), liste_poids[i]);
+        for (int i = 0; i < input_places.size(); i++) {
+            m_transitions[index].addInputPlace(getPlaceAddress(input_places[i]), weights[i]);
             //printf("%s, ",liste_places_entrees[i].mot.c_str());
 
         }
@@ -123,17 +123,17 @@ int PetriNet::addPlacesEntrees(string nom_transition, vector<string> liste_place
 ///////////////////////////////////////////////////////////
 // Ajouter les places d'entr�es � une transition
 ///////////////////////////////////////////////////////////
-int PetriNet::addPlacesSorties(string nom_transition, vector<string> liste_places_sorties, vector<int> liste_poids) {
+int PetriNet::addOutputPlaces(string transition_name, vector<string> output_places, vector<int> weights) {
     // Localisation de l'indice de la transition
-    int indice = -1;
-    for (int i = 0; i < ml_transitions.size() && indice == -1; i++) {
-        if (ml_transitions[i].getName() == nom_transition)
-            indice = i;
+    int index = -1;
+    for (int i = 0; i < m_transitions.size() && index == -1; i++) {
+        if (m_transitions[i].getName() == transition_name)
+            index = i;
     }
-    if (indice != -1) {
+    if (index != -1) {
         // Ajout de places de sortie
-        for (int j = 0; j < liste_places_sorties.size(); j++) {
-            ml_transitions[indice].addPlaceSortie(getPlaceAdresse(liste_places_sorties[j]), liste_poids[j]);
+        for (int j = 0; j < output_places.size(); j++) {
+            m_transitions[index].addOutputPlace(getPlaceAddress(output_places[j]), weights[j]);
             //printf("%s, ",liste_places_sorties[j].mot.c_str());
         }
         return 0;
@@ -145,44 +145,44 @@ int PetriNet::addPlacesSorties(string nom_transition, vector<string> liste_place
 /////////////////////////////////////
 /// Renvoyer le nom d'un marquage ///
 /////////////////////////////////////
-string PetriNet::getMarquageName(Marking marquage) {
-    string resultat = "";
-    char chaine[100] = "\0";
-    for (int j = 0; j < getPlacesCount(); j++) {
-        if (marquage.get8BitsValue(j) != 0) {
-            if (marquage.get8BitsValue(j) != 1) {
-                sprintf(chaine, "%d", (int) marquage.get8BitsValue(j));
-                resultat += chaine;
+string PetriNet::getMarkingName(Marking marking) {
+    string result = "";
+    char str[100] = "\0";
+    for (int j = 0; j < getPlaceCount(); j++) {
+        if (marking.get8BitsValue(j) != 0) {
+            if (marking.get8BitsValue(j) != 1) {
+                sprintf(str, "%d", (int) marking.get8BitsValue(j));
+                result += str;
             }
-            resultat += getPlace(j).getName();
-            resultat += "_";
+            result += getPlace(j).getName();
+            result += "_";
         }
     }
-    return resultat;
+    return result;
 }
 
 
 ///////////////////////////////////
 // Sp�cifier le num�ro du module //
 ///////////////////////////////////
-void PetriNet::setNumero(const int index) {
-    m_numero = index;
+void PetriNet::setNumber(const int index) {
+    m_number = index;
 }
 
 /////////////////////////////////////
 // Renvoyer le num�ro de ce module //
 /////////////////////////////////////
-int PetriNet::getNumero() {
-    return m_numero;
+int PetriNet::getNumber() {
+    return m_number;
 }
 
 /////////////////////////////////////////////////////////////////////
 // Renvoyer un pointeur vers une transition en connaissant son nom //
 /////////////////////////////////////////////////////////////////////
-Transition *PetriNet::getTransitionAdresse(const string nom_transition) {
+Transition *PetriNet::getTransitionAddress(const string transition_name) {
 
-    for (int i = 0; i < ml_transitions.size(); i++) {
-        if (nom_transition == ml_transitions[i].getName())  return &ml_transitions[i];
+    for (int i = 0; i < m_transitions.size(); i++) {
+        if (transition_name == m_transitions[i].getName())  return &m_transitions[i];
     }
     return nullptr;
 }
@@ -193,61 +193,61 @@ Transition *PetriNet::getTransitionAdresse(const string nom_transition) {
 
 // Construction de Meta-graphe
 
-MetaState *PetriNet::getMetaState(Marking marquage) {
+MetaState *PetriNet::getMetaState(Marking marking) {
     //vector<Marquage> list_marq_inserted;
     PStack pstack;
     PElement elt;
     auto *ms = new MetaState();
-    elt.marquage = new Marking(marquage);
-    setMarquage(&marquage);
-    elt.liste_transitions = getListeTransitionsFranchissables();
+    elt.marking = new Marking(marking);
+    setMarking(&marking);
+    elt.transitions = getListFirableTransitions();
     pstack.push_back(elt);
 
 
-    ms->insertMarking(elt.marquage);
+    ms->insertMarking(elt.marking);
 
     while (pstack.size() > 0) {
         PElement current_elt = pstack.back();
         pstack.pop_back();
 
-        while (current_elt.liste_transitions.size() > 0) {
+        while (current_elt.transitions.size() > 0) {
 
-            Transition *transition = current_elt.liste_transitions.back();
-            current_elt.liste_transitions.pop_back();
+            Transition *transition = current_elt.transitions.back();
+            current_elt.transitions.pop_back();
 
             // On doit tirer la transition correspondante apr�s avoir pr�ciser le marquage
-            setMarquage(current_elt.marquage);
-            //cout<<"\n The old  marquage="<<getMarquageName(getMarquage())<<endl;
-            tirer(*transition); // Franchissement
+            setMarking(current_elt.marking);
+            //cout<<"\n The old  marquage="<<getMarkingName(getMarking())<<endl;
+            fire(*transition); // Franchissement
 
             Marking *new_state;
-            new_state = new Marking(getMarquage());
+            new_state = new Marking(getMarking());
             // Indiquer si le marquage en question est récemment inséré
             //if (!state_graph->existMarking(new_state)) list_marq_inserted.push_back(*new_state);
-            //cout<<"\n The old  marquage="<<current_elt.marquage.get8BitsValue()<<endl;
+            //cout<<"\n The old  marquage="<<current_elt.marking.get8BitsValue()<<endl;
             //cout<<"firing of "<<(*transition).getName()<<endl;
-            //cout<<"\n The new  marquage="<<getMarquageName(*new_state)<<endl;
+            //cout<<"\n The new  marquage="<<getMarkingName(*new_state)<<endl;
             Marking *old_state = ms->insertMarking(new_state);
-            //if (old_state) cout<<"\n The found  marquage="<<getMarquageName(*old_state)<<endl;
+            //if (old_state) cout<<"\n The found  marquage="<<getMarkingName(*old_state)<<endl;
 
-            //cout<<"\n The current  marquage (old)="<<getMarquageName(*current_elt.marquage)<<endl;
-            if (!old_state) current_elt.marquage->addSucc(transition, new_state);
+            //cout<<"\n The current  marquage (old)="<<getMarkingName(*current_elt.marking)<<endl;
+            if (!old_state) current_elt.marking->addSucc(transition, new_state);
             else {
                 delete new_state;
                 new_state = nullptr;
-                current_elt.marquage->addSucc(transition, old_state);
+                current_elt.marking->addSucc(transition, old_state);
 
             }
 
 
             //cout<<"\n Ajout du noeud réusssi ="<<result;
-            //if (current_elt.liste_transitions.size()>0) pstack.push_back(current_elt);
+            //if (current_elt.transitions.size()>0) pstack.push_back(current_elt);
             // Ajouter le marquage dans la pile et ses transitions franchissables
             if (!old_state) {
-                elt.marquage = new_state;
-                setMarquage(elt.marquage);
-                elt.liste_transitions = getListeTransitionsFranchissables();
-                if (elt.liste_transitions.size() > 0) pstack.push_back(elt);
+                elt.marking = new_state;
+                setMarking(elt.marking);
+                elt.transitions = getListFirableTransitions();
+                if (elt.transitions.size() > 0) pstack.push_back(elt);
             }
         }
     }
@@ -264,9 +264,9 @@ void PetriNet::printMetaStateEx(MetaState *ms) {
     cout << "Number of arcs: " << ms->getArcCount() << endl;
     //for (ms->
     /*for (int i=0;i<list_arcs->size();i++) {
-        cout<<"Arc n°"<<i<<": ("<<getMarquageName(*list_arcs->at(i).getSource())<<" ===";
+        cout<<"Arc n°"<<i<<": ("<<getMarkingName(*list_arcs->at(i).getSource())<<" ===";
         cout<<list_arcs->at(i).getTransition()->getName()<<"==> ";
-        cout<<getMarquageName(*list_arcs->at(i).getDestination())<<")"<<endl;
+        cout<<getMarkingName(*list_arcs->at(i).getDestination())<<")"<<endl;
     }
     vector<SCC*>* list_sccs=ms->getListSCCs();
     cout<<"Number of SCCs: "<<list_sccs->size()<<endl;
@@ -274,7 +274,7 @@ void PetriNet::printMetaStateEx(MetaState *ms) {
         cout<<"SCC n°"<<i<<endl;
         vector<Marking*>* lscc_states=list_sccs->at(i)->getListStates();
         for (int j=0;j<lscc_states->size();j++) {
-            cout<<getMarquageName(*lscc_states->at(j))<<" , ";
+            cout<<getMarkingName(*lscc_states->at(j))<<" , ";
         }
         cout<<endl;
     }*/
@@ -282,12 +282,12 @@ void PetriNet::printMetaStateEx(MetaState *ms) {
 
 
 string PetriNet::getSCCName(SCC *scc) {
-    return getMarquageName(*scc->getListStates()->at(0));
+    return getMarkingName(*scc->getListStates()->at(0));
 }
 
 bool PetriNet::areTransitionsIncluded(const std::set<string> &list_transitions) {
     for (const auto &transition: list_transitions) {
-        if (std::find_if(ml_transitions.begin(), ml_transitions.end(), [transition](auto &elt) { return elt.getName() == transition; }) == ml_transitions.end()) {
+        if (std::find_if(m_transitions.begin(), m_transitions.end(), [transition](auto &elt) { return elt.getName() == transition; }) == m_transitions.end()) {
             return false;
         }
     }

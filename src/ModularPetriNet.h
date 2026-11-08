@@ -31,11 +31,11 @@ class ModularPetriNet  {
 public:
     string getProductSCCName(ProductSCC *pss);
 
-    void setSync(vector<string> liste_code_transitions);
+    void setSync(vector<string> transition_codes);
 
     void extractEnabledFusion(ProductSCC *product, vector<Element_dss> &list_elt);
 
-    ListGlobalStates computeSychronisedProduct(vector<ListLocalStates> &states_enabling_fusion);
+    ListGlobalStates computeSynchronizedProduct(vector<ListLocalStates> &states_enabling_fusion);
 
     DistributedState *buildDSS();
 
@@ -43,7 +43,7 @@ public:
 
     void addModule(PetriNet *petri);
 
-    inline int getModulesCount() { return m_modules.size(); }
+    inline int getModuleCount() { return m_modules.size(); }
 
     void writeToFile(const string filename);
 

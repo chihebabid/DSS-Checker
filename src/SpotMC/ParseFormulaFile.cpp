@@ -9,22 +9,22 @@
 
 
 ParseFormulaFile::ParseFormulaFile(const string &fileName) {
-    pFile=std::make_unique<ifstream>(ifstream{fileName});
+    m_file=std::make_unique<ifstream>(ifstream{fileName});
 }
 
 ParseFormulaFile::~ParseFormulaFile() {
-    if (pFile->is_open()) {
-        pFile->close();
+    if (m_file->is_open()) {
+        m_file->close();
     }
 }
 
 bool ParseFormulaFile::getNext(Formula &f) {
-    if (pFile->is_open()) {
+    if (m_file->is_open()) {
         string input;
         set<string> transitionSet;
-        getline(*pFile, input);
+        getline(*m_file, input);
         if (input.empty()) return false;
-        cout <<"\n***** Property#"<<mFormulaCount<<"\n\tChecking formula: " << input << endl;
+        cout <<"\n***** Property#"<<m_formula_count<<"\n\tChecking formula: " << input << endl;
         spot::parsed_formula pf = spot::parse_infix_psl(input);
         if (pf.format_errors(std::cerr)) {
             std::cerr << "Error in the formula format!\n";
@@ -44,7 +44,7 @@ bool ParseFormulaFile::getNext(Formula &f) {
         cout << "\tBuilding negation of the formula ... ";
         spot::formula not_f = spot::formula::Not(pf.f);
         cout << "done\n";
-        ++mFormulaCount;
+        ++m_formula_count;
         f= {not_f, std::move(transitionSet)};
         return true;
     }
@@ -53,5 +53,5 @@ bool ParseFormulaFile::getNext(Formula &f) {
 
 
 uint32_t ParseFormulaFile::getFormulaCount() const {
-    return mFormulaCount;
+    return m_formula_count;
 }

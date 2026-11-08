@@ -12,7 +12,7 @@ using std::vector;
 #pragma once
 #endif // _MSC_VER > 1000
 
-#include"ListMarquage.h"
+#include"ListMarking.h"
 #include "NodeSGSimplified.h"
 #include "ArcSG.h"
 
@@ -25,19 +25,19 @@ class TransitionFusionSet;
 class NodeSG : public NodeSGSimplified {
 
 public:
-    vector<ListMarquage *> m_equiv;
+    vector<ListMarking *> m_equiv;
 
     inline ArcSG *getArc(const int index) { return (*m_arcs)[index]; }
 
     vector<ArcSG *> *m_arcs;
 
-    long getCountArcs();
+    long getArcCount();
 
     NodeSG(const NodeSG &node);
 
     NodeSG &operator=(const NodeSG &val);
 
-    bool operator==(NodeSG &marq);
+    bool operator==(NodeSG &other);
 
 
     NodeSG();
@@ -50,19 +50,19 @@ public:
 
 
 
-inline bool NodeSG::operator==(NodeSG &marq) {
+inline bool NodeSG::operator==(NodeSG &other) {
 
-    if (m_list.size() != marq.m_list.size()) return false;
+    if (m_list.size() != other.m_list.size()) return false;
     bool res = true;
     for (unsigned int i = 0; i < m_list.size() && res; i++) {
         res = false;
-        if ((m_list.at(i) == marq.m_list.at(i)))
+        if ((m_list.at(i) == other.m_list.at(i)))
             res = true;
         else if (m_equiv.at(i) != NULL) {
-            if (m_equiv.at(i)->existMarquage(&marq.m_list.at(i)))
+            if (m_equiv.at(i)->existMarking(&other.m_list.at(i)))
                 res = true;
-        } else if (marq.m_equiv.at(i) != NULL) {
-            if (marq.m_equiv.at(i)->existMarquage(&(m_list.at(i)))) res = true;
+        } else if (other.m_equiv.at(i) != NULL) {
+            if (other.m_equiv.at(i)->existMarking(&(m_list.at(i)))) res = true;
         }
     }
     return res;

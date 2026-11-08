@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 # compiler flags
 if (CMAKE_COMPILER_IS_GNUCC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive -O2 -std=c++17")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fpermissive -O2 -std=c++20")
 endif ()
 
 # build spot if it is not installed on the system
@@ -27,7 +27,7 @@ if (NOT SPOT_LIBRARY)
 
     ExternalProject_Add(SpotLibrary
             PREFIX ${SPOT_DIR}
-            URL http://www.lrde.epita.fr/dload/spot/spot-2.8.7.tar.gz
+            URL http://www.lrde.epita.fr/dload/spot/spot-2.16.2.tar.gz
             DOWNLOAD_NO_PROGRESS YES
             CONFIGURE_COMMAND ./configure --disable-doxygen --disable-python --enable-silent-rules --silent --prefix=<INSTALL_DIR>
             BUILD_COMMAND make -j

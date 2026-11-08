@@ -15,13 +15,13 @@
 #include "PetriNet.h"    // Added by ClassView
 struct transition_t {
     Place *place;
-    int poids {};
+    int weight {};
 };
 
 class Transition : public Node {
 public:
-    inline int getInputPlacesCount() const {
-        return ml_input_places.size();
+    inline int getInputPlaceCount() const {
+        return m_input_places.size();
     }
 
     int getPetri();
@@ -32,7 +32,7 @@ public:
 
     void setCode(const int code);
 
-    bool isFranchissable();
+    bool isFirable();
 
     void setSync(const bool enable);
 
@@ -40,20 +40,20 @@ public:
         return m_sync;
     }
 
-    void addPlaceSortie(Place *place, int poids);
+    void addOutputPlace(Place *place, int weight);
 
-    void addPlaceEntree(Place *place, int poids);
+    void addInputPlace(Place *place, int weight);
 
     inline void fire() {
         // Add tokens to output places
 
-        for (auto & o_place : ml_output_places) {
-            o_place.place->addTokens(o_place.poids);
+        for (auto & o_place : m_output_places) {
+            o_place.place->addTokens(o_place.weight);
         }
         // Sub tokens from input places
 
-        for (auto & in_place : ml_input_places) {
-            in_place.place->subTokens(in_place.poids);
+        for (auto & in_place : m_input_places) {
+            in_place.place->subTokens(in_place.weight);
         }
     }
 
@@ -69,9 +69,9 @@ private:
     int m_petri_num;
     int m_code;
     bool m_sync {false};
-    vector<transition_t> ml_input_places;
-    vector<transition_t> ml_output_places;
-    vector<int> m_poids_entrees;
+    vector<transition_t> m_input_places;
+    vector<transition_t> m_output_places;
+    vector<int> m_input_weights;
 
 };
 

@@ -24,13 +24,13 @@ public:
 
     MetaState *getMetaState(const int32_t &pos);
 
-    vector<MetaState *> &getLMetaState();
+    vector<MetaState *> &getListMetaStates();
 
     void removeMetaState(MetaState *ms);
 
-    size_t getIDModule() const { return m_id_module; }
+    size_t getIdModule() const { return m_id_module; }
 private:
-    vector<MetaState *> mlMetaState;
+    vector<MetaState *> m_metastates;
     size_t m_id_module;
 };
 

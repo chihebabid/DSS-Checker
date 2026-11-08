@@ -12,13 +12,13 @@ MetaGraph::~MetaGraph() {
 }
 
 void MetaGraph::addMetaState(MetaState *ms) {
-    ml_metastate.push_back(ms);
+    m_metastates.push_back(ms);
 }
 
 vector<Marking*> MetaGraph::getListLocalStates(ProductSCC *productscc) {
     vector<Marking *> list_local_states;
-    for (const auto &ms : ml_metastate) {
-        if (ms->getSCCProductName() == productscc) {
+    for (const auto &ms : m_metastates) {
+        if (ms->getProductSCCName() == productscc) {
             list_local_states = ms->getListMarkings();
             break;
         }
@@ -28,16 +28,16 @@ vector<Marking*> MetaGraph::getListLocalStates(ProductSCC *productscc) {
 
 MetaState *MetaGraph::findMetaStateByProductSCC(ProductSCC *productscc) {
 
-    for (auto &ms : ml_metastate) {
-        if (*(ms->getSCCProductName()) == *productscc) return ms;
+    for (auto &ms : m_metastates) {
+        if (*(ms->getProductSCCName()) == *productscc) return ms;
     }
     return nullptr;
 }
 
 int MetaGraph::getMetaStateCount() {
-    return ml_metastate.size();
+    return m_metastates.size();
 }
 
 MetaState *MetaGraph::getMetaState(const int pos) {
-    return ml_metastate[pos];
+    return m_metastates[pos];
 }

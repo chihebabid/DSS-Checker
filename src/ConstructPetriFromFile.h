@@ -26,8 +26,8 @@ public:
 private:
     string getNextWord();
 
-    FILE *fp;
-    string m_nom_fichier;
+    FILE *m_file;
+    string m_file_name;
 };
 
 #endif // !defined(AFX_CONSTRUCTPETRIFROMFILE_H__55A5BDAE_1305_40DF_BD3B_F0957889E117__INCLUDED_)

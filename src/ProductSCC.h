@@ -10,7 +10,7 @@ public:
 
     void addSCC(SCC *scc);
 
-    bool operator==(const ProductSCC &product);
+    bool operator==(const ProductSCC &product) const;
 
 
 

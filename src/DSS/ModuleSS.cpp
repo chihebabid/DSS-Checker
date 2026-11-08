@@ -6,7 +6,7 @@
 #include "MetaState.h"
 
 MetaState *ModuleSS::getInitialMS() {
-    return mlMetaState[0];
+    return m_metastates[0];
 }
 
 /*
@@ -15,30 +15,30 @@ MetaState *ModuleSS::getInitialMS() {
  */
 bool ModuleSS::insertMS(MetaState *ms) {
     ms->setIdModule(m_id_module);
-    mlMetaState.push_back(ms);
+    m_metastates.push_back(ms);
     return true;
 }
 
 MetaState *ModuleSS::findMetaStateByProductSCC(ProductSCC &productscc) {
-    for (const auto &elt: mlMetaState) {
-        if (*(elt->getSCCProductName()) == productscc) return elt;
+    for (const auto &elt: m_metastates) {
+        if (*(elt->getProductSCCName()) == productscc) return elt;
     }
     return nullptr;
 }
 
 size_t ModuleSS::getMetaStateCount() const {
-    return mlMetaState.size();
+    return m_metastates.size();
 }
 
 MetaState *ModuleSS::getMetaState(const int32_t &pos) {
-    return mlMetaState[pos];
+    return m_metastates[pos];
 }
 
 /*
  * @brief Return Metastates list
  */
-vector<MetaState *> &ModuleSS::getLMetaState() {
-    return mlMetaState;
+vector<MetaState *> &ModuleSS::getListMetaStates() {
+    return m_metastates;
 }
 
 /*
@@ -49,14 +49,14 @@ void ModuleSS::removeMetaState(MetaState *ms) {
         delete edge;
     }
 
-    auto ptrMl = std::remove(mlMetaState.begin(), mlMetaState.end(), ms);
-    mlMetaState.erase(ptrMl, mlMetaState.end());
+    auto ptrMl = std::remove(m_metastates.begin(), m_metastates.end(), ms);
+    m_metastates.erase(ptrMl, m_metastates.end());
 
     auto compare = [&ms](ArcSync *arc) -> bool {
         return ms == arc->getMetaStateDest();
     };
 
-    for (const auto elt: mlMetaState) {
+    for (const auto elt: m_metastates) {
         if (!elt->getSyncSucc().empty()) {
             auto ptr = std::find_if(begin(elt->getSyncSucc()), end(elt->getSyncSucc()), compare);
             if (ptr != elt->getSyncSucc().end()) {

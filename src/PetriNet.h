@@ -14,7 +14,7 @@
 
 class Transition;
 
-class ListMarquage;
+class ListMarking;
 
 class MetaState;
 
@@ -27,52 +27,52 @@ class PetriNet {
 public:
     string getSCCName(SCC *scc);
 
-    int addPlacesEntrees(string nom_transition, vector<string> liste_places_entrees, vector<int> liste_poids);
+    int addInputPlaces(string transition_name, vector<string> input_places, vector<int> weights);
 
-    Transition *getTransitionAdresse(const string nom_transition);
+    Transition *getTransitionAddress(const string transition_name);
 
-    int getNumero();
+    int getNumber();
 
-    void setNumero(const int index);
+    void setNumber(const int index);
 
-    string getMarquageName(Marking marquage);
+    string getMarkingName(Marking marking);
 
-    int addPlacesSorties(string nom_transition, vector<string> liste_places_sorties, vector<int> liste_poids);
+    int addOutputPlaces(string transition_name, vector<string> output_places, vector<int> weights);
 
-    void tirer(Transition &t);
+    void fire(Transition &t);
 
-    void setMarquage(Marking *marquage);
+    void setMarking(Marking *marking);
 
-    Marking getMarquage();
+    Marking getMarking();
 
     Place getPlace(const int index);
 
-    Transition *getTransitionAdresse(const int code);
+    Transition *getTransitionAddress(const int code);
 
-    void addListTransitions(vector<Transition> liste_transitions);
+    void addListTransitions(vector<Transition> transitions);
 
-    void addListPlaces(vector<Place> liste_places);
+    void addListPlaces(vector<Place> places);
 
-    int getPlacesCount();
+    int getPlaceCount();
 
     PetriNet()=default;
 
     virtual ~PetriNet()=default;
 
-    MetaState *getMetaState(Marking marquage);
+    MetaState *getMetaState(Marking marking);
 
     void printMetaStateEx(MetaState *ms);
 
     bool areTransitionsIncluded(const std::set<string> &list_transitions);
 private:
-    int m_numero;
+    int m_number;
 
-    vector<Transition *> getListeTransitionsFranchissables();
+    vector<Transition *> getListFirableTransitions();
 
-    Place *getPlaceAdresse(string placename);
+    Place *getPlaceAddress(string placename);
 
     vector<Place> m_places;
-    vector<Transition> ml_transitions;
+    vector<Transition> m_transitions;
 
 };
 

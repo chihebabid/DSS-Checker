@@ -3,7 +3,7 @@
 #include "SCC.h"
 #include "ArcSync.h"
 SCC::SCC() {
-    mId = mCounter++;
+    m_id = m_counter++;
 }
 
 
@@ -36,18 +36,18 @@ vector<Marking *> *SCC::getListStates() {
 }
 
 uint32_t SCC::getId() const {
-    return mId;
+    return m_id;
 }
 
 
-uint32_t SCC::mCounter{0};
+uint32_t SCC::m_counter{0};
 
 MetaState * SCC::getMetaState() const {
-    return m_parentMetaState;
+    return m_parent_metastate;
 }
 
 void SCC::setMetaState(MetaState* ms) {
-    m_parentMetaState=ms;
+    m_parent_metastate=ms;
 }
 
 

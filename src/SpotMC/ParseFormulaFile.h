@@ -12,8 +12,8 @@
 using namespace std;
 
 class ParseFormulaFile {
-    unique_ptr<ifstream> pFile {nullptr};
-    uint32_t mFormulaCount {};
+    unique_ptr<ifstream> m_file {nullptr};
+    uint32_t m_formula_count {};
 public:
     ParseFormulaFile(const string &fileName);
     bool getNext(Formula &f);

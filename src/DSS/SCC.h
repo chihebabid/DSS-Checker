@@ -48,9 +48,9 @@ public:
 
 private:
     vector<Marking *> m_list;
-    static uint32_t mCounter;
-    uint32_t mId;
-    MetaState *m_parentMetaState {nullptr};
+    static uint32_t m_counter;
+    uint32_t m_id;
+    MetaState *m_parent_metastate {nullptr};
     IteratorSucc m_iterator_succ {this};
 };
 

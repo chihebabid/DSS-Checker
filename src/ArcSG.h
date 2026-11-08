@@ -27,7 +27,7 @@ public:
 
     bool operator==(ArcSG &arc);
 
-    NodeSGSimplified *getMarquageSource();
+    NodeSGSimplified *getSourceMarking();
 
     NodeSG *getNodeSGDest();
 
@@ -38,7 +38,7 @@ public:
 private:
     TransitionFusionSet *m_fusion;
     NodeSG *m_destination;
-    NodeSGSimplified m_marquage_depart;
+    NodeSGSimplified m_source_marking;
 };
 
 

@@ -2,8 +2,8 @@
 cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
 
 # include MPI
-find_package(MPI REQUIRED)
-include_directories(${MPI_INCLUDE_PATH})
+#find_package(MPI REQUIRED)
+#include_directories(${MPI_INCLUDE_PATH})
 
 # include openssl
 find_package(OpenSSL)
@@ -43,8 +43,8 @@ add_executable(distributedstatespace main.cpp
         Place.h
         Transition.cpp
         Transition.h
-        ListMarquage.cpp
-        ListMarquage.h
+        ListMarking.cpp
+        ListMarking.h
         TransitionFusionSet.cpp
         TransitionFusionSet.h
         NodeSGSimplified.cpp
@@ -79,7 +79,7 @@ add_executable(distributedstatespace main.cpp
 target_link_libraries(distributedstatespace
         bddx
         spot
-        ${MPI_LIBRARIES}
+
         ${OPENSSL_LIBRARIES}
         cli11
 )

@@ -31,7 +31,7 @@ NodeSG::NodeSG(const NodeSG &val) {
 
 }
 
-long NodeSG::getCountArcs() {
+long NodeSG::getArcCount() {
     return m_arcs->size();
 }
 

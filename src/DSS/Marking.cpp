@@ -8,7 +8,7 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-Marking::Marking(const size_t size) : m_sccContainer(nullptr),m_data(size) {
+Marking::Marking(const size_t size) : m_scc_container(nullptr),m_data(size) {
 
 }
 
@@ -38,23 +38,23 @@ Marking &Marking::operator=(const Marking &newvec) {
 }
 
 void Marking::addSucc(Transition *t, Marking *m) {
-    ml_succ.push_back(pair<Transition *, Marking *>(t, m));
+    m_succ.push_back(pair<Transition *, Marking *>(t, m));
 }
 
 vector<pair<Transition *, Marking *>> &Marking::getListSucc() {
-    return ml_succ;
+    return m_succ;
 }
 
 SCC *Marking::getSCCContainer() const {
-    return m_sccContainer;
+    return m_scc_container;
 }
 
 void Marking::setSCCContainer(SCC *c) {
-    m_sccContainer=c;
+    m_scc_container=c;
 }
 
 ostream &operator<<(ostream &stream, const Marking &m) {
-    for (auto elt: m.ml_succ) {
+    for (auto elt: m.m_succ) {
         Transition *t = elt.first;
         stream << t->getName();
         stream << "\n";

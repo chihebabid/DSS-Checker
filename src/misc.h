@@ -6,14 +6,14 @@
 #define DISTRIBUTEDSTATESPACE_MISC_H
 #include <vector>
 #include <tl/formula.hh>
-#include "ListMarquage.h"
+#include "ListMarking.h"
 #include "TransitionFusionSet.h"
 #include "ProductSCC.h"
 
 
 struct PElement {
-    Marking *marquage;
-    vector<Transition *> liste_transitions;
+    Marking *marking;
+    vector<Transition *> transitions;
 };
 #define ListLocalStates vector<Marking*>*
 #define ListGlobalStates vector<ListLocalStates>*
@@ -25,8 +25,8 @@ struct PElement_dss {
 
 /***********************************************************************/
 struct element_t {
-    Marking marquage;
-    vector<Transition *> liste_transitions;
+    Marking marking;
+    vector<Transition *> transitions;
 };
 /*************************************************************************/
 struct Element_dss : public PElement_dss {
@@ -43,29 +43,29 @@ public:
 
     RElement_dss(const RElement_dss &elt) : PElement_dss(elt) {
 
-        this->ml_metastates = elt.ml_metastates;
+        this->m_metastates = elt.m_metastates;
     }
 
     RElement_dss &operator=(const RElement_dss &elt) {
         PElement_dss::operator=(elt);
-        this->ml_metastates = elt.ml_metastates;
+        this->m_metastates = elt.m_metastates;
         return *this;
     }
 
     MetaState *getMetaState(int i) const {
-        return ml_metastates[i];
+        return m_metastates[i];
     }
 
     void addMetaState(MetaState *ms) {
-        ml_metastates.push_back(ms);
+        m_metastates.push_back(ms);
     }
 
     void setListMetaStates(vector<MetaState *> &l_metastates) {
-        ml_metastates = l_metastates;
+        m_metastates = l_metastates;
     }
 
 private:
-    vector<MetaState *> ml_metastates;
+    vector<MetaState *> m_metastates;
 };
 
 

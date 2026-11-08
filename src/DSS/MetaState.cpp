@@ -8,7 +8,7 @@
 #include "MetaState.h"
 
 MetaState::MetaState() {
-    m_id = m_Counter++;
+    m_id = m_counter++;
 }
 
 vector<Marking *> &MetaState::getListMarkings()  {
@@ -20,13 +20,13 @@ vector<Marking *> &MetaState::getListMarkings()  {
 }*/
 
 vector<SCC *> *MetaState::getListSCCs() {
-    return &ml_scc;
+    return &m_sccs;
 }
 
 SCC *MetaState::findSCC(Marking *state) {
-    for (int i = 0; i < ml_scc.size(); i++) {
-        vector<Marking *> *list_states = ml_scc[i]->getListStates();
-        if (std::find(list_states->begin(), list_states->end(), state) != list_states->end()) return ml_scc.at(i);
+    for (int i = 0; i < m_sccs.size(); i++) {
+        vector<Marking *> *list_states = m_sccs[i]->getListStates();
+        if (std::find(list_states->begin(), list_states->end(), state) != list_states->end()) return m_sccs.at(i);
     }
     return nullptr;
 }
@@ -36,21 +36,21 @@ SCC *MetaState::getInitialSCC() {
 }
 
 
-ProductSCC *MetaState::getSCCProductName() {
+ProductSCC *MetaState::getProductSCCName() {
     return m_name;
 }
 
-void MetaState::setSCCProductName(ProductSCC *name) {
+void MetaState::setProductSCCName(ProductSCC *name) {
     m_name = name;
 }
 
 
 void MetaState::addSyncArc(ArcSync *sync_arc) {
-    mArcs.push_back(sync_arc);
+    m_arcs.push_back(sync_arc);
 }
 
 vector<ArcSync *> &MetaState::getSyncSucc() {
-    return mArcs;
+    return m_arcs;
 }
 
 uint32_t MetaState::getArcCount() {
@@ -79,14 +79,14 @@ uint32_t MetaState::getId() const {
     return m_id;
 }
 
-uint32_t MetaState::m_Counter {0};
+uint32_t MetaState::m_counter {0};
 
 void MetaState::computeStrongConnectedComponents(Marking *v) {
     v->index = m_index;
     v->lowlink = m_index;
     m_index++;
     m_stack.push_back(v);
-    v->onstack = true;
+    v->on_stack = true;
 
     // Consider successors of v
 
@@ -95,7 +95,7 @@ void MetaState::computeStrongConnectedComponents(Marking *v) {
         if (w->index == -1) {
             computeStrongConnectedComponents(w);
             v->lowlink = min(v->lowlink, w->lowlink);
-        } else if (w->onstack) v->lowlink = min(v->lowlink, w->index);
+        } else if (w->on_stack) v->lowlink = min(v->lowlink, w->index);
 
     }
     // If v is a root node, pop the stack and generate an SCC
@@ -106,16 +106,16 @@ void MetaState::computeStrongConnectedComponents(Marking *v) {
         do {
             w = m_stack.back();
             m_stack.pop_back();
-            w->onstack = false;
+            w->on_stack = false;
             scc->addState(w);
         } while (w != v);
-        ml_scc.emplace_back(scc);
+        m_sccs.emplace_back(scc);
     }
 }
 
-Marking *MetaState::existMarking(Marking *marq) {
+Marking *MetaState::existMarking(Marking *marking) {
     for (const auto &elt: m_nodes) {
-            if (*elt == *marq) return elt;
+            if (*elt == *marking) return elt;
     }
     return nullptr;
 }
@@ -130,7 +130,7 @@ Marking *MetaState::insertMarking(Marking *m) {
 void MetaState::computeSCCTarjan() {
     m_index = 0;
     for (auto & node : m_nodes) {
-        node->onstack = false;
+        node->on_stack = false;
         node->index = -1;
         node->lowlink = 0;
     }

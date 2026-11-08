@@ -35,7 +35,7 @@ public:
     MetaState *getMetaState(const int pos);
 
 private:
-    vector<MetaState *> ml_metastate;
+    vector<MetaState *> m_metastates;
 };
 
 #endif /* METAGRAPH_H_ */

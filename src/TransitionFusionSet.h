@@ -21,17 +21,17 @@ public:
 
     bool participatePartially(const int index_module);
 
-    bool isFranchissableLocal(int module);
+    bool isLocallyFirable(int module);
 
     bool participate(const int index_module);
 
     void fire();
 
-    int getLocalTransitionsCount();
+    int getLocalTransitionCount();
 
     string getFusionName();
 
-    bool isFranchissable();
+    bool isFirable();
 
     void addTransition(Transition *transition);
 

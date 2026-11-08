@@ -139,10 +139,10 @@ int main(int argc, char *argv[]) {
     cout << "Petri net information loaded successfully...\n";
     cout << "Petri net built from file : " << construire.getFileName() << endl;
 
-    vectorString liste_transitions;
+    vectorString transitions;
     if (argc > 2) {
         for (int i = 0; i < argc - 2; i++) {
-            liste_transitions.push_back((string) argv[i + 2]);
+            transitions.push_back((string) argv[i + 2]);
         }
     }
     //petri->renommerTransitions(liste_transitions);
@@ -165,11 +165,12 @@ int main(int argc, char *argv[]) {
     }  else {
         cout << "Building DSS (new version) has been started...\n";
         DSSBuilder builder(petri);
-        start = clock();
+        auto start = std::chrono::steady_clock::now();//clock();
         builder.build();
-        finish = clock();
-        duration = static_cast<double> (finish - start) / CLOCKS_PER_SEC;
-        cout << "DSS has been successfully built." << endl;
+        auto finish = std::chrono::steady_clock::now();
+        //finish = clock();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
+        cout<<"\nDSS building duration: "<< duration << " ms" << endl;
         if (dot_output) builder.writeToFile(file_name + ".dot");
         if (txt_output) builder.outputTXT();
         if (property_file != "") {
@@ -201,7 +202,7 @@ int main(int argc, char *argv[]) {
             }
         }
     }
-    cout<<"\nDSS building duration: "<< duration << " seconds" << endl;
+    //cout<<"\nDSS building duration: "<< duration << " seconds" << endl;
     if (dot_output && algorithm != "DSS") petri->writeToFile(file_name + ".dot");
     if (txt_output && algorithm != "DSS") petri->writeTextFile(file_name + ".txt");
     return 0;

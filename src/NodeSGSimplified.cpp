@@ -15,15 +15,15 @@
 
 
 
-bool NodeSGSimplified::operator==(NodeSGSimplified &marq) {
-    for (int i {}; i < marq.m_list.size(); ++i) {
-        if (!(m_list[i] == marq.m_list[i])) return false;
+bool NodeSGSimplified::operator==(NodeSGSimplified &other) {
+    for (int i {}; i < other.m_list.size(); ++i) {
+        if (!(m_list[i] == other.m_list[i])) return false;
     }
     return true;
 }
 
 
-void NodeSGSimplified::addMarquage(Marking &marquage) {
-    m_list.push_back(marquage);
+void NodeSGSimplified::addMarking(Marking &marking) {
+    m_list.push_back(marking);
 }
 

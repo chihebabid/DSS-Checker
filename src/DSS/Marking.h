@@ -26,7 +26,7 @@ class Marking {
 public:
     int index; // Used in Tarjan algorithm
     int lowlink; // Used in Tarjan algorithm
-    bool onstack; // Used in Tarjan algorithm
+    bool on_stack; // Used in Tarjan algorithm
     Marking &operator=(const Marking &newvec);
 
     Marking(const Marking &value);
@@ -54,8 +54,8 @@ public:
 
 private:
     MarkingArray m_data;
-    vector<pair<Transition *, Marking *>> ml_succ;
-    SCC *m_sccContainer;
+    vector<pair<Transition *, Marking *>> m_succ;
+    SCC *m_scc_container;
 };
 
 

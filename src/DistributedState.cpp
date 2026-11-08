@@ -17,20 +17,20 @@ DistributedState::DistributedState(ModularPetriNet *petri):m_petri(petri) {
 
 
 MetaGraph *DistributedState::getMetaGraph(const int index) {
-    return ml_metagraph[index];
+    return m_metagraphs[index];
 }
 
-void DistributedState::setNombreModules(const int n) {
-    ml_metagraph.resize(n);
+void DistributedState::setModuleCount(const int n) {
+    m_metagraphs.resize(n);
     for (int i = 0; i < n; i++)
-        ml_metagraph[i] = new MetaGraph();
+        m_metagraphs[i] = new MetaGraph();
 
 }
 
 void DistributedState::addMetaState(MetaState *ms, int module) {
-    ml_metagraph[module]->addMetaState(ms);
+    m_metagraphs[module]->addMetaState(ms);
 }
 
 vector<Marking *> DistributedState::getLocalStates(ProductSCC *productscc, const int module) {
-    return ml_metagraph[module]->getListLocalStates(productscc);
+    return m_metagraphs[module]->getListLocalStates(productscc);
 }

@@ -11,7 +11,7 @@ class DSSIterator : public spot::kripke_succ_iterator {
     SCC *m_scc;
 
     uint32_t m_current_edge;
-    std::vector<std::pair<SCC*,Transition*>> m_lsucc;
+    std::vector<std::pair<SCC*,Transition*>> m_succ;
 public:
     static spot::bdd_dict_ptr* m_dict_ptr;
     DSSIterator ( SCC* scc, bdd cnd );

@@ -16,13 +16,13 @@ NodeSG *ArcSG::getNodeSGDest() {
     return m_destination;
 }
 
-NodeSGSimplified *ArcSG::getMarquageSource() {
-    return &m_marquage_depart;
+NodeSGSimplified *ArcSG::getSourceMarking() {
+    return &m_source_marking;
 }
 
 
 bool ArcSG::operator==(ArcSG &arc) {
-    return ((m_destination == arc.m_destination) && (m_marquage_depart == arc.m_marquage_depart) && (m_fusion == arc.m_fusion));
+    return ((m_destination == arc.m_destination) && (m_source_marking == arc.m_source_marking) && (m_fusion == arc.m_fusion));
 }
 
 

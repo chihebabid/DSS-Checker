@@ -11,7 +11,7 @@
 //////////////////////////////////////////////////////////////////////
 
 ConstructPetriFromFile::ConstructPetriFromFile() {
-    fp = NULL;
+    m_file = NULL;
 }
 
 ConstructPetriFromFile::~ConstructPetriFromFile() {
@@ -20,125 +20,125 @@ ConstructPetriFromFile::~ConstructPetriFromFile() {
 }
 
 void ConstructPetriFromFile::setFileName(const string name) {
-    m_nom_fichier = name;
+    m_file_name = name;
 }
 
 string ConstructPetriFromFile::getFileName() {
-    return m_nom_fichier;
+    return m_file_name;
 }
 
 ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
     ModularPetriNet *MPetri {nullptr};
 
 
-    fp = fopen(m_nom_fichier.c_str(), "r");
-    if (fp) {
+    m_file = fopen(m_file_name.c_str(), "r");
+    if (m_file) {
         //Cr�er le r�seau de Petri
         cout << "Loading modular Petri net from file..." << endl;
         MPetri = new ModularPetriNet;
         //Lecture de nombre de modules
         unsigned int nb_modules = 0;
-        string mot;
+        string word;
         getNextWord();
-        mot = getNextWord();
-        nb_modules = atoi(mot.c_str());
-        cout << "This modular Petri net consists of " << mot << " modules" << endl;
+        word = getNextWord();
+        nb_modules = atoi(word.c_str());
+        cout << "This modular Petri net consists of " << word << " modules" << endl;
         cout << "Displaying informations related to the modular Petri net" << endl;
         //Initialisation
         PetriNet *petri;
-        vector<Place> liste_places;
-        vector<Transition> liste_transitions;
+        vector<Place> places;
+        vector<Transition> transitions;
         for (unsigned int ii = 0; ii < nb_modules; ii++) {
-            int code_transition = 0;
+            int transition_code = 0;
             cout << "Module n�" << (ii + 1) << endl;
 
 
             getNextWord();
             //
             // Lire les libell�s de places
-            string chaine;
+            string str;
             petri = new PetriNet();
             // Sp�cifier le num du module
-            petri->setNumero(ii);
+            petri->setNumber(ii);
             Place place;
-            liste_places.clear();
+            places.clear();
             /******************************************/
             /** Ajout des places et de leurs marquages*/
             /******************************************/
             do {
-                int marquage = 00;
-                mot = getNextWord();
-                while (mot == "Marquage") {
-                    mot = getNextWord();
-                    marquage = atoi(mot.c_str());
+                int tokens = 00;
+                word = getNextWord();
+                while (word == "Marquage") {
+                    word = getNextWord();
+                    tokens = atoi(word.c_str());
 //					printf("marquage :%d \n",marquage);
 
                     do {
-                        mot = getNextWord();
-                        if (mot != "Marquage" && mot != "End") {
-                            place.setName(mot.c_str());
-                            place.setTokens(marquage);
-                            liste_places.push_back(place);
-                            cout << "Added place: " << mot.c_str() << endl;
+                        word = getNextWord();
+                        if (word != "Marquage" && word != "End") {
+                            place.setName(word.c_str());
+                            place.setTokens(tokens);
+                            places.push_back(place);
+                            cout << "Added place: " << word.c_str() << endl;
                         }
-                    } while (mot != "Marquage" && mot != "End");
+                    } while (word != "Marquage" && word != "End");
                 }
-            } while (mot != "End");
-            petri->addListPlaces(liste_places);
+            } while (word != "End");
+            petri->addListPlaces(places);
             /****************************************/
             /** Lecture de libell�s de transitions **/
             /****************************************/
             getNextWord();
             Transition transition;
-            liste_transitions.clear();
+            transitions.clear();
             do {
-                mot = getNextWord();
-                if (mot != "End") {
-                    transition.setName(mot);
-                    transition.setCode(code_transition);
-                    code_transition++;
+                word = getNextWord();
+                if (word != "End") {
+                    transition.setName(word);
+                    transition.setCode(transition_code);
+                    transition_code++;
 //					printf("Transition ajout�e :%s*\n",mot.c_str());
-                    liste_transitions.push_back(transition);
+                    transitions.push_back(transition);
                 }
-            } while (mot != "End");
-            petri->addListTransitions(liste_transitions);
+            } while (word != "End");
+            petri->addListTransitions(transitions);
 
             /****************************************/
             /** Lecture des entr�es de transitions **/
             /****************************************/
 
             getNextWord();
-            vector<string> liste_places_entrees;
+            vector<string> input_places;
 
-            vector<int> liste_poids;
-            string nom_transition;
+            vector<int> weights;
+            string transition_name;
             do {
-                nom_transition = getNextWord();
-                if (nom_transition != "End") {
-                    cout << "Transition: " << nom_transition.c_str() << " has as place inputs ";
+                transition_name = getNextWord();
+                if (transition_name != "End") {
+                    cout << "Transition: " << transition_name.c_str() << " has as place inputs ";
                     string item;
                     while (item != "]") {
                         item = getNextWord();
                         if (item == "-") {
-                            string poids;
-                            poids = getNextWord();
-                            int poids_entier = atoi(poids.c_str());
-                            liste_poids.pop_back();
-                            liste_poids.push_back(poids_entier);
+                            string weight;
+                            weight = getNextWord();
+                            int int_weight = atoi(weight.c_str());
+                            weights.pop_back();
+                            weights.push_back(int_weight);
                         } else if (item != "[" && item != "]") {
                             cout << item.c_str() << "<";
-                            liste_places_entrees.push_back(item);
-                            liste_poids.push_back(1);
+                            input_places.push_back(item);
+                            weights.push_back(1);
                         }
                     }
-                    if (liste_places_entrees.size() == liste_poids.size())
-                        petri->addPlacesEntrees(nom_transition, liste_places_entrees, liste_poids);
+                    if (input_places.size() == weights.size())
+                        petri->addInputPlaces(transition_name, input_places, weights);
                     else cout << "Erreur liee au poids...";
-                    liste_places_entrees.clear();
-                    liste_poids.clear();
+                    input_places.clear();
+                    weights.clear();
                 }
                 cout << endl;
-            } while (nom_transition != "End");
+            } while (transition_name != "End");
 
 
 
@@ -146,35 +146,35 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
             /** Lecture des sorties de transitions **/
             /****************************************/
             getNextWord();
-            vector<string> liste_places_sorties;
-            liste_poids.clear();
+            vector<string> output_places;
+            weights.clear();
             do {
-                nom_transition = getNextWord();
-                if (nom_transition != "End") {
-                    cout << "Transition: " << nom_transition.c_str() << " has as output places ";
+                transition_name = getNextWord();
+                if (transition_name != "End") {
+                    cout << "Transition: " << transition_name.c_str() << " has as output places ";
                     string item;
                     while (item != "]") {
                         item = getNextWord();
                         if (item == "-") {
-                            string poids;
-                            poids = getNextWord();
-                            int poids_entier = atoi(poids.c_str());
-                            liste_poids.pop_back();
-                            liste_poids.push_back(poids_entier);
+                            string weight;
+                            weight = getNextWord();
+                            int int_weight = atoi(weight.c_str());
+                            weights.pop_back();
+                            weights.push_back(int_weight);
                         } else if (item != "[" && item != "]") {
                             cout << ">" << item.c_str();
-                            liste_places_sorties.push_back(item);
-                            liste_poids.push_back(1);
+                            output_places.push_back(item);
+                            weights.push_back(1);
                         }
                     }
-                    if (liste_places_sorties.size() == liste_poids.size())
-                        petri->addPlacesSorties(nom_transition, liste_places_sorties, liste_poids);
+                    if (output_places.size() == weights.size())
+                        petri->addOutputPlaces(transition_name, output_places, weights);
                     else cout << "erreur liee au poids...";
-                    liste_places_sorties.clear();
-                    liste_poids.clear();
+                    output_places.clear();
+                    weights.clear();
                 }
                 cout << endl;
-            } while (nom_transition != "End");
+            } while (transition_name != "End");
             MPetri->addModule(petri);
         }
         /*************************************************/
@@ -183,42 +183,42 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
         cout << "Determining synchronised transitions..." << endl;
         getNextWord();
         string transition;
-        vector<string> liste_sync;
+        vector<string> sync_transitions;
         string temp;
         do {
             transition = getNextWord();
             if (transition != "End") {
                 cout << transition.c_str() << " ";
                 temp = transition;
-                liste_sync.push_back(temp);
+                sync_transitions.push_back(temp);
             }
 
         } while (transition != "End");
-        MPetri->setSync(liste_sync);
+        MPetri->setSync(sync_transitions);
     } else {
         cout << "Error: can't open file";
     }
-    fclose(fp);
+    fclose(m_file);
     return MPetri;
 }
 
 
 string ConstructPetriFromFile::getNextWord() {
-    string separateur = ",;(:)";
-    string chaine;
+    string separators = ",;(:)";
+    string str;
     char c = '\0';
-    while (c <= (char) 32 || separateur.find_first_of(c) != -1) {
-        c = fgetc(fp);
+    while (c <= (char) 32 || separators.find_first_of(c) != -1) {
+        c = fgetc(m_file);
     }
     bool quit = false;
     while (c > 32 && !quit) {
-        if (separateur.find_first_of(c) != -1) {
+        if (separators.find_first_of(c) != -1) {
             quit = true;
         } else {
-            chaine += c;
-            c = fgetc(fp);
+            str += c;
+            c = fgetc(m_file);
         }
     }
-    return chaine;
+    return str;
 }
 

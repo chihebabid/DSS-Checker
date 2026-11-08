@@ -28,8 +28,8 @@ private:
 
     void buildInitialMS();
 
-    ModularPetriNet *mptrMPNet;
-    vector<ModuleSS *> mlModuleSS;
+    ModularPetriNet *m_petri;
+    vector<ModuleSS *> m_modules;
 };
 
 
