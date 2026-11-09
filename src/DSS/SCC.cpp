@@ -71,9 +71,12 @@ void SCC::IteratorSucc::update() {
 bool SCC::isTerminal() const {
     auto it {beginSucc()};
     while (it!=endSucc()) {
-        if ((*it).first!=this) {
-            return false;
+        if ((*it).second && !((*it).second->isSync())) {
+            if ((*it).first!=this) {
+                return false;
+            }
         }
+        ++it;
     }
     return true;
 }

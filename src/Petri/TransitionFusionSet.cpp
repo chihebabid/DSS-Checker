@@ -30,12 +30,12 @@ int TransitionFusionSet::getLocalTransitionCount() {
 }
 
 
-/////////////////////////////////////////////////////////////////////
-// Indiquer si le module 'index_module' participe � la communication
-///////////////////////////////////////////////////////////////////////
-bool TransitionFusionSet::participatePartially(const int index_module) {
+/*
+ * @brief Check whether module is synchronised on the transition fusion set
+ */
+bool TransitionFusionSet::participatePartially(const int module) {
     for (const auto & transition : m_transitions) {
-        if (transition->getPetri() == index_module)
+        if (transition->getPetri() == module)
             if (transition->getInputPlaceCount() > 0) {
                 return true;
             }
@@ -43,11 +43,10 @@ bool TransitionFusionSet::participatePartially(const int index_module) {
     return false;
 }
 
-/////////////////////////////////////////////////////////////////////
-// Indiquer si le module 'index_module' participe � la communication
-///////////////////////////////////////////////////////////////////////
+/*
+ * @brief returns true if index_module is synchronised on transition
+ */
 bool TransitionFusionSet::participate(const int index_module) {
-
     for (const auto & transition :  m_transitions) {
         if (transition->getPetri() == index_module) {
             return true;
@@ -67,5 +66,8 @@ bool TransitionFusionSet::isLocallyFirable(int module) {
 }
 
 Transition *TransitionFusionSet::getTransitionOfModule(int module) const{
+    if (module>=m_transitions.size() or module<0) {
+        return nullptr;
+    }
     return m_transitions[module];
 }

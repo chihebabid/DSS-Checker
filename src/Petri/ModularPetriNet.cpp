@@ -58,7 +58,7 @@ DistributedState *ModularPetriNet::buildDSS() {
     //cout << "Build initial meta-states" << endl;
     ProductSCC *productscc = new ProductSCC();
     vector<MetaState *> list_metastates;
-    for (int module = 0; module < getModuleCount(); module++) {
+    for (int module{}; module < getModuleCount(); ++module) {
         ms = new MetaState();
 
         m_dss->addMetaState(ms, module);
@@ -68,7 +68,7 @@ DistributedState *ModularPetriNet::buildDSS() {
     }
 
     // Setting name for meta-states
-    for (int i = 0; i < getModuleCount(); i++) {
+    for (int i{}; i < getModuleCount(); ++i) {
         list_metastates[i]->setProductSCCName(productscc);
     }
     ListProductFusion list_fusions;

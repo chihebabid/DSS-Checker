@@ -30,10 +30,9 @@ void DSSBuilder::buildInitialMS() {
     MetaState *ms;
     // Build initial meta-states
     cout << "Build initial meta-states" << endl;
-    auto *productscc = new ProductSCC();
+    auto productscc{new ProductSCC()};
     vector<MetaState *> list_metastates;
-    for (int module = 0; module < m_petri->getModuleCount(); ++module) {
-        //ms = new MetaState();
+    for (int module {}; module < m_petri->getModuleCount(); ++module) {
         ms = m_petri->getModule(module)->getMetaState(m_petri->getModule(module)->getMarking());
         m_modules[module]->insertMS(ms);
         list_metastates.push_back(ms);
@@ -54,10 +53,19 @@ void DSSBuilder::buildInitialMS() {
         for (const auto &elt: list_fusions) {
             for (int index_global_state {}; index_global_state < elt.m_gs->size(); index_global_state++) {
                 vector<Marking *> *global_state = elt.m_gs->at(index_global_state);
-                for (int module = 0; module < m_petri->getModuleCount(); ++module) {
-                    m_petri->getModule(module)->setMarking((*global_state)[module]);
-                }
                 TransitionFusionSet *fusion = elt.m_fusion;
+
+                for (int module = 0; module < m_petri->getModuleCount(); ++module) {
+                    if (fusion->participate(module)) {
+                        m_petri->getModule(module)->setMarking((*global_state)[module]);
+                    }
+                    else {
+                        Marking *marking = elt.getMetaState(module)->getInitialSCC()->getListStates()->at(0);
+                        m_petri->getModule(module)->setMarking(marking);
+                    }
+
+                }
+
                 fusion->fire();
 
                 // Build obtained destination Meta-states and check whether they exist or not
@@ -84,8 +92,13 @@ void DSSBuilder::buildInitialMS() {
                 ProductSCC startProduct;
                 for (int i{}; i < global_state->size(); ++i) {
                     MetaState *_source_ms = elt.getMetaState(i);
-                    SCC *_scc = _source_ms->findSCC((*global_state)[i]);
-                    startProduct.addSCC(_scc);
+                    if (fusion->participate(i)) {
+                        SCC *_scc = _source_ms->findSCC((*global_state)[i]);
+                        startProduct.addSCC(_scc);
+                    }
+                    else {
+                        startProduct.addSCC(dest_productscc->getSCC(i));
+                    }
                 }
                 // Check whether the computed product SCC exists or not
                 vector<MetaState *> list_dest_metastates;
@@ -172,6 +185,8 @@ void DSSBuilder::writeToFile(const string &filename) {
             }
 
             for (const auto &source: ms->getListMarkings()) {
+
+                std::cout<<petri->getMarkingName(*source)<<"is "<<source->getSCCContainer()->isTerminal()<<"\n";
                 auto sourceName = petri->getMarkingName(*source);
                 auto lsucc = source->getListSucc();
                 if (!lsucc.empty()) {
