@@ -8,8 +8,8 @@
 #ifndef ARCSYNC_H_
 #define ARCSYNC_H_
 
-#include "ProductSCC.h"
-#include "TransitionFusionSet.h"
+#include "DSS/ProductSCC.h"
+#include "Petri/TransitionFusionSet.h"
 
 class ProductSCC;
 

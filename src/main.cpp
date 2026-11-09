@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ConstructPetriFromFile.h"
+#include "Petri/ConstructPetriFromFile.h"
 #include "time.h"
 #include <sys/wait.h>
 #include <spot/twaalgos/dot.hh>

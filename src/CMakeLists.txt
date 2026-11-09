@@ -24,57 +24,68 @@ set_target_properties(bddx PROPERTIES
 
 
 # Hybrid SOG executable
-add_executable(distributedstatespace main.cpp
-        ConstructPetriFromFile.cpp
-        ConstructPetriFromFile.h
-        ModularPetriNet.cpp
-        ModularPetriNet.h
-        ArcSG.cpp
-        ArcSG.h
+add_executable(distributedstatespace
+        main.cpp
+        misc.h
+
+        # Petri
+        Petri/ConstructPetriFromFile.cpp
+        Petri/ConstructPetriFromFile.h
+        Petri/ModularPetriNet.cpp
+        Petri/ModularPetriNet.h
+        Petri/Node.cpp
+        Petri/Node.h
+        Petri/PetriNet.cpp
+        Petri/PetriNet.h
+        Petri/Place.cpp
+        Petri/Place.h
+        Petri/Transition.cpp
+        Petri/Transition.h
+        Petri/TransitionFusionSet.cpp
+        Petri/TransitionFusionSet.h
+
+        # DSS
+        DSS/ArcSync.cpp
+        DSS/ArcSync.h
+        DSS/DSSBuilder.cpp
+        DSS/DSSBuilder.h
+        DSS/DistributedState.cpp
+        DSS/DistributedState.h
         DSS/Marking.cpp
         DSS/Marking.h
-        ProductSCC.cpp
-        ProductSCC.h
-        PetriNet.cpp
-        PetriNet.h
-        Node.cpp
-        Node.h
-        Place.cpp
-        Place.h
-        Transition.cpp
-        Transition.h
-        ListMarking.cpp
-        ListMarking.h
-        TransitionFusionSet.cpp
-        TransitionFusionSet.h
-        NodeSGSimplified.cpp
-        NodeSGSimplified.h
-        ArcSG.cpp
-        ArcSG.h
-        DistributedState.cpp
-        DistributedState.h
+        DSS/MarkingArray.cpp
+        DSS/MarkingArray.h
         DSS/MetaGraph.cpp
         DSS/MetaGraph.h
         DSS/MetaState.cpp
         DSS/MetaState.h
+        DSS/ModuleSS.cpp
+        DSS/ModuleSS.h
+        DSS/ProductSCC.cpp
+        DSS/ProductSCC.h
         DSS/SCC.cpp
         DSS/SCC.h
-        NodeSG.cpp
-        NodeSG.h
-        ArcSync.cpp
-        ArcSync.h
-        DSS/DSSBuilder.cpp DSS/DSSBuilder.h DSS/ModuleSS.cpp DSS/ModuleSS.h
-        SpotMC/DSSKripke.cpp
-        SpotMC/DSSKripke.h
+
+        # SpotMC
         SpotMC/DSSIterator.cpp
         SpotMC/DSSIterator.h
+        SpotMC/DSSKripke.cpp
+        SpotMC/DSSKripke.h
         SpotMC/DSSState.cpp
         SpotMC/DSSState.h
-        misc.h
         SpotMC/ParseFormulaFile.cpp
         SpotMC/ParseFormulaFile.h
-        DSS/MarkingArray.cpp
-        DSS/MarkingArray.h)
+
+        # Legacy
+        Legacy/ArcSG.cpp
+        Legacy/ArcSG.h
+        Legacy/ListMarking.cpp
+        Legacy/ListMarking.h
+        Legacy/NodeSG.cpp
+        Legacy/NodeSG.h
+        Legacy/NodeSGSimplified.cpp
+        Legacy/NodeSGSimplified.h
+)
 
 target_link_libraries(distributedstatespace
         bddx

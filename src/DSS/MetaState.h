@@ -9,8 +9,8 @@
 #define METASTATE_H_
 
 #include <vector>
-#include "SCC.h"
-#include "../ProductSCC.h"
+#include "DSS/SCC.h"
+#include "DSS/ProductSCC.h"
 
 using namespace std;
 

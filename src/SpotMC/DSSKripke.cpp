@@ -2,8 +2,8 @@
 // Created by chiheb on 04/10/23.
 //
 
-#include "DSSKripke.h"
-#include "DSSState.h"
+#include "SpotMC/DSSKripke.h"
+#include "SpotMC/DSSState.h"
 
 DSSKripke::DSSKripke(const spot::bdd_dict_ptr &dict_ptr,ModuleSS *metagraph): spot::kripke(dict_ptr),m_metagraph(metagraph)
 {

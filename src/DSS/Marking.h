@@ -13,7 +13,7 @@
 #include <vector>
 #include <iostream>
 #include <bitset>
-#include "MarkingArray.h"
+#include "DSS/MarkingArray.h"
 class Transition;
 
 class SCC;

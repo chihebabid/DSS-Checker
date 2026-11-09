@@ -6,7 +6,7 @@
 #define DISTRIBUTEDSTATESPACE_DSSKRIPKE_H
 #include <spot/kripke/kripke.hh>
 #include "DSS/ModuleSS.h"
-#include "DSSIterator.h"
+#include "SpotMC/DSSIterator.h"
 class DSSKripke : public spot::kripke {
     ModuleSS * m_metagraph;
 public:

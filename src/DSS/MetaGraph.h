@@ -9,9 +9,9 @@
 #define METAGRAPH_H_
 
 #include <vector>
-#include "Marking.h"
-#include "../ProductSCC.h"
-#include "MetaState.h"
+#include "DSS/Marking.h"
+#include "DSS/ProductSCC.h"
+#include "DSS/MetaState.h"
 
 using namespace std;
 

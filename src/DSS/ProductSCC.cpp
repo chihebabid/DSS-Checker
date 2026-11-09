@@ -1,4 +1,4 @@
-#include "ProductSCC.h"
+#include "DSS/ProductSCC.h"
 
 void ProductSCC::addSCC(SCC *scc) {
     m_product.emplace_back(scc);

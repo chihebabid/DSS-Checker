@@ -1,7 +1,7 @@
 #include <iostream>
 #include <algorithm>
-#include "SCC.h"
-#include "ArcSync.h"
+#include "DSS/SCC.h"
+#include "DSS/ArcSync.h"
 SCC::SCC() {
     m_id = m_counter++;
 }

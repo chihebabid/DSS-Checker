@@ -5,7 +5,7 @@
  *      Author: LIP2
  */
 
-#include "MetaGraph.h"
+#include "DSS/MetaGraph.h"
 
 MetaGraph::~MetaGraph() {
 

@@ -2,7 +2,7 @@
 // Created by chiheb on 11/12/24.
 //
 
-#include "MarkingArray.h"
+#include "DSS/MarkingArray.h"
 
 
 MarkingArray::~MarkingArray() {

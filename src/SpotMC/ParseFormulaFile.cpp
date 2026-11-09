@@ -5,7 +5,7 @@
 #include <tl/parse.hh>
 #include <spot/tl/apcollect.hh>
 #include <spot/tl/print.hh>
-#include "ParseFormulaFile.h"
+#include "SpotMC/ParseFormulaFile.h"
 
 
 ParseFormulaFile::ParseFormulaFile(const string &fileName) {

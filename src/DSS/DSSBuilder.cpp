@@ -2,8 +2,8 @@
 // Created by chiheb on 13/07/22.
 //
 
-#include "DSSBuilder.h"
-#include "../ArcSync.h"
+#include "DSS/DSSBuilder.h"
+#include "DSS/ArcSync.h"
 #include <fstream>
 
 // Enable/disable reduction on the fly

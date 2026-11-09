@@ -4,9 +4,9 @@
 
 #include <fstream>
 #include <set>
-#include "ModularPetriNet.h"
+#include "Petri/ModularPetriNet.h"
 #include "time.h"
-#include "ArcSync.h"
+#include "DSS/ArcSync.h"
 
 
 //Marking MARQUAGE_VIDE;

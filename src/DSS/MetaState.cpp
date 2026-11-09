@@ -5,7 +5,7 @@
  *      Author: LIP2
  */
 #include <algorithm>
-#include "MetaState.h"
+#include "DSS/MetaState.h"
 
 MetaState::MetaState() {
     m_id = m_counter++;

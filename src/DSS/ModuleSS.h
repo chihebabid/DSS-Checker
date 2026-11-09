@@ -5,8 +5,8 @@
 #ifndef DISTRIBUTEDSTATESPACE_MODULESS_H
 #define DISTRIBUTEDSTATESPACE_MODULESS_H
 
-#include "../ArcSync.h"
-#include "MetaState.h"
+#include "DSS/ArcSync.h"
+#include "DSS/MetaState.h"
 
 class ModuleSS {
 public:

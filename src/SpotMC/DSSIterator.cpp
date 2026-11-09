@@ -2,8 +2,8 @@
 // Created by chiheb on 04/10/23.
 //
 
-#include "DSSIterator.h"
-#include "Transition.h"
+#include "SpotMC/DSSIterator.h"
+#include "Petri/Transition.h"
 
 DSSIterator::DSSIterator(SCC *scc, bdd cnd) : m_scc(scc), kripke_succ_iterator(cnd) {
 
@@ -19,6 +19,7 @@ DSSIterator::DSSIterator(SCC *scc, bdd cnd) : m_scc(scc), kripke_succ_iterator(c
     for (auto it_succ = m_scc->beginSucc(); it_succ != m_scc->endSucc(); ++it_succ) {
         m_succ.emplace_back(it_succ->first, it_succ->second);
     }
+
 }
 
 

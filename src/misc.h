@@ -6,9 +6,9 @@
 #define DISTRIBUTEDSTATESPACE_MISC_H
 #include <vector>
 #include <tl/formula.hh>
-#include "ListMarking.h"
-#include "TransitionFusionSet.h"
-#include "ProductSCC.h"
+#include "Legacy/ListMarking.h"
+#include "Petri/TransitionFusionSet.h"
+#include "DSS/ProductSCC.h"
 
 
 struct PElement {

@@ -6,7 +6,7 @@
 #define DISTRIBUTEDSTATESPACE_DSSITERATOR_H
 #include <spot/kripke/kripke.hh>
 #include <vector>
-#include "DSSState.h"
+#include "SpotMC/DSSState.h"
 class DSSIterator : public spot::kripke_succ_iterator {
     SCC *m_scc;
 

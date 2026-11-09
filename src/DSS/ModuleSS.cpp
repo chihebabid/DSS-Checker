@@ -2,8 +2,8 @@
 // Created by chiheb on 13/07/22.
 //
 #include <algorithm>
-#include "ModuleSS.h"
-#include "MetaState.h"
+#include "DSS/ModuleSS.h"
+#include "DSS/MetaState.h"
 
 MetaState *ModuleSS::getInitialMS() {
     return m_metastates[0];
