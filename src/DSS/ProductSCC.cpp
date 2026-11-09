@@ -17,4 +17,20 @@ SCC *ProductSCC::getSCC(const size_t pos) {
     return m_product[pos];
 }
 
+size_t ProductSCC::getRepresentedProductsCount(const TransitionFusionSet &fusion,size_t module) const {
+    size_t count {1};
+    for (size_t index{}; const auto &scc : m_product) {
+        if (index!=module) {
+            if (fusion.getTransitionOfModule(index)==nullptr) {
+                count*=scc->getMetaState()->getTerminalSCCsCount();
+            }
+            else if (!scc->isTerminal()) {
+                return 0;
+            }
+        }
+        ++index;
+    }
+    return count;
+}
+
 

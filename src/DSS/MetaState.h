@@ -38,10 +38,11 @@ public:
     void setIdModule(const size_t id) { m_id_module = id;}
     [[nodiscard]] size_t getIdModule() const { return m_id_module;}
     void computeSyncClosedSCC();
+    size_t getTerminalSCCsCount() const;
 private:
     size_t m_id_module;
     ProductSCC *m_name {};
-    vector<ArcSync *> m_arcs;
+    vector<ArcSync *> m_sync_arcs;
     uint32_t m_id;
     static uint32_t m_counter;
 

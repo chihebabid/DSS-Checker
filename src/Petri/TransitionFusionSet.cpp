@@ -46,9 +46,9 @@ bool TransitionFusionSet::participatePartially(const int module) {
 /*
  * @brief returns true if index_module is synchronised on transition
  */
-bool TransitionFusionSet::participate(const int index_module) {
+bool TransitionFusionSet::participate(const int module) {
     for (const auto & transition :  m_transitions) {
-        if (transition->getPetri() == index_module) {
+        if (transition->getPetri() == module) {
             return true;
         }
     }

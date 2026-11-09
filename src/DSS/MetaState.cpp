@@ -7,6 +7,8 @@
 #include <algorithm>
 #include "DSS/MetaState.h"
 
+#include "ArcSync.h"
+
 MetaState::MetaState() {
     m_id = m_counter++;
 }
@@ -46,11 +48,11 @@ void MetaState::setProductSCCName(ProductSCC *name) {
 
 
 void MetaState::addSyncArc(ArcSync *sync_arc) {
-    m_arcs.push_back(sync_arc);
+    m_sync_arcs.push_back(sync_arc);
 }
 
 vector<ArcSync *> &MetaState::getSyncSucc() {
-    return m_arcs;
+    return m_sync_arcs;
 }
 
 uint32_t MetaState::getArcCount() {
@@ -141,7 +143,31 @@ void MetaState::computeSCCTarjan() {
 }
 
 void MetaState::computeSyncClosedSCC() {
-    for (auto &scc : m_sccs) {
-
+    // Compute total products that should appear in sync edges
+    size_t total_products{1};
+    for (const auto &scc : m_sccs) {
+        // We compute sync-closure only for terminal SCCs
+        if (scc->isTerminal()) {
+            size_t count_represented_products{};
+            for (const auto &sync_arc : m_sync_arcs) {
+                auto product {sync_arc->getStartProduct()};
+                if (product->getSCC(m_id_module) == scc) {
+                    count_represented_products+=product->getRepresentedProductsCount(*(sync_arc->getFusion()),m_id_module);
+                }
+            }
+            if (total_products==count_represented_products) {
+                scc->setSyncClosed(true);
+            }
+        }
     }
+}
+
+size_t MetaState::getTerminalSCCsCount() const {
+    size_t count {0};
+    for (const auto &scc : m_sccs) {
+        if (scc->isTerminal()) {
+            ++count;
+        }
+    }
+    return count;
 }
