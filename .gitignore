@@ -90,3 +90,5 @@ dkms.conf
 cmake-build-debug/
 *.log
 
+# JetBrains IDE settings (kept locally)
+.idea/
