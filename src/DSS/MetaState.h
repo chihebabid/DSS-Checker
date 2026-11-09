@@ -22,7 +22,7 @@ public:
     virtual ~MetaState()=default;
 
     vector<ArcSync *> &getSyncSucc();
-    vector<Marking *> &getListMarkings();
+    vector<Marking *> getListMarkings() const;
     vector<SCC *> *getListSCCs();
     SCC *findSCC(Marking *state);
     SCC *getInitialSCC();
@@ -30,16 +30,17 @@ public:
     void setProductSCCName(ProductSCC *name);
     void addSyncArc(ArcSync *sync_arc);
     uint32_t getArcCount();
-    bool operator==(MetaState &ms);
+    bool operator==(MetaState &ms) const;
     [[nodiscard]] uint32_t getId() const;
     Marking *existMarking(Marking *marking);
     Marking *insertMarking(Marking *m);
     void computeSCCTarjan();
     void setIdModule(const size_t id) { m_id_module = id;}
     [[nodiscard]] size_t getIdModule() const { return m_id_module;}
+    void computeSyncClosedSCC();
 private:
     size_t m_id_module;
-    ProductSCC *m_name {nullptr};
+    ProductSCC *m_name {};
     vector<ArcSync *> m_arcs;
     uint32_t m_id;
     static uint32_t m_counter;

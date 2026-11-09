@@ -7,13 +7,8 @@ class ProductSCC {
 public:
     ProductSCC()=default;
     virtual ~ProductSCC()=default;
-
     void addSCC(SCC *scc);
-
     bool operator==(const ProductSCC &product) const;
-
-
-
     SCC *getSCC(const size_t pos);
 
 private:

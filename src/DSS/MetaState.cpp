@@ -11,7 +11,7 @@ MetaState::MetaState() {
     m_id = m_counter++;
 }
 
-vector<Marking *> &MetaState::getListMarkings()  {
+vector<Marking *> MetaState::getListMarkings()  const {
     return m_nodes;
 }
 
@@ -60,7 +60,7 @@ uint32_t MetaState::getArcCount() {
     return res;
 }
 
-bool MetaState::operator==(MetaState &ms) {
+bool MetaState::operator==(MetaState &ms) const {
     if (ms.getListMarkings().size() != getListMarkings().size()) return false;
     for (auto &elt1: ms.getListMarkings()) {
         bool found = false;
@@ -137,5 +137,11 @@ void MetaState::computeSCCTarjan() {
 
     for (auto & node : m_nodes) {
         if (node->index == -1) computeStrongConnectedComponents(node);
+    }
+}
+
+void MetaState::computeSyncClosedSCC() {
+    for (auto &scc : m_sccs) {
+
     }
 }

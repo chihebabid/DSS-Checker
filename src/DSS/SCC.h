@@ -45,13 +45,21 @@ public:
     std::vector<std::pair<SCC * ,Transition*>>::iterator endSucc() {
         return m_iterator_succ.end();
     }
+    void setSyncClosed(bool v) {
+        m_sync_closed=v;
+    }
 
+    bool isSyncClosed() const {
+        return m_sync_closed;
+    }
+    bool isTerminal() const;
 private:
     vector<Marking *> m_list;
     static uint32_t m_counter;
     uint32_t m_id;
     MetaState *m_parent_metastate {nullptr};
     IteratorSucc m_iterator_succ {this};
+    bool m_sync_closed {};
 };
 
 #endif // SCC_H

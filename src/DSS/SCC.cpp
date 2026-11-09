@@ -67,3 +67,13 @@ void SCC::IteratorSucc::update() {
         }
     }
 }
+
+bool SCC::isTerminal() const {
+    auto it {beginSucc()};
+    while (it!=endSucc()) {
+        if ((*it).first!=this) {
+            return false;
+        }
+    }
+    return true;
+}

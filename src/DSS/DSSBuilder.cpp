@@ -52,7 +52,7 @@ void DSSBuilder::buildInitialMS() {
         list_fusions = stack_fusion.back();
         stack_fusion.pop_back();
         for (const auto &elt: list_fusions) {
-            for (int index_global_state = 0; index_global_state < elt.m_gs->size(); index_global_state++) {
+            for (int index_global_state {}; index_global_state < elt.m_gs->size(); index_global_state++) {
                 vector<Marking *> *global_state = elt.m_gs->at(index_global_state);
                 for (int module = 0; module < m_petri->getModuleCount(); ++module) {
                     m_petri->getModule(module)->setMarking((*global_state)[module]);
@@ -82,34 +82,32 @@ void DSSBuilder::buildInitialMS() {
 
                 // Compute the start product
                 ProductSCC startProduct;
-                for (int i = 0; i < global_state->size(); i++) {
+                for (int i{}; i < global_state->size(); ++i) {
                     MetaState *_source_ms = elt.getMetaState(i);
                     SCC *_scc = _source_ms->findSCC((*global_state)[i]);
                     startProduct.addSCC(_scc);
                 }
                 // Check whether the computed product SCC exists or not
-
                 vector<MetaState *> list_dest_metastates;
                 bool exist = false;
-                for (int module = 0; module < m_petri->getModuleCount(); ++module) {
+                for (int module{}; module < m_petri->getModuleCount(); ++module) {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
                     if (!m_modules[module]->findMetaStateByProductSCC(*dest_productscc)) {
-                        auto *arc_sync = new ArcSync();
+                        auto *arc_sync{new ArcSync()};
                         MetaState *source_ms = elt.getMetaState(module);
                         arc_sync->setData(startProduct, fusion, dest_list_metastates[module]);
                         source_ms->addSyncArc(arc_sync);
                         //dest_list_metatstates.at(module)->addSyncArc(arc_sync);
                         m_modules[module]->insertMS(dest_list_metastates[module]);
 
-                        //m_modules[module]->printMetaStateEx(
-                        //		dest_list_metatstates.at(module));
+
                         dest_list_metastates.at(module)->setProductSCCName(dest_productscc);
                         list_dest_metastates.push_back(dest_list_metastates[module]);
                     } else {
                         exist = true;
-                        auto *arc_sync = new ArcSync();
+                        auto *arc_sync{new ArcSync()};
                         MetaState *source_ms = elt.getMetaState(module);
                         MetaState *ms_dest = m_modules[module]->findMetaStateByProductSCC(*dest_productscc);
                         arc_sync->setData(startProduct, fusion, ms_dest);
@@ -157,9 +155,9 @@ void DSSBuilder::writeToFile(const string &filename) {
     myfile.open(filename);
     myfile << "digraph " << "fichier " << "{" << endl;
     myfile << "compound=true" << endl;
-    for (int module = 0; module < m_petri->getModuleCount(); ++module) {
+    for (int module{}; module < m_petri->getModuleCount(); ++module) {
         PetriNet *petri = m_petri->getModule(module);
-        for (int i = 0; i < m_modules[module]->getMetaStateCount(); i++) {
+        for (int i {}; i < m_modules[module]->getMetaStateCount(); i++) {
             MetaState *ms = m_modules[module]->getMetaState(i);
             ProductSCC *pscc = ms->getProductSCCName();
             myfile << "subgraph cluster" << getProductSCCName(pscc) << module
@@ -253,7 +251,7 @@ MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
 }
 
 void DSSBuilder::outputTXT() {
-    uint32_t sumMS = 0, sumStates = 0, sumSCC = 0, sumLocalEdges = 0, sumSyncEdges = 0;
+    uint32_t sumMS{}, sumStates{}, sumSCC{}, sumLocalEdges{}, sumSyncEdges{};
     for (const auto &module: m_modules) {
         sumMS += module->getMetaStateCount();
         for (const auto &ms: module->getListMetaStates()) {

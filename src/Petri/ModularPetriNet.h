@@ -14,9 +14,9 @@
 
 #include "Petri/PetriNet.h"
 #include "Legacy/NodeSG.h"
-#include "Legacy/NodeSGSimplified.h"
 #include "DSS/DistributedState.h"
 #include "misc.h"
+
 #define ListLocalStates vector<Marking*>*
 #define ListGlobalStates vector<ListLocalStates>*
 
