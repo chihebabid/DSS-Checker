@@ -7,8 +7,6 @@
 #include <algorithm>
 #include "DSS/MetaState.h"
 
-#include "ArcSync.h"
-
 MetaState::MetaState() {
     m_id = m_counter++;
 }
@@ -142,32 +140,8 @@ void MetaState::computeSCCTarjan() {
     }
 }
 
-void MetaState::computeSyncClosedSCC() {
-    // Compute total products that should appear in sync edges
-    size_t total_products{1};
-    for (const auto &scc : m_sccs) {
-        // We compute sync-closure only for terminal SCCs
-        if (scc->isTerminal()) {
-            size_t count_represented_products{};
-            for (const auto &sync_arc : m_sync_arcs) {
-                auto product {sync_arc->getStartProduct()};
-                if (product->getSCC(m_id_module) == scc) {
-                    count_represented_products+=product->getRepresentedProductsCount(*(sync_arc->getFusion()),m_id_module);
-                }
-            }
-            if (total_products==count_represented_products) {
-                scc->setSyncClosed(true);
-            }
-        }
-    }
-}
-
 size_t MetaState::getTerminalSCCsCount() const {
-    size_t count {0};
-    for (const auto &scc : m_sccs) {
-        if (scc->isTerminal()) {
-            ++count;
-        }
-    }
-    return count;
+    return std::count_if(m_sccs.begin(), m_sccs.end(), [](const SCC *scc) {
+        return scc->isTerminal();
+    });
 }

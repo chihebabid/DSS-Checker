@@ -70,6 +70,30 @@ void ModuleSS::removeMetaState(MetaState *ms) {
     }
 }
 
+/*
+ * @brief Compute the sync-closure property of the terminal SCCs of all metastates
+ */
+void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
+    // Compute total products that should appear in sync edges
+    size_t total_products{1};
+
+    for (const auto &scc : *ms->getListSCCs()) {
+        // We compute sync-closure only for terminal SCCs
+        if (scc->isTerminal()) {
+            size_t count_represented_products{};
+            for (const auto &sync_arc : ms->getSyncSucc()) {
+                auto product {sync_arc->getStartProduct()};
+                if (product->getSCC(m_id_module) == scc) {
+                    count_represented_products+=product->getRepresentedProductsCount(*(sync_arc->getFusion()),m_id_module);
+                }
+            }
+            if (total_products==count_represented_products) {
+                scc->setSyncClosed(true);
+            }
+        }
+    }
+}
+
 ostream &operator<<(ostream &os, const ModuleSS &ss) {
     //os << dt.mo << '/' << dt.da << '/' << dt.yr;
 

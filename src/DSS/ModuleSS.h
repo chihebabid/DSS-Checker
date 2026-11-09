@@ -28,6 +28,8 @@ public:
 
     void removeMetaState(MetaState *ms);
 
+    void computeSyncClosedSCC(const MetaState *ms);
+
     size_t getIdModule() const { return m_id_module; }
 private:
     vector<MetaState *> m_metastates;
