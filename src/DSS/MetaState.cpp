@@ -49,7 +49,7 @@ void MetaState::addSyncArc(ArcSync *sync_arc) {
     m_sync_arcs.push_back(sync_arc);
 }
 
-vector<ArcSync *> &MetaState::getSyncSucc() {
+const vector<ArcSync *> &MetaState::getSyncSucc() const {
     return m_sync_arcs;
 }
 

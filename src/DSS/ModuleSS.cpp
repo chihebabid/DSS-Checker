@@ -60,10 +60,7 @@ void ModuleSS::removeMetaState(MetaState *ms) {
         if (!elt->getSyncSucc().empty()) {
             auto ptr = std::find_if(begin(elt->getSyncSucc()), end(elt->getSyncSucc()), compare);
             if (ptr != elt->getSyncSucc().end()) {
-                //cout<<"erassed\n";
-                //cout<<"size before : "<<elt->getSyncSucc().size()<<endl;
                 elt->getSyncSucc().erase(ptr);
-                //cout<<"size after : "<<elt->getSyncSucc().size()<<endl;
                 delete (*ptr);
             }
         }
