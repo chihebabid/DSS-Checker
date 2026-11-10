@@ -38,7 +38,7 @@ Marking &Marking::operator=(const Marking &newvec) {
 }
 
 void Marking::addSucc(Transition *t, Marking *m) {
-    m_succ.push_back(pair<Transition *, Marking *>(t, m));
+    m_succ.emplace_back(pair<Transition *, Marking *>(t, m));
 }
 
 vector<pair<Transition *, Marking *>> &Marking::getListSucc() {

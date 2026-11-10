@@ -10,7 +10,7 @@
 //#define REDUCTION
 
 DSSBuilder::DSSBuilder(ModularPetriNet *ptr) : m_petri(ptr) {
-    for (uint32_t i = 0; i < m_petri->getModuleCount(); i++) {
+    for (uint32_t i = 0; i < ModularPetriNet::getModuleCount(); i++) {
         auto elt {new ModuleSS(i)};
         m_modules.emplace_back(elt);
     }
@@ -32,7 +32,7 @@ void DSSBuilder::buildInitialMS() {
     cout << "Build initial meta-states" << endl;
     auto productscc{new ProductSCC()};
     vector<MetaState *> list_metastates;
-    for (int module {}; module < m_petri->getModuleCount(); ++module) {
+    for (int module {}; module < ModularPetriNet::getModuleCount(); ++module) {
         ms = m_petri->getModule(module)->getMetaState(m_petri->getModule(module)->getMarking());
         m_modules[module]->insertMS(ms);
         list_metastates.push_back(ms);
@@ -55,7 +55,7 @@ void DSSBuilder::buildInitialMS() {
                 vector<Marking *> *global_state = elt.m_gs->at(index_global_state);
                 TransitionFusionSet *fusion = elt.m_fusion;
 
-                for (int module = 0; module < m_petri->getModuleCount(); ++module) {
+                for (int module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
                     if (fusion->participate(module)) {
                         m_petri->getModule(module)->setMarking((*global_state)[module]);
                     }
@@ -73,8 +73,8 @@ void DSSBuilder::buildInitialMS() {
                 //cout << "Build destination meta-states" << endl;
                 auto *dest_productscc = new ProductSCC();
                 vector<MetaState *> dest_list_metastates;
-                dest_list_metastates.resize(m_petri->getModuleCount());
-                for (int module = 0; module < m_petri->getModuleCount(); module++) {
+                dest_list_metastates.resize(ModularPetriNet::getModuleCount());
+                for (int module = 0; module < ModularPetriNet::getModuleCount(); module++) {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
@@ -103,7 +103,7 @@ void DSSBuilder::buildInitialMS() {
                 // Check whether the computed product SCC exists or not
                 vector<MetaState *> list_dest_metastates;
                 bool exist = false;
-                for (int module{}; module < m_petri->getModuleCount(); ++module) {
+                for (int module{}; module < ModularPetriNet::getModuleCount(); ++module) {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
@@ -143,7 +143,7 @@ void DSSBuilder::buildInitialMS() {
         }
         // Reducing
         for (const auto &elt: list_fusions) {
-            for (auto module = 0; module < m_petri->getModuleCount(); ++module) {
+            for (auto module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
                 auto *_ms = elt.getMetaState(module);
 
                 if (auto ptrMS = reduce(_ms, module);ptrMS) {
@@ -168,7 +168,7 @@ void DSSBuilder::writeToFile(const string &filename) {
     myfile.open(filename);
     myfile << "digraph " << "fichier " << "{" << endl;
     myfile << "compound=true" << endl;
-    for (int module{}; module < m_petri->getModuleCount(); ++module) {
+    for (int module{}; module < ModularPetriNet::getModuleCount(); ++module) {
         PetriNet *petri = m_petri->getModule(module);
         for (int i {}; i < m_modules[module]->getMetaStateCount(); i++) {
             MetaState *ms = m_modules[module]->getMetaState(i);
@@ -227,7 +227,7 @@ void DSSBuilder::writeToFile(const string &filename) {
 string DSSBuilder::getProductSCCName(ProductSCC *pss) {
     string res;
     PetriNet *petri {};
-    for (int module = 0; module < m_petri->getModuleCount(); ++module) {
+    for (int module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
         petri = m_petri->getModule(module);
         res += petri->getSCCName(pss->getSCC(module));
     }

@@ -43,7 +43,7 @@ public:
 
     void addModule(PetriNet *petri);
 
-    inline int getModuleCount() { return m_modules.size(); }
+    static size_t getModuleCount();
 
     void writeToFile(const string filename);
 
@@ -57,7 +57,9 @@ public:
 
     size_t getModule(const std::set<string> &list_transitions);
     PetriNet *getModule(const int index);
+
 private:
+    static size_t nb_modules;
     vector<PetriNet *> m_modules;
     DistributedState *m_dss;
     vector<TransitionFusionSet *> m_fusions;

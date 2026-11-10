@@ -24,10 +24,12 @@ ModularPetriNet::~ModularPetriNet() {
 
     for (const auto &elt: m_modules)
         delete elt;
+    nb_modules = 0;
 }
 
 
 void ModularPetriNet::addModule(PetriNet *petri) {
+    ++nb_modules;
     m_modules.push_back(petri);
 }
 
@@ -45,8 +47,8 @@ void ModularPetriNet::addSync(const string transition_name) {
 }
 
 void ModularPetriNet::setSync(vector<string> transition_codes) {
-    for (int i = 0; i < transition_codes.size(); i++)
-        addSync(transition_codes[i]);
+    for (auto & code : transition_codes)
+        addSync(code);
 }
 
 DistributedState *ModularPetriNet::buildDSS() {
@@ -439,3 +441,10 @@ size_t ModularPetriNet::getModule(const std::set<string> &list_transitions) {
 PetriNet *ModularPetriNet::getModule(const int index) {
     return m_modules[index];
 }
+
+size_t ModularPetriNet::getModuleCount() {
+    return nb_modules;
+}
+
+
+size_t ModularPetriNet::nb_modules {};
