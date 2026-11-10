@@ -14,6 +14,11 @@
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
+ModularPetriNet &ModularPetriNet::getInstance() {
+    static ModularPetriNet instance;
+    return instance;
+}
+
 ModularPetriNet::ModularPetriNet(): m_dss(nullptr) {
     //MARQUAGE_VIDE.setEmpty(true);
 }
@@ -24,12 +29,10 @@ ModularPetriNet::~ModularPetriNet() {
 
     for (const auto &elt: m_modules)
         delete elt;
-    nb_modules = 0;
 }
 
 
 void ModularPetriNet::addModule(PetriNet *petri) {
-    ++nb_modules;
     m_modules.push_back(petri);
 }
 
@@ -443,8 +446,5 @@ PetriNet *ModularPetriNet::getModule(const int index) {
 }
 
 size_t ModularPetriNet::getModuleCount() {
-    return nb_modules;
+    return getInstance().m_modules.size();
 }
-
-
-size_t ModularPetriNet::nb_modules {};

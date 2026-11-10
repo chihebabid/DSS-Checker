@@ -29,6 +29,13 @@ typedef vector<RElement_dss> RListProductFusion;
 
 class ModularPetriNet  {
 public:
+    static ModularPetriNet &getInstance();
+
+    ModularPetriNet(const ModularPetriNet &) = delete;
+    ModularPetriNet &operator=(const ModularPetriNet &) = delete;
+    ModularPetriNet(ModularPetriNet &&) = delete;
+    ModularPetriNet &operator=(ModularPetriNet &&) = delete;
+
     string getProductSCCName(ProductSCC *pss);
 
     void setSync(vector<string> transition_codes);
@@ -49,17 +56,16 @@ public:
 
     void writeTextFile(const string filename);
 
-    ModularPetriNet();
-
-    virtual ~ModularPetriNet();
-
     void extractEnabledFusionReduced(vector<MetaState *> &list_ms, vector<RElement_dss> &list_elt);
 
     size_t getModule(const std::set<string> &list_transitions);
     PetriNet *getModule(const int index);
 
 private:
-    static size_t nb_modules;
+    ModularPetriNet();
+
+    ~ModularPetriNet();
+
     vector<PetriNet *> m_modules;
     DistributedState *m_dss;
     vector<TransitionFusionSet *> m_fusions;

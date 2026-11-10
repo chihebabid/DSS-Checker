@@ -35,7 +35,7 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
     if (m_file) {
         //Cr�er le r�seau de Petri
         cout << "Loading modular Petri net from file..." << endl;
-        MPetri = new ModularPetriNet;
+        MPetri = &ModularPetriNet::getInstance();
         //Lecture de nombre de modules
         unsigned int nb_modules = 0;
         string word;

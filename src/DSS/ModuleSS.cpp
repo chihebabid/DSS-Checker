@@ -4,6 +4,7 @@
 #include <algorithm>
 #include "DSS/ModuleSS.h"
 #include "DSS/MetaState.h"
+#include "Petri/ModularPetriNet.h"
 
 MetaState *ModuleSS::getInitialMS() {
     return m_metastates[0];
@@ -73,8 +74,12 @@ void ModuleSS::removeMetaState(MetaState *ms) {
 void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
     // Compute total products that should appear in sync edges
     size_t total_products{1};
+    for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
+        if (module!=m_id_module) {
 
-    for (const auto &scc : *ms->getListSCCs()) {
+        }
+    }
+    for (const auto &scc : *(ms->getListSCCs())) {
         // We compute sync-closure only for terminal SCCs
         if (scc->isTerminal()) {
             size_t count_represented_products{};
