@@ -3,6 +3,8 @@
 //
 #include <algorithm>
 #include "DSS/ModuleSS.h"
+
+#include "DistributedSS.h"
 #include "DSS/MetaState.h"
 #include "Petri/ModularPetriNet.h"
 
@@ -22,7 +24,7 @@ bool ModuleSS::insertMS(MetaState *ms) {
 
 MetaState *ModuleSS::findMetaStateByProductSCC(ProductSCC &productscc) {
     for (const auto &elt: m_metastates) {
-        if (*(elt->getProductSCCName()) == productscc) return elt;
+        if (elt->representsProductSCC(productscc)) return elt;
     }
     return nullptr;
 }
@@ -49,6 +51,9 @@ void ModuleSS::removeMetaState(MetaState *ms) {
     for (auto edge: ms->getSyncSucc()) {
         delete edge;
     }
+    // ms itself stays alive: its SCCs are still referenced by product SCCs of other modules.
+    // Its edges are gone, so do not keep dangling pointers on them.
+    ms->clearSyncArcs();
 
     auto ptrMl = std::remove(m_metastates.begin(), m_metastates.end(), ms);
     m_metastates.erase(ptrMl, m_metastates.end());
@@ -57,12 +62,13 @@ void ModuleSS::removeMetaState(MetaState *ms) {
         return ms == arc->getMetaStateDest();
     };
 
+    // Remove every remaining edge leading to ms
     for (const auto elt: m_metastates) {
-        if (!elt->getSyncSucc().empty()) {
-            auto ptr = std::find_if(begin(elt->getSyncSucc()), end(elt->getSyncSucc()), compare);
-            if (ptr != elt->getSyncSucc().end()) {
-                elt->getSyncSucc().erase(ptr);
-                delete (*ptr);
+        const auto edges {elt->getSyncSucc()}; // copy: the list is modified below
+        for (auto edge: edges) {
+            if (compare(edge)) {
+                elt->removeSyncArc(edge);
+                delete edge;
             }
         }
     }
@@ -76,8 +82,9 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
     size_t total_products{1};
     for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
         if (module!=m_id_module) {
-            auto & mp{ModularPetriNet::getInstance()};
-           // mp.getModule(module)->
+            auto mss {m_parent->getModule(module)};
+            auto found_ms {mss->findMetaStateByProductSCC(*(ms->getProductSCCName()))};
+            total_products *= found_ms->getTerminalSCCsCount();
         }
     }
     for (const auto &scc : *(ms->getListSCCs())) {

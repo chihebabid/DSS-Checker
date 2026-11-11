@@ -19,7 +19,7 @@ vector<Marking *> MetaState::getListMarkings()  const {
     return m_graph->getListArcs();
 }*/
 
-vector<SCC *> *MetaState::getListSCCs() {
+vector<SCC *> *MetaState::getListSCCs() const {
     return &m_sccs;
 }
 
@@ -36,7 +36,7 @@ SCC *MetaState::getInitialSCC() {
 }
 
 
-ProductSCC *MetaState::getProductSCCName() {
+ProductSCC *MetaState::getProductSCCName() const {
     return m_name;
 }
 
@@ -44,6 +44,25 @@ void MetaState::setProductSCCName(ProductSCC *name) {
     m_name = name;
 }
 
+
+bool MetaState::representsProductSCC(const ProductSCC &productscc) const {
+    if (m_name && *m_name == productscc) return true;
+    return std::any_of(m_merged_names.begin(), m_merged_names.end(),
+                       [&productscc](const ProductSCC *name) { return *name == productscc; });
+}
+
+void MetaState::absorbNames(const MetaState &merged) {
+    if (merged.m_name) m_merged_names.emplace_back(merged.m_name);
+    m_merged_names.insert(m_merged_names.end(), merged.m_merged_names.begin(), merged.m_merged_names.end());
+}
+
+void MetaState::removeSyncArc(ArcSync *sync_arc) {
+    std::erase(m_sync_arcs, sync_arc);
+}
+
+void MetaState::clearSyncArcs() {
+    m_sync_arcs.clear();
+}
 
 void MetaState::addSyncArc(ArcSync *sync_arc) {
     m_sync_arcs.push_back(sync_arc);

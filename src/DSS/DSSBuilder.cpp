@@ -5,6 +5,7 @@
 #include "DSS/DSSBuilder.h"
 #include "DSS/ArcSync.h"
 #include <fstream>
+#include <algorithm>
 
 // Enable/disable reduction on the fly
 //#define REDUCTION
@@ -143,6 +144,9 @@ void DSSBuilder::buildInitialMS() {
         for (const auto &elt: list_fusions) {
             for (auto module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
                 auto *_ms = elt.getMetaState(module);
+                // _ms may itself have been merged into another metastate earlier in this loop
+                const auto &alive {m_dss[module]->getListMetaStates()};
+                if (std::find(alive.begin(), alive.end(), _ms) == alive.end()) continue;
 
                 if (auto ptrMS = reduce(_ms, module);ptrMS) {
                     // Redirect edges to ptrMS
@@ -152,10 +156,18 @@ void DSSBuilder::buildInitialMS() {
                             if (edge->getMetaStateDest() == ptrMS) edge->setDestination(_ms);
                         }
                     }
+                    // _ms now also stands for the product SCCs represented by ptrMS
+                    _ms->absorbNames(*ptrMS);
                     // Remove ptrMS
                     m_dss[module]->removeMetaState(ptrMS);
                 }
             }
+        }
+    }
+    // Lazy version for computing Sync-closure property
+    for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
+        for (auto ms: m_dss[module]->getListMetaStates()) {
+            m_dss[module]->computeSyncClosedSCC(ms);
         }
     }
 }
@@ -171,6 +183,7 @@ void DSSBuilder::writeToFile(const string &filename) {
         for (int i {}; i < m_dss[module]->getMetaStateCount(); i++) {
             MetaState *ms = m_dss[module]->getMetaState(i);
             ProductSCC *pscc = ms->getProductSCCName();
+
             myfile << "subgraph cluster" << getProductSCCName(pscc) << module
                    << " {" << endl;
             /*********************************/
@@ -185,6 +198,7 @@ void DSSBuilder::writeToFile(const string &filename) {
             for (const auto &source: ms->getListMarkings()) {
 
                 std::cout<<petri->getMarkingName(*source)<<"is "<<source->getSCCContainer()->isTerminal()<<"\n";
+                std::cout<<petri->getMarkingName(*source)<<"closure is "<<source->getSCCContainer()->isSyncClosed()<<"\n";
                 auto sourceName = petri->getMarkingName(*source);
                 auto lsucc = source->getListSucc();
                 if (!lsucc.empty()) {

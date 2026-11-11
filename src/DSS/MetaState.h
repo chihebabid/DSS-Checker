@@ -23,11 +23,17 @@ public:
 
     const vector<ArcSync *> &getSyncSucc() const;
     vector<Marking *> getListMarkings() const;
-    vector<SCC *> *getListSCCs();
+    vector<SCC *> *getListSCCs() const;
     SCC *findSCC(Marking *state);
     SCC *getInitialSCC();
-    ProductSCC *getProductSCCName();
+    ProductSCC *getProductSCCName() const;
     void setProductSCCName(ProductSCC *name);
+    // True if productscc is the name of this metastate or of a metastate merged into it
+    bool representsProductSCC(const ProductSCC &productscc) const;
+    // Take over the names of a metastate that has been merged into this one
+    void absorbNames(const MetaState &merged);
+    void removeSyncArc(ArcSync *sync_arc);
+    void clearSyncArcs();
     void addSyncArc(ArcSync *sync_arc);
     uint32_t getArcCount();
     bool operator==(MetaState &ms) const;
@@ -41,6 +47,7 @@ public:
 private:
     size_t m_id_module;
     ProductSCC *m_name {};
+    vector<ProductSCC *> m_merged_names; // Names of the metastates merged into this one (reduction)
     vector<ArcSync *> m_sync_arcs;
     uint32_t m_id;
     static uint32_t m_counter;
