@@ -7,6 +7,7 @@
 
 #include "Petri/ModularPetriNet.h"
 #include "DSS/ModuleSS.h"
+#include "DSS/DistributedSS.h"
 #include <string>
 
 class DSSBuilder {
@@ -29,7 +30,7 @@ private:
     void buildInitialMS();
 
     ModularPetriNet *m_petri;
-    vector<ModuleSS *> m_modules;
+    DistributedSS m_dss;
 };
 
 

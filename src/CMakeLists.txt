@@ -51,6 +51,8 @@ add_executable(distributedstatespace
         DSS/DSSBuilder.h
         DSS/DistributedState.cpp
         DSS/DistributedState.h
+        DSS/DistributedSS.cpp
+        DSS/DistributedSS.h
         DSS/Marking.cpp
         DSS/Marking.h
         DSS/MarkingArray.cpp

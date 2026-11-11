@@ -10,9 +10,8 @@
 //#define REDUCTION
 
 DSSBuilder::DSSBuilder(ModularPetriNet *ptr) : m_petri(ptr) {
-    for (uint32_t i = 0; i < ModularPetriNet::getModuleCount(); i++) {
-        auto elt {new ModuleSS(i)};
-        m_modules.emplace_back(elt);
+    for (size_t i{}; i < ModularPetriNet::getModuleCount(); ++i) {
+        m_dss.addModule(new ModuleSS(i));
     }
 }
 
@@ -34,7 +33,7 @@ void DSSBuilder::buildInitialMS() {
     vector<MetaState *> list_metastates;
     for (int module {}; module < ModularPetriNet::getModuleCount(); ++module) {
         ms = m_petri->getModule(module)->getMetaState(m_petri->getModule(module)->getMarking());
-        m_modules[module]->insertMS(ms);
+        m_dss[module]->insertMS(ms);
         list_metastates.push_back(ms);
         productscc->addSCC(ms->getInitialSCC());
     }
@@ -74,13 +73,12 @@ void DSSBuilder::buildInitialMS() {
                 auto *dest_productscc = new ProductSCC();
                 vector<MetaState *> dest_list_metastates;
                 dest_list_metastates.resize(ModularPetriNet::getModuleCount());
-                for (int module = 0; module < ModularPetriNet::getModuleCount(); module++) {
+                for (int module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
 
-                    dest_ms =  m_petri->getModule(module)->getMetaState(
-                                m_petri->getModule(module)->getMarking());
+                    dest_ms =  m_petri->getModule(module)->getMetaState(m_petri->getModule(module)->getMarking());
                     dest_list_metastates[module] = dest_ms;
                     dest_productscc->addSCC(dest_ms->getInitialSCC());
 #ifdef REDUCTION
@@ -107,13 +105,13 @@ void DSSBuilder::buildInitialMS() {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
-                    if (!m_modules[module]->findMetaStateByProductSCC(*dest_productscc)) {
+                    if (!m_dss[module]->findMetaStateByProductSCC(*dest_productscc)) {
                         auto *arc_sync{new ArcSync()};
                         MetaState *source_ms = elt.getMetaState(module);
                         arc_sync->setData(startProduct, fusion, dest_list_metastates[module]);
                         source_ms->addSyncArc(arc_sync);
                         //dest_list_metatstates.at(module)->addSyncArc(arc_sync);
-                        m_modules[module]->insertMS(dest_list_metastates[module]);
+                        m_dss[module]->insertMS(dest_list_metastates[module]);
 
 
                         dest_list_metastates.at(module)->setProductSCCName(dest_productscc);
@@ -122,7 +120,7 @@ void DSSBuilder::buildInitialMS() {
                         exist = true;
                         auto *arc_sync{new ArcSync()};
                         MetaState *source_ms = elt.getMetaState(module);
-                        MetaState *ms_dest = m_modules[module]->findMetaStateByProductSCC(*dest_productscc);
+                        MetaState *ms_dest = m_dss[module]->findMetaStateByProductSCC(*dest_productscc);
                         arc_sync->setData(startProduct, fusion, ms_dest);
                         source_ms->addSyncArc(arc_sync);
                         list_dest_metastates.push_back(ms_dest);
@@ -149,13 +147,13 @@ void DSSBuilder::buildInitialMS() {
                 if (auto ptrMS = reduce(_ms, module);ptrMS) {
                     // Redirect edges to ptrMS
                     // A comment
-                    for (const auto &m: m_modules[module]->getListMetaStates()) {
+                    for (const auto &m: m_dss[module]->getListMetaStates()) {
                         for (const auto &edge: m->getSyncSucc()) {
                             if (edge->getMetaStateDest() == ptrMS) edge->setDestination(_ms);
                         }
                     }
                     // Remove ptrMS
-                    m_modules[module]->removeMetaState(ptrMS);
+                    m_dss[module]->removeMetaState(ptrMS);
                 }
             }
         }
@@ -170,8 +168,8 @@ void DSSBuilder::writeToFile(const string &filename) {
     myfile << "compound=true" << endl;
     for (int module{}; module < ModularPetriNet::getModuleCount(); ++module) {
         PetriNet *petri = m_petri->getModule(module);
-        for (int i {}; i < m_modules[module]->getMetaStateCount(); i++) {
-            MetaState *ms = m_modules[module]->getMetaState(i);
+        for (int i {}; i < m_dss[module]->getMetaStateCount(); i++) {
+            MetaState *ms = m_dss[module]->getMetaState(i);
             ProductSCC *pscc = ms->getProductSCCName();
             myfile << "subgraph cluster" << getProductSCCName(pscc) << module
                    << " {" << endl;
@@ -241,7 +239,7 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
  * @return true if *ms can be fusedm else false
  */
 MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
-    for (const auto &elt: m_modules[module]->getListMetaStates()) {
+    for (const auto &elt: m_dss[module]->getListMetaStates()) {
         if (elt != ms && *elt == *ms) {
             //Compare out edges
             auto lEdges1 = ms->getSyncSucc();
@@ -267,7 +265,7 @@ MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
 
 void DSSBuilder::outputTXT() {
     uint32_t sumMS{}, sumStates{}, sumSCC{}, sumLocalEdges{}, sumSyncEdges{};
-    for (const auto &module: m_modules) {
+    for (const auto &module: m_dss) {
         sumMS += module->getMetaStateCount();
         for (const auto &ms: module->getListMetaStates()) {
             sumStates += ms->getListMarkings().size();
@@ -284,5 +282,5 @@ void DSSBuilder::outputTXT() {
 }
 
 ModuleSS* DSSBuilder::getModuleGraph(const size_t index) const {
-    return m_modules[index];
+    return m_dss[index];
 }

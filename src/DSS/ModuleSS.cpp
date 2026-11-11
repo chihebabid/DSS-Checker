@@ -76,7 +76,8 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
     size_t total_products{1};
     for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
         if (module!=m_id_module) {
-
+            auto & mp{ModularPetriNet::getInstance()};
+           // mp.getModule(module)->
         }
     }
     for (const auto &scc : *(ms->getListSCCs())) {

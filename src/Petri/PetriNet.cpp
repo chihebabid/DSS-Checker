@@ -85,9 +85,9 @@ void PetriNet::setMarking(Marking *marking) {
 ///////////////////////////////////////////////////////////////
 vector<Transition *> PetriNet::getListFirableTransitions() {
     vector<Transition *> transitions;
-    for (int i = 0; i < m_transitions.size(); i++)
-        if (m_transitions[i].isFirable()) {
-            transitions.push_back(&m_transitions[i]);
+    for (auto & transition : m_transitions)
+        if (transition.isFirable()) {
+            transitions.emplace_back(&transition);
         }
 
     return transitions;
@@ -116,13 +116,13 @@ int PetriNet::addInputPlaces(string transition_name, vector<string> input_places
         }
         return 0;
     }
-    cout << "\nErreur d'ajout d'une relation!\n";
+    std::cerr << "\nError adding a relation...!\n";
     return -1;
 }
 
-///////////////////////////////////////////////////////////
-// Ajouter les places d'entr�es � une transition
-///////////////////////////////////////////////////////////
+/*
+** Ajouter les places d'entres une transition
+*/
 int PetriNet::addOutputPlaces(string transition_name, vector<string> output_places, vector<int> weights) {
     // Localisation de l'indice de la transition
     int index = -1;
@@ -132,13 +132,13 @@ int PetriNet::addOutputPlaces(string transition_name, vector<string> output_plac
     }
     if (index != -1) {
         // Ajout de places de sortie
-        for (int j = 0; j < output_places.size(); j++) {
+        for (size_t j = 0; j < output_places.size(); ++j) {
             m_transitions[index].addOutputPlace(getPlaceAddress(output_places[j]), weights[j]);
             //printf("%s, ",liste_places_sorties[j].mot.c_str());
         }
         return 0;
     }
-    printf("ERREUR : relation erron�e!\n");
+    std::cerr << "ERROR : wrong relation!\n";;
     return -1;
 }
 
@@ -146,7 +146,7 @@ int PetriNet::addOutputPlaces(string transition_name, vector<string> output_plac
 /// Renvoyer le nom d'un marquage ///
 /////////////////////////////////////
 string PetriNet::getMarkingName(Marking marking) {
-    string result = "";
+    string result;
     char str[100] = "\0";
     for (int j = 0; j < getPlaceCount(); j++) {
         if (marking.get8BitsValue(j) != 0) {
