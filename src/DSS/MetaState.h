@@ -9,6 +9,7 @@
 #define METASTATE_H_
 
 #include <vector>
+#include "DSS/ChildOf.h"
 #include "DSS/SCC.h"
 #include "DSS/ProductSCC.h"
 
@@ -16,7 +17,10 @@ using namespace std;
 
 class ArcSync;
 class ProductSCC;
-class MetaState {
+class ModuleSS;
+
+// A metastate; its parent is the module state space containing it (set by ModuleSS::insertMS)
+class MetaState : public ChildOf<ModuleSS> {
 public:
     MetaState();
     virtual ~MetaState()=default;

@@ -18,6 +18,7 @@ MetaState *ModuleSS::getInitialMS() {
  */
 bool ModuleSS::insertMS(MetaState *ms) {
     ms->setIdModule(m_id_module);
+    ms->setParent(this);
     m_metastates.push_back(ms);
     return true;
 }
@@ -48,15 +49,17 @@ vector<MetaState *> &ModuleSS::getListMetaStates() {
  * @brief Remove a metastate
  */
 void ModuleSS::removeMetaState(MetaState *ms) {
-    for (auto edge: ms->getSyncSucc()) {
+    // ms itself stays alive: its SCCs are still referenced by product SCCs of other modules.
+    // Detach its edges first (this touches them), then delete them: no dangling pointers are kept.
+    const auto out_edges {ms->getSyncSucc()}; // copy: the list is cleared below
+    ms->clearSyncArcs();
+    for (auto edge: out_edges) {
         delete edge;
     }
-    // ms itself stays alive: its SCCs are still referenced by product SCCs of other modules.
-    // Its edges are gone, so do not keep dangling pointers on them.
-    ms->clearSyncArcs();
 
     auto ptrMl = std::remove(m_metastates.begin(), m_metastates.end(), ms);
     m_metastates.erase(ptrMl, m_metastates.end());
+    if (ms->getParent() == this) ms->setParent(nullptr); // detached from this module
 
     auto compare = [&ms](ArcSync *arc) -> bool {
         return ms == arc->getMetaStateDest();
@@ -82,7 +85,7 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
     size_t total_products{1};
     for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
         if (module!=m_id_module) {
-            auto mss {m_parent->getModule(module)};
+            auto mss {getParent()->getModule(module)};
             auto found_ms {mss->findMetaStateByProductSCC(*(ms->getProductSCCName()))};
             total_products *= found_ms->getTerminalSCCsCount();
         }

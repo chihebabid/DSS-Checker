@@ -22,7 +22,7 @@ size_t ProductSCC::getRepresentedProductsCount(const TransitionFusionSet &fusion
     for (size_t index{}; const auto &scc : m_product) {
         if (index!=module) {
             if (fusion.getTransitionOfModule(index)==nullptr) {
-                count*=scc->getMetaState()->getTerminalSCCsCount();
+                count*=scc->getParent()->getTerminalSCCsCount();
             }
             else if (!scc->isTerminal()) {
                 return 0;

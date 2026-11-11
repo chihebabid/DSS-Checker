@@ -8,12 +8,15 @@
 #ifndef ARCSYNC_H_
 #define ARCSYNC_H_
 
+#include "DSS/ChildOf.h"
 #include "DSS/ProductSCC.h"
 #include "Petri/TransitionFusionSet.h"
 
 class ProductSCC;
+class MetaState;
 
-class ArcSync {
+// A synchronisation arc; its parent is the metastate it leaves (set by MetaState::addSyncArc)
+class ArcSync : public ChildOf<MetaState> {
 public:
     ArcSync()=default;
     virtual ~ArcSync()=default;

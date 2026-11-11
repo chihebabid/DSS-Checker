@@ -6,6 +6,7 @@
  */
 #include <algorithm>
 #include "DSS/MetaState.h"
+#include "DSS/ArcSync.h"
 
 MetaState::MetaState() {
     m_id = m_counter++;
@@ -57,14 +58,17 @@ void MetaState::absorbNames(const MetaState &merged) {
 }
 
 void MetaState::removeSyncArc(ArcSync *sync_arc) {
-    std::erase(m_sync_arcs, sync_arc);
+    if (std::erase(m_sync_arcs, sync_arc) && sync_arc->getParent() == this) sync_arc->setParent(nullptr);
 }
 
 void MetaState::clearSyncArcs() {
+    for (auto arc: m_sync_arcs)
+        if (arc->getParent() == this) arc->setParent(nullptr);
     m_sync_arcs.clear();
 }
 
 void MetaState::addSyncArc(ArcSync *sync_arc) {
+    sync_arc->setParent(this);
     m_sync_arcs.push_back(sync_arc);
 }
 
@@ -120,7 +124,7 @@ void MetaState::computeStrongConnectedComponents(Marking *v) {
     // If v is a root node, pop the stack and generate an SCC
     if (v->lowlink == v->index) {
         SCC *scc = new SCC();
-        scc->setMetaState(this);
+        scc->setParent(this);
         Marking *w;
         do {
             w = m_stack.back();

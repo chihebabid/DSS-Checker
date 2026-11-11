@@ -47,6 +47,7 @@ add_executable(distributedstatespace
         # DSS
         DSS/ArcSync.cpp
         DSS/ArcSync.h
+        DSS/ChildOf.h
         DSS/DSSBuilder.cpp
         DSS/DSSBuilder.h
         DSS/DistributedState.cpp

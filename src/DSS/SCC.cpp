@@ -42,14 +42,6 @@ uint32_t SCC::getId() const {
 
 uint32_t SCC::m_counter{0};
 
-MetaState * SCC::getMetaState() const {
-    return m_parent_metastate;
-}
-
-void SCC::setMetaState(MetaState* ms) {
-    m_parent_metastate=ms;
-}
-
 
 void SCC::IteratorSucc::update() {
     m_succ.clear();
@@ -58,7 +50,7 @@ void SCC::IteratorSucc::update() {
             m_succ.emplace_back(succ.second->getSCCContainer(), succ.first);
         }
     }
-    auto ms {m_ptr->getMetaState()};
+    auto ms {m_ptr->getParent()};
     auto module {ms->getIdModule()};
     for(auto & edge : ms->getSyncSucc()) {
         auto startProduct {edge->getStartProduct()};

@@ -1,14 +1,16 @@
 #ifndef SCC_H
 #define SCC_H
 #include <cstdint>
+#include "DSS/ChildOf.h"
 #include "DSS/Marking.h"
 #include "DSS/MetaState.h"
 
 
-// This class represents a Strongly Connected Component
 class MetaState;
 
-class SCC {
+// This class represents a Strongly Connected Component;
+// its parent is the metastate it belongs to (set when the metastate computes its SCCs)
+class SCC : public ChildOf<MetaState> {
     struct IteratorSucc {
         explicit IteratorSucc(SCC * ptr):m_ptr(ptr){
         }
@@ -37,8 +39,6 @@ public:
     vector<Marking *> *getListStates();
     bool isEqual(const SCC &scc);
     [[nodiscard]] uint32_t getId() const;
-    [[nodiscard]] MetaState * getMetaState() const;
-    void setMetaState(MetaState* ms);
     std::vector<std::pair<SCC * ,Transition*>>::iterator beginSucc() {
         return m_iterator_succ.begin();
     }
@@ -57,7 +57,6 @@ private:
     vector<Marking *> m_list;
     static uint32_t m_counter;
     uint32_t m_id;
-    MetaState *m_parent_metastate {nullptr};
     IteratorSucc m_iterator_succ {this};
     bool m_sync_closed {};
 };
