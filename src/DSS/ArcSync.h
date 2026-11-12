@@ -19,7 +19,7 @@ class MetaState;
 class ArcSync : public ChildOf<MetaState> {
 public:
     ArcSync()=default;
-    virtual ~ArcSync()=default;
+    ~ArcSync()=default;
 
     [[nodiscard]] TransitionFusionSet *getFusion() const;
 

@@ -35,7 +35,15 @@ public:
     void computeSyncClosedSCC(const MetaState *ms);
 
     size_t getIdModule() const { return m_id_module; }
+
 private:
+    /*
+     * Source products of the sync arcs leaving ms that are built from *scc (component of this module)
+     * and, for the other modules, exclusively from terminal SCCs or "-" (any).
+     * Only the maximal products are kept: if p1 > p2 then only p1 is kept (and one of equivalent products).
+     * The products belong to the arcs of ms: the pointers are valid as long as these arcs exist.
+     */
+    std::vector<const ProductSCC *> getMaxProductOfTerminalSCCs(const MetaState *ms, const SCC *scc) const;
     vector<MetaState *> m_metastates;
     size_t m_id_module;
 };
