@@ -228,7 +228,7 @@ void DSSBuilder::writeToFile(const string &filename) {
                        << getProductSCCName(ms_dest->getProductSCCName())
                        << module;
                 myfile << ",ltail=cluster" << getProductSCCName(pscc) << module;
-                myfile << ",color=red,shape=curve,label=\"(" << getProductSCCName(arc->getStartProduct()) << "," << arc->getFusion()->getName() << ")\"]" << endl;
+                myfile << ",color=red,shape=curve,label=\"(" << getStartProductName(arc) << "," << arc->getFusion()->getName() << ")\"]" << endl;
             }
         }
     }
@@ -242,6 +242,15 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
     for (int module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
         petri = m_petri->getModule(module);
         res += petri->getSCCName(pss->getSCC(module));
+    }
+    return res;
+}
+
+string DSSBuilder::getStartProductName(ArcSync *arc) {
+    string res;
+    for (int module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
+        const auto scc {arc->getSourceSCC(module)};
+        res += scc ? m_petri->getModule(module)->getSCCName(scc) : "-";
     }
     return res;
 }

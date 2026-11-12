@@ -66,8 +66,9 @@ bool TransitionFusionSet::isLocallyFirable(int module) {
 }
 
 Transition *TransitionFusionSet::getTransitionOfModule(int module) const{
-    if (module>=m_transitions.size() or module<0) {
-        return nullptr;
+    // m_transitions only holds the transitions of the synchronised modules: search by module id
+    for (const auto &transition: m_transitions) {
+        if (transition->getPetri() == module) return transition;
     }
-    return m_transitions[module];
+    return nullptr;
 }

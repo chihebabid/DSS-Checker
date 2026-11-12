@@ -25,6 +25,9 @@ public:
 private:
     string getProductSCCName(ProductSCC *pss);
 
+    // Name of the start product of arc: the SCC of every module not synchronised on arc is displayed as "-"
+    string getStartProductName(ArcSync *arc);
+
     MetaState *reduce(MetaState *ms, const int &module);
 
     void buildInitialMS();

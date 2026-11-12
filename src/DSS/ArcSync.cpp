@@ -30,3 +30,11 @@ TransitionFusionSet *ArcSync::getFusion() {
 ProductSCC *ArcSync::getStartProduct() {
     return &m_source;
 }
+
+bool ArcSync::isSynchronised(const size_t module) const {
+    return m_fusion->getTransitionOfModule(static_cast<int>(module)) != nullptr;
+}
+
+SCC *ArcSync::getSourceSCC(const size_t module) {
+    return isSynchronised(module) ? m_source.getSCC(module) : nullptr;
+}

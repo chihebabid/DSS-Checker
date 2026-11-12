@@ -29,6 +29,14 @@ public:
 
     MetaState *getMetaStateDest();
     ProductSCC *getStartProduct();
+
+    // True if module is synchronised on the fusion of this arc.
+    // If not, the SCC of this module in the start product is not significant:
+    // it stands for any SCC of the module's metastate.
+    [[nodiscard]] bool isSynchronised(size_t module) const;
+
+    // SCC of module in the start product, or nullptr if module is not synchronised on this arc
+    [[nodiscard]] SCC *getSourceSCC(size_t module);
 private:
     TransitionFusionSet *m_fusion;
     ProductSCC m_source;
