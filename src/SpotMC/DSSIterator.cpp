@@ -17,13 +17,12 @@ DSSIterator::DSSIterator(Marking *marking, const DSSKripke *kripke) : m_kripke(k
 
     SCC *scc {marking->getSCCContainer()};
     const size_t module {kripke->getIdModule()};
-    // The module may stay forever in scc: if scc is sync-closed, or if a sync arc leaving scc is marked
-    // divergent (another module may loop forever, so the synchronisation may never happen)
-    const auto &sync_arcs {scc->getParent()->getSyncSucc()};
-    const bool divergent_arc {std::any_of(sync_arcs.begin(), sync_arcs.end(), [scc, module](const auto &arc) {
-        return arc->isDivergent() && arc->getSourceSCC(module) == scc;
-    })};
-    if (scc->isSyncClosed() || divergent_arc) {
+    if (scc->isSyncClosed()) {
+        m_succ.emplace_back(divergence, nullptr);
+    }
+    // Another module may loop forever: the module may stop moving forever (divergence).
+    // Not a reflexive arc: a finite wait would add an empty letter to the word seen by the formula
+    if (scc->othersCanLoop() && !scc->isSyncClosed()) {
         m_succ.emplace_back(divergence, nullptr);
     }
 

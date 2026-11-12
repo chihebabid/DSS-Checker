@@ -39,14 +39,7 @@ public:
 
     // SCC of module in the source product, or nullptr if module is not synchronised on this arc
     [[nodiscard]] SCC *getSourceSCC(size_t module) const;
-
-    // Marked when another module, in its metastate of the same name, has a cycle of local transitions:
-    // it may loop forever, so the synchronisation may never happen (executions without fairness)
-    void setDivergent(bool divergent) { m_divergent = divergent; }
-
-    [[nodiscard]] bool isDivergent() const { return m_divergent; }
 private:
-    bool m_divergent {false};
     TransitionFusionSet *m_fusion;
     ProductSCC m_source;
     MetaState *m_destination;

@@ -54,6 +54,16 @@ public:
     bool isSyncClosed() const {
         return m_sync_closed;
     }
+
+    // Marked when another module, in its metastate of the same name, has a cycle of local transitions:
+    // it may loop forever, so the module may stay forever in this SCC (executions without fairness)
+    void setOthersCanLoop(bool v) {
+        m_others_can_loop = v;
+    }
+
+    [[nodiscard]] bool othersCanLoop() const {
+        return m_others_can_loop;
+    }
     bool isTerminal() const;
 private:
     std::vector<Marking *> m_list;
@@ -61,6 +71,7 @@ private:
     uint32_t m_id;
     IteratorSucc m_iterator_succ {this};
     bool m_sync_closed {};
+    bool m_others_can_loop {};
 };
 
 #endif // SCC_H

@@ -39,6 +39,8 @@ public:
     bool representsProductSCC(const ProductSCC &productscc) const;
     // Take over the names of a metastate that has been merged into this one
     void absorbNames(const MetaState &merged);
+    // Names of the metastates merged into this one
+    [[nodiscard]] const vector<ProductSCC *> &getMergedNames() const { return m_merged_names; }
     // Destroy the sync arcs leading to destination
     void removeSyncArcsTo(const MetaState *destination);
     // Destroy all the sync arcs

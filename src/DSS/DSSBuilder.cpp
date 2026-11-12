@@ -180,10 +180,10 @@ void DSSBuilder::buildInitialMS() {
             m_dss[module]->computeSyncClosedSCC(ms);
         }
     }
-    // Sync arcs that may never be taken because another module can loop forever
+    // SCCs where a module may stay forever because another module can loop forever
     for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
         for (auto ms: m_dss[module]->getListMetaStates()) {
-            m_dss[module]->markDivergentSyncArcs(ms);
+            m_dss[module]->markOthersCanLoop(ms);
         }
     }
 }

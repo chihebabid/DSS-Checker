@@ -2,6 +2,8 @@
 // Created by chiheb on 13/07/22.
 //
 #include <algorithm>
+#include <set>
+#include <vector>
 #include <iostream>
 #include "DSS/ModuleSS.h"
 
@@ -100,11 +102,15 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
 
     // Compute total products that should appear in sync edges
     size_t total_products{1};
+    std::vector<std::vector<SCC *>> terminal_sccs_of(module_count); // terminal SCCs of the other modules
     for (size_t module{}; module < module_count; ++module) {
         if (module != m_id_module) {
             auto mss {getParent()->getModule(module)};
             auto found_ms {mss->findMetaStateByProductSCC(*(ms->getProductSCCName()))};
-            const size_t terminal_sccs {found_ms->getTerminalSCCsCount()};
+            for (const auto &other_scc: *found_ms->getListSCCs()) {
+                if (other_scc->isTerminal()) terminal_sccs_of[module].push_back(other_scc);
+            }
+            const size_t terminal_sccs {terminal_sccs_of[module].size()};
             total_products *= terminal_sccs;
             if (debug_sync_closed) {
                 std::cout << "[sync-closed]   module " << module << ": metastate " << productName(*found_ms->getProductSCCName())
@@ -124,26 +130,55 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
             continue;
         }
 
-        size_t result{};
+        // Products of terminal SCCs of the other modules covered by at least one sync arc.
+        // A product is counted once even if several arcs (e.g. of different fusions) cover it.
+        // Each product is a tuple of indices in terminal_sccs_of ("-" stands for every terminal SCC)
+        std::set<std::vector<size_t>> covered;
         auto max_products {getMaxProductOfTerminalSCCs(ms, scc)};
         if (debug_sync_closed) {
             std::cout << "[sync-closed]   SCC " << sccName(scc, m_id_module) << ": terminal, "
                       << max_products.size() << " maximal product(s)\n";
         }
         for (const auto &elt : max_products) {
-            const size_t represented_products {elt->getRepresentedProductsCount(m_id_module)};
-            result += represented_products;
+            // Possible terminal SCCs (indices) of each other module for this product
+            std::vector<std::vector<size_t>> choices;
+            for (size_t module{}; module < module_count; ++module) {
+                if (module == m_id_module) continue;
+                const auto &terminals {terminal_sccs_of[module]};
+                std::vector<size_t> indices;
+                for (size_t i{}; i < terminals.size(); ++i) {
+                    // SCCs are compared by content: equal SCCs may belong to distinct (merged) metastates
+                    if (elt->isAny(module) || terminals[i]->isEqual(*elt->getSCC(module))) indices.push_back(i);
+                }
+                choices.push_back(std::move(indices));
+            }
+            // Cartesian product of the choices
+            std::vector<std::vector<size_t>> tuples {{}};
+            for (const auto &indices: choices) {
+                std::vector<std::vector<size_t>> next;
+                for (const auto &tuple: tuples) {
+                    for (const auto index: indices) {
+                        next.push_back(tuple);
+                        next.back().push_back(index);
+                    }
+                }
+                tuples = std::move(next);
+            }
+            const size_t before {covered.size()};
+            covered.insert(tuples.begin(), tuples.end());
             if (debug_sync_closed) {
                 std::cout << "[sync-closed]     product " << productName(*elt) << " represents "
-                          << represented_products << " product(s)\n";
+                          << tuples.size() << " product(s), " << covered.size() - before << " new\n";
             }
         }
+        const size_t result {covered.size()};
 
         if (debug_sync_closed) {
             std::cout << "[sync-closed]     result = " << result << ", total_products = " << total_products
-                      << " => " << (total_products != result ? "sync-closed" : "NOT sync-closed") << "\n";
+                      << " => " << (total_products > result ? "sync-closed" : "NOT sync-closed") << "\n";
         }
-        if (total_products != result) {
+        // Some product of terminal SCCs of the other modules is covered by no sync arc
+        if (total_products > result) {
             scc->setSyncClosed(true);
         }
     }
@@ -162,15 +197,20 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
     //     }
     // }
 }
-void ModuleSS::markDivergentSyncArcs(const MetaState *ms) {
-    bool others_can_loop {false};
-    for (size_t module {}; module < ModularPetriNet::getModuleCount() && !others_can_loop; ++module) {
+void ModuleSS::markOthersCanLoop(const MetaState *ms) {
+    if (!ms->hasLocalCycle()) return;
+    // All the names of ms: its own one and the ones of the metastates merged into it
+    vector<ProductSCC *> names {ms->getMergedNames()};
+    names.push_back(ms->getProductSCCName());
+    for (size_t module {}; module < ModularPetriNet::getModuleCount(); ++module) {
         if (module == m_id_module) continue;
-        const auto found_ms {getParent()->getModule(module)->findMetaStateByProductSCC(*ms->getProductSCCName())};
-        others_can_loop = found_ms && found_ms->hasLocalCycle();
-    }
-    for (const auto &sync_arc: ms->getSyncSucc()) {
-        sync_arc->setDivergent(others_can_loop);
+        for (const auto name: names) {
+            const auto found_ms {getParent()->getModule(module)->findMetaStateByProductSCC(*name)};
+            if (!found_ms) continue;
+            for (const auto &scc: *found_ms->getListSCCs()) {
+                scc->setOthersCanLoop(true);
+            }
+        }
     }
 }
 
