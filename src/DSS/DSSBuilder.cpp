@@ -96,7 +96,8 @@ void DSSBuilder::buildInitialMS() {
                         startProduct.addSCC(_scc);
                     }
                     else {
-                        startProduct.addSCC(dest_productscc->getSCC(i));
+                        // Module i is not synchronised on fusion: any SCC of its metastate
+                        startProduct.addSCC(dest_productscc->getSCC(i), true);
                     }
                 }
                 // Check whether the computed product SCC exists or not

@@ -1,18 +1,48 @@
 #ifndef PRODUCTSCC_H
 #define PRODUCTSCC_H
 
+#include <compare>
+#include <vector>
 #include "DSS/SCC.h"
 #include "Petri/TransitionFusionSet.h"
+
+/*
+ * A product of SCCs: one component per module.
+ * A component is either a given SCC, or "any" (displayed as "-"): it then represents
+ * every SCC of a metastate of the module.
+ */
 class ProductSCC {
 public:
     ProductSCC()=default;
     virtual ~ProductSCC()=default;
-    void addSCC(SCC *scc);
-    bool operator==(const ProductSCC &product) const;
+    // Add the component of the next module.
+    // If any is true, the component represents every SCC of the metastate of scc ("-")
+    void addSCC(SCC *scc, bool any = false);
+    // For an "any" component, returns the SCC given to addSCC (it identifies the metastate)
     SCC *getSCC(const size_t pos);
+    // True if the component of module pos is "any" ("-")
+    [[nodiscard]] bool isAny(size_t pos) const;
     size_t getRepresentedProductsCount(const TransitionFusionSet &fusion,size_t module) const;
+
+    /*
+     * Partial order: a > b if a represents strictly more products than b
+     *  - equivalent : all components are the same
+     *  - greater    : a and b only differ on components where a is "-" and represents the SCC of b (a-c > abc)
+     *  - less       : the converse (abc < ab-)
+     *  - unordered  : otherwise (abc and abd; ab- and abc when "-" does not represent c; a-c and -bc)
+     */
+    friend std::partial_ordering operator<=>(const ProductSCC &a, const ProductSCC &b);
+
+    friend bool operator==(const ProductSCC &a, const ProductSCC &b) {
+        return (a <=> b) == std::partial_ordering::equivalent;
+    }
 private:
-    vector<SCC *> m_product;
+    struct Component {
+        SCC *scc;
+        bool any;
+    };
+    static std::partial_ordering compare(const Component &a, const Component &b);
+    std::vector<Component> m_product;
 };
 
 #endif // PRODUCTSCC_H
