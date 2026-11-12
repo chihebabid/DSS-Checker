@@ -15,28 +15,30 @@
 class ProductSCC;
 class MetaState;
 
-// A synchronisation arc; its parent is the metastate it leaves (set by MetaState::addSyncArc)
+// A synchronisation arc; its parent is the metastate it leaves, which owns it (see MetaState::addSyncArc)
 class ArcSync : public ChildOf<MetaState> {
 public:
     ArcSync()=default;
     virtual ~ArcSync()=default;
 
-    TransitionFusionSet *getFusion();
+    [[nodiscard]] TransitionFusionSet *getFusion() const;
 
     void setDestination(MetaState *destination);
 
     void setData(ProductSCC source, TransitionFusionSet *transition, MetaState *destination);
 
-    MetaState *getMetaStateDest();
-    ProductSCC *getStartProduct();
+    [[nodiscard]] MetaState *getDestination() const;
+
+    [[nodiscard]] const ProductSCC &getSourceProduct() const;
 
     // True if module is synchronised on the fusion of this arc.
-    // If not, the SCC of this module in the start product is not significant:
+    // If not, the component of this module in the source product is "any" (see ProductSCC::isAny):
     // it stands for any SCC of the module's metastate.
+    // The source product is the single source of truth: it must be built accordingly.
     [[nodiscard]] bool isSynchronised(size_t module) const;
 
-    // SCC of module in the start product, or nullptr if module is not synchronised on this arc
-    [[nodiscard]] SCC *getSourceSCC(size_t module);
+    // SCC of module in the source product, or nullptr if module is not synchronised on this arc
+    [[nodiscard]] SCC *getSourceSCC(size_t module) const;
 private:
     TransitionFusionSet *m_fusion;
     ProductSCC m_source;

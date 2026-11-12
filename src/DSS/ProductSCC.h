@@ -4,7 +4,6 @@
 #include <compare>
 #include <vector>
 #include "DSS/SCC.h"
-#include "Petri/TransitionFusionSet.h"
 
 /*
  * A product of SCCs: one component per module.
@@ -19,10 +18,13 @@ public:
     // If any is true, the component represents every SCC of the metastate of scc ("-")
     void addSCC(SCC *scc, bool any = false);
     // For an "any" component, returns the SCC given to addSCC (it identifies the metastate)
-    SCC *getSCC(const size_t pos);
+    [[nodiscard]] SCC *getSCC(size_t pos) const;
     // True if the component of module pos is "any" ("-")
     [[nodiscard]] bool isAny(size_t pos) const;
-    size_t getRepresentedProductsCount(const TransitionFusionSet &fusion,size_t module) const;
+    // Number of products of terminal SCCs of the modules other than module represented by this product:
+    // an "any" component stands for every terminal SCC of its metastate, another one counts for one
+    // if it is terminal, else the product represents nothing
+    size_t getRepresentedProductsCount(size_t module) const;
 
     /*
      * Partial order: a > b if a represents strictly more products than b

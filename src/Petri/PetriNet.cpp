@@ -1,7 +1,9 @@
 // PetriNet.cpp: implementation of the PetriNet class.
 //
 //////////////////////////////////////////////////////////////////////
+#include <iostream>
 #include <algorithm>
+#include <cctype>
 #include "Petri/PetriNet.h"
 #include "misc.h"
 
@@ -67,16 +69,16 @@ Place PetriNet::getPlace(const int index) {
 Marking PetriNet::getMarking() {
     Marking marking {m_places.size()};
     for (int i = 0; i < m_places.size(); i++) {
-        marking.add8BitsValue(m_places[i].getTokens(),i);
+        marking.setTokens(i, m_places[i].getTokens());
     }
 
     return marking;
 }
 
-void PetriNet::setMarking(Marking *marking) {
+void PetriNet::setMarking(const Marking *marking) {
 
     for (int i = 0; i < m_places.size(); i++) {
-        m_places[i].setTokens(marking->get8BitsValue(i));
+        m_places[i].setTokens(marking->getTokens(i));
     }
 }
 
@@ -145,13 +147,13 @@ int PetriNet::addOutputPlaces(string transition_name, vector<string> output_plac
 /////////////////////////////////////
 /// Renvoyer le nom d'un marquage ///
 /////////////////////////////////////
-string PetriNet::getMarkingName(Marking marking) {
+string PetriNet::getMarkingName(const Marking &marking) {
     string result;
     char str[100] = "\0";
     for (int j = 0; j < getPlaceCount(); j++) {
-        if (marking.get8BitsValue(j) != 0) {
-            if (marking.get8BitsValue(j) != 1) {
-                sprintf(str, "%d", (int) marking.get8BitsValue(j));
+        if (marking.getTokens(j) != 0) {
+            if (marking.getTokens(j) != 1) {
+                sprintf(str, "%d", (int) marking.getTokens(j));
                 result += str;
             }
             result += getPlace(j).getName();
@@ -193,7 +195,7 @@ Transition *PetriNet::getTransitionAddress(const string transition_name) {
 
 // Construction de Meta-graphe
 
-MetaState *PetriNet::getMetaState(Marking marking) {
+MetaState *PetriNet::getMetaState(const Marking &marking) {
     //vector<Marquage> list_marq_inserted;
     PStack pstack;
     PElement elt;
@@ -220,24 +222,24 @@ MetaState *PetriNet::getMetaState(Marking marking) {
             //cout<<"\n The old  marquage="<<getMarkingName(getMarking())<<endl;
             fire(*transition); // Franchissement
 
-            Marking *new_state;
-            new_state = new Marking(getMarking());
+            // Only allocate a node if the reached marking is a new one
+            Marking reached {getMarking()};
+            Marking *old_state = ms->existMarking(&reached);
+            Marking *new_state {nullptr};
+            if (!old_state) {
+                new_state = new Marking(std::move(reached));
+                ms->insertMarking(new_state);
+            }
             // Indiquer si le marquage en question est récemment inséré
             //if (!state_graph->existMarking(new_state)) list_marq_inserted.push_back(*new_state);
             //cout<<"\n The old  marquage="<<current_elt.marking.get8BitsValue()<<endl;
             //cout<<"firing of "<<(*transition).getName()<<endl;
             //cout<<"\n The new  marquage="<<getMarkingName(*new_state)<<endl;
-            Marking *old_state = ms->insertMarking(new_state);
             //if (old_state) cout<<"\n The found  marquage="<<getMarkingName(*old_state)<<endl;
 
             //cout<<"\n The current  marquage (old)="<<getMarkingName(*current_elt.marking)<<endl;
             if (!old_state) current_elt.marking->addSucc(transition, new_state);
-            else {
-                delete new_state;
-                new_state = nullptr;
-                current_elt.marking->addSucc(transition, old_state);
-
-            }
+            else current_elt.marking->addSucc(transition, old_state);
 
 
             //cout<<"\n Ajout du noeud réusssi ="<<result;
@@ -281,8 +283,11 @@ void PetriNet::printMetaStateEx(MetaState *ms) {
 }
 
 
+// The name of an SCC is the name of its representative marking (its first one), in upper case
 string PetriNet::getSCCName(SCC *scc) {
-    return getMarkingName(*scc->getListStates()->at(0));
+    string name {getMarkingName(*scc->getListStates()->at(0))};
+    std::transform(name.begin(), name.end(), name.begin(), [](const unsigned char c) { return std::toupper(c); });
+    return name;
 }
 
 bool PetriNet::areTransitionsIncluded(const std::set<string> &list_transitions) {

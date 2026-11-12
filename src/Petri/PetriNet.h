@@ -35,13 +35,13 @@ public:
 
     void setNumber(const int index);
 
-    string getMarkingName(Marking marking);
+    string getMarkingName(const Marking &marking);
 
     int addOutputPlaces(string transition_name, vector<string> output_places, vector<int> weights);
 
     void fire(Transition &t);
 
-    void setMarking(Marking *marking);
+    void setMarking(const Marking *marking);
 
     Marking getMarking();
 
@@ -59,7 +59,7 @@ public:
 
     virtual ~PetriNet()=default;
 
-    MetaState *getMetaState(Marking marking);
+    MetaState *getMetaState(const Marking &marking);
 
     void printMetaStateEx(MetaState *ms);
 

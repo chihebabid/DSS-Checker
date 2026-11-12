@@ -10,7 +10,7 @@ DSSIterator::DSSIterator(SCC *scc, bdd cnd) : m_scc(scc), kripke_succ_iterator(c
 
     // Transitions inside an SCC
     for (const auto &source: *(scc->getListStates())) {
-        auto lsucc = source->getListSucc();
+        const auto &lsucc = source->getListSucc();
         for (const auto &[t,m]: lsucc) {
             m_succ.emplace_back(m->getSCCContainer(), t);
         }

@@ -2,6 +2,15 @@
 // Created by chiheb on 13/07/22.
 //
 
+#include <cstdio>
+#include <cstdlib>
+#include <filesystem>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <random>
+#include <sstream>
+#include <memory>
 #include "DSS/DSSBuilder.h"
 #include "DSS/ArcSync.h"
 #include <fstream>
@@ -108,10 +117,10 @@ void DSSBuilder::buildInitialMS() {
                     if (fusion->participate(module)) {
 #endif
                     if (!m_dss[module]->findMetaStateByProductSCC(*dest_productscc)) {
-                        auto *arc_sync{new ArcSync()};
+                        auto arc_sync{std::make_unique<ArcSync>()};
                         MetaState *source_ms = elt.getMetaState(module);
                         arc_sync->setData(startProduct, fusion, dest_list_metastates[module]);
-                        source_ms->addSyncArc(arc_sync);
+                        source_ms->addSyncArc(std::move(arc_sync));
                         //dest_list_metatstates.at(module)->addSyncArc(arc_sync);
                         m_dss[module]->insertMS(dest_list_metastates[module]);
 
@@ -120,11 +129,11 @@ void DSSBuilder::buildInitialMS() {
                         list_dest_metastates.push_back(dest_list_metastates[module]);
                     } else {
                         exist = true;
-                        auto *arc_sync{new ArcSync()};
+                        auto arc_sync{std::make_unique<ArcSync>()};
                         MetaState *source_ms = elt.getMetaState(module);
                         MetaState *ms_dest = m_dss[module]->findMetaStateByProductSCC(*dest_productscc);
                         arc_sync->setData(startProduct, fusion, ms_dest);
-                        source_ms->addSyncArc(arc_sync);
+                        source_ms->addSyncArc(std::move(arc_sync));
                         list_dest_metastates.push_back(ms_dest);
                     }
 
@@ -154,7 +163,7 @@ void DSSBuilder::buildInitialMS() {
                     // A comment
                     for (const auto &m: m_dss[module]->getListMetaStates()) {
                         for (const auto &edge: m->getSyncSucc()) {
-                            if (edge->getMetaStateDest() == ptrMS) edge->setDestination(_ms);
+                            if (edge->getDestination() == ptrMS) edge->setDestination(_ms);
                         }
                     }
                     // _ms now also stands for the product SCCs represented by ptrMS
@@ -177,6 +186,13 @@ void DSSBuilder::buildInitialMS() {
 void DSSBuilder::writeToFile(const string &filename) {
     std::ofstream myfile;
     myfile.open(filename);
+    writeDot(myfile, nullptr);
+    myfile.close();
+}
+
+void DSSBuilder::writeDot(std::ostream &myfile, vector<SyncLoop> *loops) {
+    // In layout mode, the helper nodes of the reflexive sync arcs are invisible: they only reserve room
+    const string hidden {loops ? ",style=invis" : ""};
     myfile << "digraph " << "fichier " << "{" << endl;
     myfile << "compound=true" << endl;
     for (int module{}; module < ModularPetriNet::getModuleCount(); ++module) {
@@ -189,19 +205,30 @@ void DSSBuilder::writeToFile(const string &filename) {
                    << " {" << endl;
             /*********************************/
 
-            for (const auto &source: ms->getListMarkings()) {
-                auto sourceName = petri->getMarkingName(*source);
-                myfile << sourceName << getProductSCCName(pscc);
-                myfile << " [label=\"" << sourceName << "\"] ";
-                myfile << ";\n";
+            // One nested cluster per SCC, containing the markings of the SCC
+            for (const auto &scc: *ms->getListSCCs()) {
+                const auto sccName {petri->getSCCName(scc)};
+                myfile << "subgraph " << getSCCClusterName(scc, pscc, module) << " {" << endl;
+                for (const auto &marking: *scc->getListStates()) {
+                    auto markingName = petri->getMarkingName(*marking);
+                    myfile << markingName << getProductSCCName(pscc);
+                    myfile << " [label=\"" << markingName << "\"] ";
+                    myfile << ";\n";
+                }
+                myfile << "label=\"" << sccName << "\"" << endl;
+                // A sync-closed SCC is drawn in bold green
+                if (scc->isSyncClosed()) myfile << "style=\"dashed,bold\";color=green;fontcolor=green" << endl;
+                else myfile << "style=dashed;color=black;fontcolor=black" << endl;
+                myfile << "}" << endl;
             }
 
             for (const auto &source: ms->getListMarkings()) {
-
-                std::cout<<petri->getMarkingName(*source)<<"is "<<source->getSCCContainer()->isTerminal()<<"\n";
-                std::cout<<petri->getMarkingName(*source)<<"closure is "<<source->getSCCContainer()->isSyncClosed()<<"\n";
+                if (!loops) {
+                    std::cout<<petri->getMarkingName(*source)<<"is "<<source->getSCCContainer()->isTerminal()<<"\n";
+                    std::cout<<petri->getMarkingName(*source)<<"closure is "<<source->getSCCContainer()->isSyncClosed()<<"\n";
+                }
                 auto sourceName = petri->getMarkingName(*source);
-                auto lsucc = source->getListSucc();
+                const auto &lsucc = source->getListSucc();
                 if (!lsucc.empty()) {
                     for (const auto &elt: lsucc) {
                         myfile << sourceName << getProductSCCName(pscc);
@@ -215,29 +242,141 @@ void DSSBuilder::writeToFile(const string &filename) {
             }
 
             myfile << "label=\"" << getProductSCCName(pscc) << module << "\"" << endl;
+            myfile << "style=solid" << endl;
             myfile << "}" << endl;
 
+            // A sync arc links a metastate to another one (ltail/lhead are the metastate clusters)
+            const string sourceCluster {"cluster" + getProductSCCName(pscc) + std::to_string(module)};
+            // A sync arc is attached to a marking node of each metastate: the representative marking of the SCC of its name
+            const auto anchorNode = [&](MetaState *metastate) {
+                const auto name {metastate->getProductSCCName()};
+                return petri->getMarkingName(*name->getSCC(module)->getListStates()->at(0)) + getProductSCCName(name);
+            };
+            const string sourceNode {anchorNode(ms)};
+            size_t loop_count {};
             for (const auto &arc: ms->getSyncSucc()) { // Build output edges of Metastate ms
-                myfile << petri->getSCCName(ms->getProductSCCName()->getSCC(module)) << getProductSCCName(pscc)
-                       << " -> ";
-                MetaState *ms_dest = arc->getMetaStateDest();
-                myfile
-                        << petri->getSCCName(ms_dest->getProductSCCName()->getSCC(module))
-                        << getProductSCCName(ms_dest->getProductSCCName());
-                myfile << " ["
-                       << "lhead=cluster"
-                       << getProductSCCName(ms_dest->getProductSCCName())
-                       << module;
-                myfile << ",ltail=cluster" << getProductSCCName(pscc) << module;
-                myfile << ",color=red,shape=curve,label=\"(" << getStartProductName(arc) << "," << arc->getFusion()->getName() << ")\"]" << endl;
+                MetaState *ms_dest = arc->getDestination();
+                const string destCluster {"cluster" + getProductSCCName(ms_dest->getProductSCCName()) + std::to_string(module)};
+                const string label {"(" + getSourceProductName(arc.get()) + "," + arc->getFusion()->getName() + ")"};
+                if (destCluster == sourceCluster) {
+                    // Graphviz cannot draw an edge from a cluster to itself: the loop goes through
+                    // a helper node outside the metastate, which carries the label.
+                    // renderToFile() hides it and draws the loop itself, with explicit coordinates.
+                    const string loopNode {"loop_" + sourceCluster + "_" + std::to_string(loop_count++)};
+                    myfile << loopNode << " [shape=plaintext,fontcolor=red,width=0,height=0,margin=0.05,label=\"" << label << "\"" << hidden << "]" << endl;
+                    myfile << sourceNode << " -> " << loopNode << " [ltail=" << sourceCluster << ",color=red,arrowhead=none" << hidden << "]" << endl;
+                    myfile << sourceNode << " -> " << loopNode << " [ltail=" << sourceCluster << ",color=red,dir=back" << hidden << "]" << endl;
+                    if (loops) loops->push_back({sourceCluster, label});
+                    continue;
+                }
+                myfile << sourceNode << " -> " << anchorNode(ms_dest);
+                myfile << " [lhead=" << destCluster << ",ltail=" << sourceCluster;
+                myfile << ",color=red,shape=curve,label=\"" << label << "\"]" << endl;
             }
         }
     }
     myfile << "}" << endl;
-    myfile.close();
 }
 
-string DSSBuilder::getProductSCCName(ProductSCC *pss) {
+// Quote a file name for the shell
+static string shellQuote(const string &text) {
+    string res {"'"};
+    for (const char c: text) {
+        if (c == '\'') res += "'\\''";
+        else res += c;
+    }
+    return res + "'";
+}
+
+/*
+ * @brief Render the graph in an image file, in two Graphviz passes:
+ *        1. dot computes the layout;
+ *        2. each reflexive sync arc, that Graphviz cannot draw on a cluster, is added with explicit coordinates
+ *           as a loop from the bottom-left to the bottom-right corner of its metastate, and neato -n2 renders.
+ * @param filename image file; its extension gives the format (svg, png, pdf, ...)
+ * @return false if Graphviz (dot and neato) is missing or fails
+ */
+bool DSSBuilder::renderToFile(const string &filename) {
+    namespace fs = std::filesystem;
+    const double loop_depth {28}, loop_step {26}, arrow {10}, font_size {14}; // in points
+
+    string format {fs::path(filename).extension().string()};
+    format = format.empty() ? "svg" : format.substr(1);
+
+    const fs::path dir {fs::temp_directory_path() / ("dss_render_" + std::to_string(std::random_device{}()))};
+    fs::create_directories(dir);
+    struct Cleaner {
+        fs::path dir;
+        ~Cleaner() { std::error_code ec; fs::remove_all(dir, ec); }
+    } cleaner {dir};
+    const string pass1 {(dir / "pass1.dot").string()}, laid {(dir / "laid.dot").string()}, final_dot {(dir / "final.dot").string()};
+
+    // Pass 1: layout
+    vector<SyncLoop> loops;
+    {
+        std::ofstream file(pass1);
+        writeDot(file, &loops);
+    }
+    if (std::system(("dot -Tdot -o " + shellQuote(laid) + " " + shellQuote(pass1)).c_str()) != 0) {
+        std::cerr << "Error: Graphviz (dot) is missing or failed; " << filename << " not written\n";
+        return false;
+    }
+    std::stringstream buffer;
+    buffer << std::ifstream(laid).rdbuf();
+    string graph {buffer.str()};
+
+    // Add the loops, using the bounding boxes of the metastates computed by dot
+    std::ostringstream extra;
+    extra << std::fixed << std::setprecision(2);
+    std::map<string, size_t> loop_counts;
+    for (size_t index {}; index < loops.size(); ++index) {
+        const auto &[cluster, label] {loops[index]};
+        double left, bottom, right, top;
+        const auto pos_cluster {graph.find("subgraph " + cluster + " {")};
+        const auto pos_bb {pos_cluster == string::npos ? string::npos : graph.find("bb=\"", pos_cluster)};
+        if (pos_bb == string::npos
+            || std::sscanf(graph.c_str() + pos_bb, "bb=\"%lf,%lf,%lf,%lf", &left, &bottom, &right, &top) != 4) {
+            std::cerr << "Error: metastate " << cluster << " not found in the layout; " << filename << " not written\n";
+            return false;
+        }
+        const double depth {loop_depth + loop_counts[cluster]++ * loop_step};
+        const double middle {(left + right) / 2}, label_y {bottom - depth - font_size * 0.8};
+        const string name {"__dss_loop_" + std::to_string(index)};
+        const string corner {" [shape=point,style=invis,width=0.01,height=0.01,label=\"\",pos=\""};
+        extra << name << "_a" << corner << left << "," << bottom << "\"];\n";
+        extra << name << "_b" << corner << right << "," << bottom << "\"];\n";
+        // Invisible node below the label: it makes the drawing area include the whole loop
+        extra << name << "_c" << corner << middle << "," << label_y - font_size << "\"];\n";
+        // Bezier curve leaving the left corner downwards and coming back up to the right corner
+        extra << name << "_a -> " << name << "_b [color=red,fontcolor=red,fontsize=" << font_size
+              << ",label=\"" << label << "\",lp=\"" << middle << "," << label_y << "\",pos=\"e," << right << "," << bottom
+              << " " << left << "," << bottom << " " << left << "," << bottom - 1.3 * depth
+              << " " << right << "," << bottom - 1.3 * depth << " " << right << "," << bottom - arrow << "\"];\n";
+    }
+    const auto pos_end {graph.rfind('}')};
+    if (pos_end == string::npos) {
+        std::cerr << "Error: unexpected Graphviz output; " << filename << " not written\n";
+        return false;
+    }
+    graph.insert(pos_end, extra.str());
+    {
+        std::ofstream file(final_dot);
+        file << graph;
+    }
+
+    // Pass 2: render with the positions computed in pass 1
+    if (std::system(("neato -n2 -T" + format + " -o " + shellQuote(filename) + " " + shellQuote(final_dot)).c_str()) != 0) {
+        std::cerr << "Error: Graphviz (neato) is missing or failed; " << filename << " not written\n";
+        return false;
+    }
+    return true;
+}
+
+string DSSBuilder::getSCCClusterName(SCC *scc, const ProductSCC *pss, const int module) {
+    return "cluster_scc_" + m_petri->getModule(module)->getSCCName(scc) + getProductSCCName(pss) + std::to_string(module);
+}
+
+string DSSBuilder::getProductSCCName(const ProductSCC *pss) {
     string res;
     PetriNet *petri {};
     for (int module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
@@ -247,7 +386,7 @@ string DSSBuilder::getProductSCCName(ProductSCC *pss) {
     return res;
 }
 
-string DSSBuilder::getStartProductName(ArcSync *arc) {
+string DSSBuilder::getSourceProductName(const ArcSync *arc) {
     string res;
     for (int module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
         const auto scc {arc->getSourceSCC(module)};
@@ -266,13 +405,13 @@ MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
     for (const auto &elt: m_dss[module]->getListMetaStates()) {
         if (elt != ms && *elt == *ms) {
             //Compare out edges
-            auto lEdges1 = ms->getSyncSucc();
-            auto lEdges2 = elt->getSyncSucc();
+            const auto &lEdges1 = ms->getSyncSucc();
+            const auto &lEdges2 = elt->getSyncSucc();
             if (lEdges1.size() == lEdges2.size()) { // Check that all edges are the same
                 bool areSame = true;
                 for (const auto &edge1: lEdges1) {
-                    auto compare = [&edge1](ArcSync *arc) {
-                        return edge1->getFusion() == arc->getFusion() && edge1->getMetaStateDest() == arc->getMetaStateDest();
+                    auto compare = [&edge1](const std::unique_ptr<ArcSync> &arc) {
+                        return edge1->getFusion() == arc->getFusion() && edge1->getDestination() == arc->getDestination();
                     };
                     auto res = std::find_if(lEdges2.begin(), lEdges2.end(), compare);
                     if (res == lEdges2.end()) {

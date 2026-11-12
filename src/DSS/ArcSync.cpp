@@ -7,7 +7,7 @@
 
 #include "DSS/ArcSync.h"
 
-MetaState *ArcSync::getMetaStateDest() {
+MetaState *ArcSync::getDestination() const {
     return m_destination;
 }
 
@@ -23,18 +23,18 @@ void ArcSync::setDestination(MetaState *destination) {
     m_destination = destination;
 }
 
-TransitionFusionSet *ArcSync::getFusion() {
+TransitionFusionSet *ArcSync::getFusion() const {
     return m_fusion;
 }
 
-ProductSCC *ArcSync::getStartProduct() {
-    return &m_source;
+const ProductSCC &ArcSync::getSourceProduct() const {
+    return m_source;
 }
 
 bool ArcSync::isSynchronised(const size_t module) const {
-    return m_fusion->getTransitionOfModule(static_cast<int>(module)) != nullptr;
+    return !m_source.isAny(module);
 }
 
-SCC *ArcSync::getSourceSCC(const size_t module) {
+SCC *ArcSync::getSourceSCC(const size_t module) const {
     return isSynchronised(module) ? m_source.getSCC(module) : nullptr;
 }

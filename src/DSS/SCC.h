@@ -1,6 +1,8 @@
 #ifndef SCC_H
 #define SCC_H
 #include <cstdint>
+#include <utility>
+#include <vector>
 #include "DSS/ChildOf.h"
 #include "DSS/Marking.h"
 #include "DSS/MetaState.h"
@@ -36,7 +38,7 @@ public:
     Marking *findMarking(Marking *m);
     size_t getCount() const;
     void addState(Marking *m);
-    vector<Marking *> *getListStates();
+    std::vector<Marking *> *getListStates();
     bool isEqual(const SCC &scc);
     [[nodiscard]] uint32_t getId() const;
     std::vector<std::pair<SCC * ,Transition*>>::iterator beginSucc() {
@@ -54,7 +56,7 @@ public:
     }
     bool isTerminal() const;
 private:
-    vector<Marking *> m_list;
+    std::vector<Marking *> m_list;
     static uint32_t m_counter;
     uint32_t m_id;
     IteratorSucc m_iterator_succ {this};

@@ -6,7 +6,7 @@ void ProductSCC::addSCC(SCC *scc, const bool any) {
     m_product.push_back({scc, any});
 }
 
-SCC *ProductSCC::getSCC(const size_t pos) {
+SCC *ProductSCC::getSCC(const size_t pos) const {
     return m_product[pos].scc;
 }
 
@@ -49,11 +49,11 @@ std::partial_ordering operator<=>(const ProductSCC &a, const ProductSCC &b) {
     return result;
 }
 
-size_t ProductSCC::getRepresentedProductsCount(const TransitionFusionSet &fusion,size_t module) const {
+size_t ProductSCC::getRepresentedProductsCount(const size_t module) const {
     size_t count {1};
     for (size_t index{}; const auto &[scc, any] : m_product) {
         if (index!=module) {
-            if (fusion.getTransitionOfModule(index)==nullptr) {
+            if (any) {
                 count*=scc->getParent()->getTerminalSCCsCount();
             }
             else if (!scc->isTerminal()) {

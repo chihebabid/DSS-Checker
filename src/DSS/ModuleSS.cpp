@@ -50,30 +50,16 @@ vector<MetaState *> &ModuleSS::getListMetaStates() {
  */
 void ModuleSS::removeMetaState(MetaState *ms) {
     // ms itself stays alive: its SCCs are still referenced by product SCCs of other modules.
-    // Detach its edges first (this touches them), then delete them: no dangling pointers are kept.
-    const auto out_edges {ms->getSyncSucc()}; // copy: the list is cleared below
+    // Its edges are owned by it: they are destroyed here.
     ms->clearSyncArcs();
-    for (auto edge: out_edges) {
-        delete edge;
-    }
 
     auto ptrMl = std::remove(m_metastates.begin(), m_metastates.end(), ms);
     m_metastates.erase(ptrMl, m_metastates.end());
     if (ms->getParent() == this) ms->setParent(nullptr); // detached from this module
 
-    auto compare = [&ms](ArcSync *arc) -> bool {
-        return ms == arc->getMetaStateDest();
-    };
-
     // Remove every remaining edge leading to ms
     for (const auto elt: m_metastates) {
-        const auto edges {elt->getSyncSucc()}; // copy: the list is modified below
-        for (auto edge: edges) {
-            if (compare(edge)) {
-                elt->removeSyncArc(edge);
-                delete edge;
-            }
-        }
+        elt->removeSyncArcsTo(ms);
     }
 }
 
@@ -95,9 +81,9 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
         if (scc->isTerminal()) {
             size_t count_represented_products{};
             for (const auto &sync_arc : ms->getSyncSucc()) {
-                auto product {sync_arc->getStartProduct()};
-                if (product->getSCC(m_id_module) == scc) {
-                    count_represented_products+=product->getRepresentedProductsCount(*(sync_arc->getFusion()),m_id_module);
+                const auto &product {sync_arc->getSourceProduct()}; // no copy
+                if (product.getSCC(m_id_module) == scc) {
+                    count_represented_products+=product.getRepresentedProductsCount(m_id_module);
                 }
             }
             if (total_products==count_represented_products) {

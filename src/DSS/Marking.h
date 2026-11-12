@@ -1,66 +1,78 @@
-// BitsVector.h: interface for the BitsVector class.
-//
-//////////////////////////////////////////////////////////////////////
+#ifndef DISTRIBUTEDSTATESPACE_MARKING_H
+#define DISTRIBUTEDSTATESPACE_MARKING_H
 
-#if !defined(AFX_BITSVECTOR_H__FCB7EB69_05AC_41F8_9A21_7807D91657A0__INCLUDED_)
-#define AFX_BITSVECTOR_H__FCB7EB69_05AC_41F8_9A21_7807D91657A0__INCLUDED_
-
-#if _MSC_VER > 1000
-#pragma once
-
-#endif // _MSC_VER > 1000
-
+#include <cstddef>
+#include <cstdint>
+#include <iosfwd>
+#include <utility>
 #include <vector>
-#include <iostream>
-#include <bitset>
-#include "DSS/MarkingArray.h"
+
 class Transition;
 
 class SCC;
 
-using namespace std;
-typedef unsigned char Octet;
-typedef vector<std::bitset<8>> VecCar;
-
+/*
+ * A marking of a (module) Petri net: one token count per place, stored on 8 bits.
+ * It is also a node of the local reachability graph: it knows its successors and the SCC containing it.
+ */
 class Marking {
 public:
-    int index; // Used in Tarjan algorithm
-    int lowlink; // Used in Tarjan algorithm
-    bool on_stack; // Used in Tarjan algorithm
-    Marking &operator=(const Marking &newvec);
+    using token_t = unsigned char;
+    using succ_list_t = std::vector<std::pair<Transition *, Marking *>>;
 
-    Marking(const Marking &value);
+    // Marking of place_count places, all empty
+    explicit Marking(size_t place_count);
 
-    Octet get8BitsValue(const int index);
+    // Copy only copies the token counts: the copy is a new node without successors nor SCC
+    Marking(const Marking &other);
 
-    bool operator==(const Marking &newvec) const {
-        return m_data==newvec.m_data;
-    }
+    // Only assigns the token counts: successors and SCC of this node are left unchanged
+    Marking &operator=(const Marking &other);
 
+    Marking(Marking &&) noexcept = default;
 
+    Marking &operator=(Marking &&) noexcept = default;
 
-    void add8BitsValue(const Octet val,const int index);
+    ~Marking() = default;
 
-    void addSucc(Transition *, Marking *);
+    [[nodiscard]] size_t getPlaceCount() const { return m_data.size(); }
 
-    vector<pair<Transition *, Marking *>> &getListSucc();
+    [[nodiscard]] token_t getTokens(size_t place) const { return m_data[place]; }
 
-    Marking(const size_t);
-    ~Marking();
+    // @throws std::overflow_error if tokens does not fit on 8 bits
+    void setTokens(size_t place, uint32_t tokens);
 
-    SCC *getSCCContainer() const;
-    void setSCCContainer(SCC *c);
-    friend ostream &operator<<(ostream &stream, const Marking &);
+    bool operator==(const Marking &other) const { return m_data == other.m_data; }
+
+    // Hash of the token counts (consistent with operator==)
+    [[nodiscard]] size_t hash() const;
+
+    void addSucc(Transition *t, Marking *m);
+
+    succ_list_t &getListSucc() { return m_succ; }
+
+    [[nodiscard]] const succ_list_t &getListSucc() const { return m_succ; }
+
+    [[nodiscard]] SCC *getSCCContainer() const { return m_scc_container; }
+
+    void setSCCContainer(SCC *c) { m_scc_container = c; }
+
+    // Prints the token counts, e.g. (1,0,2)
+    friend std::ostream &operator<<(std::ostream &stream, const Marking &m);
+
+    // Functors to store Marking pointers in hashed containers, compared by token counts
+    struct PtrHash {
+        size_t operator()(const Marking *m) const { return m->hash(); }
+    };
+
+    struct PtrEqual {
+        bool operator()(const Marking *a, const Marking *b) const { return *a == *b; }
+    };
 
 private:
-    MarkingArray m_data;
-    vector<pair<Transition *, Marking *>> m_succ;
-    SCC *m_scc_container;
+    std::vector<token_t> m_data;
+    succ_list_t m_succ;
+    SCC *m_scc_container {nullptr};
 };
 
-
-
-
-
-
-#endif // !defined(AFX_BITSVECTOR_H__FCB7EB69_05AC_41F8_9A21_7807D91657A0__INCLUDED_)
+#endif //DISTRIBUTEDSTATESPACE_MARKING_H

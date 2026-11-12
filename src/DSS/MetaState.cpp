@@ -5,6 +5,7 @@
  *      Author: LIP2
  */
 #include <algorithm>
+#include <unordered_map>
 #include "DSS/MetaState.h"
 #include "DSS/ArcSync.h"
 
@@ -57,22 +58,24 @@ void MetaState::absorbNames(const MetaState &merged) {
     m_merged_names.insert(m_merged_names.end(), merged.m_merged_names.begin(), merged.m_merged_names.end());
 }
 
-void MetaState::removeSyncArc(ArcSync *sync_arc) {
-    if (std::erase(m_sync_arcs, sync_arc) && sync_arc->getParent() == this) sync_arc->setParent(nullptr);
+MetaState::~MetaState() = default;
+
+void MetaState::removeSyncArcsTo(const MetaState *destination) {
+    std::erase_if(m_sync_arcs, [destination](const unique_ptr<ArcSync> &arc) {
+        return arc->getDestination() == destination;
+    });
 }
 
 void MetaState::clearSyncArcs() {
-    for (auto arc: m_sync_arcs)
-        if (arc->getParent() == this) arc->setParent(nullptr);
     m_sync_arcs.clear();
 }
 
-void MetaState::addSyncArc(ArcSync *sync_arc) {
+void MetaState::addSyncArc(unique_ptr<ArcSync> sync_arc) {
     sync_arc->setParent(this);
-    m_sync_arcs.push_back(sync_arc);
+    m_sync_arcs.push_back(std::move(sync_arc));
 }
 
-const vector<ArcSync *> &MetaState::getSyncSucc() const {
+const vector<unique_ptr<ArcSync>> &MetaState::getSyncSucc() const {
     return m_sync_arcs;
 }
 
@@ -84,18 +87,10 @@ uint32_t MetaState::getArcCount() {
 }
 
 bool MetaState::operator==(MetaState &ms) const {
-    if (ms.getListMarkings().size() != getListMarkings().size()) return false;
-    for (auto &elt1: ms.getListMarkings()) {
-        bool found = false;
-        for (const auto &elt2: getListMarkings()) {
-            if (*elt1 == *elt2) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) return false;
-    }
-    return true;
+    if (ms.m_nodes.size() != m_nodes.size()) return false;
+    // Markings are unique inside a metastate: same count and inclusion mean equality
+    return std::all_of(ms.m_nodes.begin(), ms.m_nodes.end(),
+                       [this](const Marking *marking) { return existMarking(marking) != nullptr; });
 }
 
 uint32_t MetaState::getId() const {
@@ -104,62 +99,69 @@ uint32_t MetaState::getId() const {
 
 uint32_t MetaState::m_counter {0};
 
-void MetaState::computeStrongConnectedComponents(Marking *v) {
-    v->index = m_index;
-    v->lowlink = m_index;
-    m_index++;
-    m_stack.push_back(v);
-    v->on_stack = true;
+// Working data of Tarjan algorithm, only alive during computeSCCTarjan()
+struct MetaState::TarjanContext {
+    struct NodeInfo {
+        int index {-1}; // -1: not visited yet
+        int lowlink {0};
+        bool on_stack {false};
+    };
+    unordered_map<const Marking *, NodeInfo> infos;
+    int next_index {0};
+    vector<Marking *> stack;
+};
+
+void MetaState::computeStrongConnectedComponents(Marking *v, TarjanContext &ctx) {
+    auto &info_v {ctx.infos[v]}; // references stay valid: unordered_map never moves its elements
+    info_v.index = ctx.next_index;
+    info_v.lowlink = ctx.next_index;
+    ctx.next_index++;
+    ctx.stack.push_back(v);
+    info_v.on_stack = true;
 
     // Consider successors of v
-
-    for (const auto & elt: v->getListSucc()) {
+    for (const auto &elt: v->getListSucc()) {
         Marking *w = elt.second;
-        if (w->index == -1) {
-            computeStrongConnectedComponents(w);
-            v->lowlink = min(v->lowlink, w->lowlink);
-        } else if (w->on_stack) v->lowlink = min(v->lowlink, w->index);
-
+        auto &info_w {ctx.infos[w]};
+        if (info_w.index == -1) {
+            computeStrongConnectedComponents(w, ctx);
+            info_v.lowlink = min(info_v.lowlink, info_w.lowlink);
+        } else if (info_w.on_stack) info_v.lowlink = min(info_v.lowlink, info_w.index);
     }
     // If v is a root node, pop the stack and generate an SCC
-    if (v->lowlink == v->index) {
+    if (info_v.lowlink == info_v.index) {
         SCC *scc = new SCC();
         scc->setParent(this);
         Marking *w;
         do {
-            w = m_stack.back();
-            m_stack.pop_back();
-            w->on_stack = false;
+            w = ctx.stack.back();
+            ctx.stack.pop_back();
+            ctx.infos[w].on_stack = false;
             scc->addState(w);
         } while (w != v);
         m_sccs.emplace_back(scc);
     }
 }
 
-Marking *MetaState::existMarking(Marking *marking) {
-    for (const auto &elt: m_nodes) {
-            if (*elt == *marking) return elt;
-    }
-    return nullptr;
+Marking *MetaState::existMarking(const Marking *marking) const {
+    // The lookup only reads *marking (hash and comparison)
+    const auto it {m_nodes_index.find(const_cast<Marking *>(marking))};
+    return it == m_nodes_index.end() ? nullptr : *it;
 }
 
 Marking *MetaState::insertMarking(Marking *m) {
-    Marking *p = existMarking(m);
-    if (!p) m_nodes.push_back(m);
-    return p;
+    const auto [it, inserted] {m_nodes_index.insert(m)};
+    if (!inserted) return *it;
+    m_nodes.push_back(m);
+    return nullptr;
 }
 
 
 void MetaState::computeSCCTarjan() {
-    m_index = 0;
-    for (auto & node : m_nodes) {
-        node->on_stack = false;
-        node->index = -1;
-        node->lowlink = 0;
-    }
-
-    for (auto & node : m_nodes) {
-        if (node->index == -1) computeStrongConnectedComponents(node);
+    TarjanContext ctx;
+    ctx.infos.reserve(m_nodes.size());
+    for (auto &node: m_nodes) {
+        if (ctx.infos[node].index == -1) computeStrongConnectedComponents(node, ctx);
     }
 }
 

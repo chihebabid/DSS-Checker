@@ -36,7 +36,7 @@ public:
     ModularPetriNet(ModularPetriNet &&) = delete;
     ModularPetriNet &operator=(ModularPetriNet &&) = delete;
 
-    string getProductSCCName(ProductSCC *pss);
+    string getProductSCCName(const ProductSCC *pss);
 
     void setSync(vector<string> transition_codes);
 

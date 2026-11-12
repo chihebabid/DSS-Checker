@@ -116,7 +116,7 @@ DistributedState *ModularPetriNet::buildDSS() {
                     dest_productscc)) {
                     // Insert metastate into DSS
                     for (int module = 0; module < getModuleCount(); module++) {
-                        ArcSync *arc_sync = new ArcSync();
+                        auto arc_sync = std::make_unique<ArcSync>();
                         MetaState *source_ms =
                                 m_dss->getMetaGraph(module)->findMetaStateByProductSCC(
                                     elt.m_product);
@@ -127,11 +127,12 @@ DistributedState *ModularPetriNet::buildDSS() {
                                         elt.m_product);
                             SCC *_scc = _source_ms->findSCC(
                                 (*global_state)[i]);
-                            startProduct.addSCC(_scc);
+                            // "any" if module i is not synchronised on fusion
+                            startProduct.addSCC(_scc, !fusion->participate(i));
                         }
                         arc_sync->setData(startProduct, fusion,
                                           dest_list_metastates[module]);
-                        source_ms->addSyncArc(arc_sync);
+                        source_ms->addSyncArc(std::move(arc_sync));
                         m_dss->addMetaState(dest_list_metastates[module],
                                             module);
                     }
@@ -146,7 +147,7 @@ DistributedState *ModularPetriNet::buildDSS() {
                     stack_fusion.push_back(new_list_fusions);
                 } else {
                     for (int module = 0; module < getModuleCount(); module++) {
-                        ArcSync *arc_sync = new ArcSync();
+                        auto arc_sync = std::make_unique<ArcSync>();
                         MetaState *source_ms =
                                 m_dss->getMetaGraph(module)->findMetaStateByProductSCC(elt.m_product);
 
@@ -154,11 +155,12 @@ DistributedState *ModularPetriNet::buildDSS() {
                         for (int i = 0; i < global_state->size(); i++) {
                             MetaState *_source_ms = m_dss->getMetaGraph(i)->findMetaStateByProductSCC(elt.m_product);
                             SCC *_scc = _source_ms->findSCC((*global_state)[i]);
-                            startProduct.addSCC(_scc);
+                            // "any" if module i is not synchronised on fusion
+                            startProduct.addSCC(_scc, !fusion->participate(i));
                         }
                         MetaState *ms_dest = m_dss->getMetaGraph(module)->findMetaStateByProductSCC(dest_productscc);
                         arc_sync->setData(startProduct, fusion, ms_dest);
-                        source_ms->addSyncArc(arc_sync);
+                        source_ms->addSyncArc(std::move(arc_sync));
                     }
                 }
             }
@@ -343,8 +345,8 @@ void ModularPetriNet::writeToFile(const string filename) {
             for (int k = 0; k < ms->getSyncSucc().size(); k++) {
                 myfile << petri->getSCCName(pscc->getSCC(module))
                         << getProductSCCName(pscc) << module << " -> ";
-                ArcSync *arc = ms->getSyncSucc().at(k);
-                MetaState *ms_dest = arc->getMetaStateDest();
+                ArcSync *arc = ms->getSyncSucc().at(k).get();
+                MetaState *ms_dest = arc->getDestination();
                 myfile
                         << petri->getSCCName(
                             ms_dest->getProductSCCName()->getSCC(module))
@@ -363,7 +365,7 @@ void ModularPetriNet::writeToFile(const string filename) {
     myfile.close();
 }
 
-string ModularPetriNet::getProductSCCName(ProductSCC *pss) {
+string ModularPetriNet::getProductSCCName(const ProductSCC *pss) {
     string res = "";
     for (int module = 0; module < getModuleCount(); module++) {
         PetriNet *petri = m_modules.at(module);
@@ -411,9 +413,9 @@ void ModularPetriNet::writeTextFile(const string filename) {
             ProductSCC *pscc = ms->getProductSCCName();
             for (int k = 0; k < ms->getSyncSucc().size(); k++) {
                 myfile << getProductSCCName(pscc) << " ==== ";
-                ArcSync *arc = ms->getSyncSucc()[k];
-                MetaState *ms_dest = arc->getMetaStateDest();
-                myfile << "(" << getProductSCCName(arc->getStartProduct())
+                ArcSync *arc = ms->getSyncSucc()[k].get();
+                MetaState *ms_dest = arc->getDestination();
+                myfile << "(" << getProductSCCName(&arc->getSourceProduct())
                         << "," << arc->getFusion()->getName() << ") ===> ";
                 myfile << getProductSCCName(ms_dest->getProductSCCName()) << endl;
                 //myfile<<arc->getFusion()->getName()<<"]";

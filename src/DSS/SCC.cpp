@@ -53,9 +53,8 @@ void SCC::IteratorSucc::update() {
     auto ms {m_ptr->getParent()};
     auto module {ms->getIdModule()};
     for(auto & edge : ms->getSyncSucc()) {
-        auto startProduct {edge->getStartProduct()};
-        if (m_ptr==startProduct->getSCC(module)) {
-            m_succ.emplace_back(edge->getMetaStateDest()->getInitialSCC(),edge->getFusion()->getTransitionOfModule(module));
+        if (m_ptr==edge->getSourceProduct().getSCC(module)) {
+            m_succ.emplace_back(edge->getDestination()->getInitialSCC(),edge->getFusion()->getTransitionOfModule(module));
         }
     }
 }

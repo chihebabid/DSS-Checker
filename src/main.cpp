@@ -119,6 +119,9 @@ int main(int argc, char *argv[]) {
     bool dot_output{false};
     app.add_flag("--dot-output", dot_output, "Save the output graph in a dot file")->group("Print");
 
+    bool svg_output{false};
+    app.add_flag("--svg-output", svg_output, "Render the output graph in an SVG file (requires Graphviz)")->group("Print");
+
     bool txt_output{false};
     app.add_flag("--txt-output", txt_output, "Save the output graph in a formatted text file")->group("Print");
 
@@ -172,6 +175,7 @@ int main(int argc, char *argv[]) {
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
         cout<<"\nDSS building duration: "<< duration << " ms" << endl;
         if (dot_output) builder.writeToFile(file_name + ".dot");
+        if (svg_output && builder.renderToFile(file_name + ".svg")) cout << "Graph rendered in " << file_name << ".svg\n";
         if (txt_output) builder.outputTXT();
         if (property_file != "") {
             bool dot_formula {false};
