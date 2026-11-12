@@ -151,33 +151,39 @@ void DSSBuilder::buildInitialMS() {
             }
         }
         // Reducing
-        for (const auto &elt: list_fusions) {
-            for (auto module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
-                auto *_ms = elt.getMetaState(module);
-                // _ms may itself have been merged into another metastate earlier in this loop
-                const auto &alive {m_dss[module]->getListMetaStates()};
-                if (std::find(alive.begin(), alive.end(), _ms) == alive.end()) continue;
-
-                if (auto ptrMS = reduce(_ms, module);ptrMS) {
-                    // Redirect edges to ptrMS
-                    // A comment
-                    for (const auto &m: m_dss[module]->getListMetaStates()) {
-                        for (const auto &edge: m->getSyncSucc()) {
-                            if (edge->getDestination() == ptrMS) edge->setDestination(_ms);
-                        }
-                    }
-                    // _ms now also stands for the product SCCs represented by ptrMS
-                    _ms->absorbNames(*ptrMS);
-                    // Remove ptrMS
-                    m_dss[module]->removeMetaState(ptrMS);
-                }
-            }
-        }
+        // for (const auto &elt: list_fusions) {
+        //     for (auto module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
+        //         auto *_ms = elt.getMetaState(module);
+        //         // _ms may itself have been merged into another metastate earlier in this loop
+        //         const auto &alive {m_dss[module]->getListMetaStates()};
+        //         if (std::find(alive.begin(), alive.end(), _ms) == alive.end()) continue;
+        //
+        //         if (auto ptrMS = reduce(_ms, module);ptrMS) {
+        //             // Redirect edges to ptrMS
+        //             // A comment
+        //             for (const auto &m: m_dss[module]->getListMetaStates()) {
+        //                 for (const auto &edge: m->getSyncSucc()) {
+        //                     if (edge->getDestination() == ptrMS) edge->setDestination(_ms);
+        //                 }
+        //             }
+        //             // _ms now also stands for the product SCCs represented by ptrMS
+        //             _ms->absorbNames(*ptrMS);
+        //             // Remove ptrMS
+        //             m_dss[module]->removeMetaState(ptrMS);
+        //         }
+        //     }
+        // }
     }
     // Lazy version for computing Sync-closure property
     for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
         for (auto ms: m_dss[module]->getListMetaStates()) {
             m_dss[module]->computeSyncClosedSCC(ms);
+        }
+    }
+    // Sync arcs that may never be taken because another module can loop forever
+    for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
+        for (auto ms: m_dss[module]->getListMetaStates()) {
+            m_dss[module]->markDivergentSyncArcs(ms);
         }
     }
 }

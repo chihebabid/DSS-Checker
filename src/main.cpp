@@ -193,7 +193,7 @@ int main(int argc, char *argv[]) {
                 auto moduleGraph{builder.getModuleGraph(index_module)};
                 // build a twa graph of the SOG
 
-                auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph);
+                auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph, negate_formula.propositions);
                 auto start_intersect{clock()};
                 auto res{(k->intersecting_run(af) == nullptr)};
                 auto finish_intersect{clock()};

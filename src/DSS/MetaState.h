@@ -56,6 +56,9 @@ public:
     void setIdModule(const size_t id) { m_id_module = id;}
     [[nodiscard]] size_t getIdModule() const { return m_id_module;}
     size_t getTerminalSCCsCount() const;
+    // True if the metastate contains a cycle of local transitions:
+    // an SCC with several markings, or a marking with a loop on itself
+    [[nodiscard]] bool hasLocalCycle() const;
 private:
     size_t m_id_module;
     ProductSCC *m_name {};

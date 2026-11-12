@@ -4,22 +4,26 @@
 
 #ifndef DISTRIBUTEDSTATESPACE_DSSITERATOR_H
 #define DISTRIBUTEDSTATESPACE_DSSITERATOR_H
-#include <spot/kripke/kripke.hh>
+#include <spot/twa/twa.hh>
 #include <vector>
 #include "SpotMC/DSSState.h"
-class DSSIterator : public spot::kripke_succ_iterator {
-    SCC *m_scc;
 
-    uint32_t m_current_edge;
-    std::vector<std::pair<SCC*,Transition*>> m_succ;
+class DSSKripke;
+
+// Successors of a marking in a DSSKripke
+class DSSIterator : public spot::twa_succ_iterator {
 public:
-    static spot::bdd_dict_ptr* m_dict_ptr;
-    DSSIterator ( SCC* scc, bdd cnd );
+    DSSIterator(Marking *marking, const DSSKripke *kripke);
     bool first() override;
     bool next() override;
     bool done() const override;
-    DSSState* dst() const override;
-    bdd cond() const override final;
+    DSSState *dst() const override;
+    bdd cond() const override;
+    spot::acc_cond::mark_t acc() const override { return {}; }
+private:
+    const DSSKripke *m_kripke;
+    uint32_t m_current_edge {};
+    std::vector<std::pair<Marking *, Transition *>> m_succ; // (destination, fired transition or nullptr)
 };
 
 

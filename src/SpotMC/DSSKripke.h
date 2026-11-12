@@ -4,18 +4,49 @@
 
 #ifndef DISTRIBUTEDSTATESPACE_DSSKRIPKE_H
 #define DISTRIBUTEDSTATESPACE_DSSKRIPKE_H
-#include <spot/kripke/kripke.hh>
+#include <map>
+#include <set>
+#include <string>
+#include <spot/twa/twa.hh>
 #include "DSS/ModuleSS.h"
 #include "SpotMC/DSSIterator.h"
-class DSSKripke : public spot::kripke {
-    ModuleSS * m_metagraph;
-public:
-    DSSKripke ( const spot::bdd_dict_ptr& dict_ptr, ModuleSS *metagraph);
-    spot::state* get_init_state() const override;
-    DSSIterator* succ_iter(const spot::state* s) const override;
-    std::string format_state(const spot::state* s) const override;
-    bdd state_condition(const spot::state* s) const override;
 
+/*
+ * Automaton of the state space of one module, to be intersected with the automaton of a formula.
+ * States are markings: the run goes from a marking to another one, by local transitions or by
+ * synchronisations (sync arcs of the metastates). The atomic propositions of the formula are
+ * transition names, carried by the edges.
+ *
+ * It derives from spot::twa and not from spot::kripke: Spot assumes that all the edges leaving a
+ * state of a Kripke structure have the same label (state-based labels), which is not the case here.
+ */
+class DSSKripke : public spot::twa {
+public:
+    // aps: atomic propositions (transition names) of the formula
+    DSSKripke(const spot::bdd_dict_ptr &dict_ptr, ModuleSS *metagraph, const std::set<std::string> &aps);
+
+    ~DSSKripke() override;
+
+    const spot::state *get_init_state() const override;
+
+    DSSIterator *succ_iter(const spot::state *s) const override;
+
+    std::string format_state(const spot::state *s) const override;
+
+    // Label of an edge firing transition t (nullptr: no transition of the formula is fired):
+    // the proposition of t is true and the other ones are false
+    [[nodiscard]] bdd edgeCondition(const Transition *t) const;
+
+    // State reached when a marking of a sync-closed SCC diverges: it loops forever without firing a transition
+    [[nodiscard]] Marking *getDivergence() const { return &m_divergence; }
+
+    [[nodiscard]] size_t getIdModule() const { return m_metagraph->getIdModule(); }
+
+private:
+    ModuleSS *m_metagraph;
+    std::map<std::string, bdd> m_ap_vars; // BDD variable of each atomic proposition
+    bdd m_no_ap {bddtrue};                // All the atomic propositions are false
+    mutable Marking m_divergence {0};
 };
 
 

@@ -170,3 +170,12 @@ size_t MetaState::getTerminalSCCsCount() const {
         return scc->isTerminal();
     });
 }
+
+bool MetaState::hasLocalCycle() const {
+    return std::any_of(m_sccs.begin(), m_sccs.end(), [](SCC *scc) {
+        if (scc->getCount() > 1) return true;
+        Marking *marking {scc->getListStates()->at(0)};
+        const auto &succ {marking->getListSucc()};
+        return std::any_of(succ.begin(), succ.end(), [marking](const auto &elt) { return elt.second == marking; });
+    });
+}

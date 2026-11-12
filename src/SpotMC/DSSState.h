@@ -5,40 +5,33 @@
 #ifndef DISTRIBUTEDSTATESPACE_DSSSTATE_H
 #define DISTRIBUTEDSTATESPACE_DSSSTATE_H
 
+#include <functional>
 #include <twa/twa.hh>
-#include "DSS/SCC.h"
-#include "DSS/MetaState.h"
+#include "DSS/Marking.h"
 
+// A state of a DSSKripke: a marking of a metastate of the module
+// (markings are unique objects inside a metastate: they are compared by address)
 class DSSState : public spot::state {
-    SCC *m_scc;
+    Marking *m_marking;
 public:
-    DSSState(SCC* scc) : m_scc(scc) {
-
-    };
-
-    DSSState* clone() const override
-    {
-        return new DSSState(m_scc);
+    explicit DSSState(Marking *marking) : m_marking(marking) {
     }
 
-    size_t hash() const override
-    {
-        return m_scc->getId();
+    DSSState *clone() const override {
+        return new DSSState(m_marking);
     }
 
-    int compare(const spot::state* other) const override
-    {
-        auto o = static_cast<const DSSState*>(other);
-        size_t oh = o->hash();
-        size_t h = hash();
-        if (h < oh)
-            return -1;
-        else
-            return h > oh;
+    size_t hash() const override {
+        return std::hash<const Marking *>{}(m_marking);
     }
 
-    SCC * getSCC() const {
-        return m_scc;
+    int compare(const spot::state *other) const override {
+        const auto o {static_cast<const DSSState *>(other)->m_marking};
+        return std::less<const Marking *>{}(m_marking, o) ? -1 : (m_marking != o);
+    }
+
+    [[nodiscard]] Marking *getMarking() const {
+        return m_marking;
     }
 };
 

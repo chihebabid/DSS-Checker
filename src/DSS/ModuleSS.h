@@ -34,6 +34,10 @@ public:
 
     void computeSyncClosedSCC(const MetaState *ms);
 
+    // Mark the sync arcs of ms as divergent if another module, in its metastate of the same name,
+    // has a cycle of local transitions (see ArcSync::isDivergent)
+    void markDivergentSyncArcs(const MetaState *ms);
+
     size_t getIdModule() const { return m_id_module; }
 
 private:
