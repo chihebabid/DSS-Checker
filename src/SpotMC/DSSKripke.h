@@ -7,6 +7,9 @@
 #include <map>
 #include <set>
 #include <string>
+#include <unordered_map>
+#include <utility>
+#include <vector>
 #include <spot/twa/twa.hh>
 #include "DSS/ModuleSS.h"
 #include "SpotMC/DSSIterator.h"
@@ -37,16 +40,23 @@ public:
     // the proposition of t is true and the other ones are false
     [[nodiscard]] bdd edgeCondition(const Transition *t) const;
 
-    // State reached when a marking of a sync-closed SCC diverges: it loops forever without firing a transition
-    [[nodiscard]] Marking *getDivergence() const { return &m_divergence; }
-
     [[nodiscard]] size_t getIdModule() const { return m_metagraph->getIdModule(); }
+
+    // Successor of a marking: (destination marking, fired transition of the module or nullptr)
+    using Successors = std::vector<std::pair<Marking *, Transition *>>;
+
+    // Successors of marking, as seen by Spot (computed once, then cached).
+    // Synchronisations in which the module does not take part are invisible: the module keeps its marking
+    // but moves to the destination metastate. They are not edges: they are followed by a closure, and the
+    // successors of marking are those of every marking of its closure (see DSSKripke.cpp)
+    const Successors &getSuccessors(Marking *marking) const;
 
 private:
     ModuleSS *m_metagraph;
     std::map<std::string, bdd> m_ap_vars; // BDD variable of each atomic proposition
     bdd m_no_ap {bddtrue};                // All the atomic propositions are false
     mutable Marking m_divergence {0};
+    mutable std::unordered_map<Marking *, Successors> m_successors; // Cache of getSuccessors()
 };
 
 

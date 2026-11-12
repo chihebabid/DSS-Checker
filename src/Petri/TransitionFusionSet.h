@@ -27,12 +27,6 @@ public:
 
     void fire();
 
-    int getLocalTransitionCount();
-
-    string getFusionName();
-
-    bool isFirable();
-
     void addTransition(Transition *transition);
 
     Transition *getTransitionOfModule(int module) const;

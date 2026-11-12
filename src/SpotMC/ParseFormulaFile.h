@@ -17,7 +17,6 @@ class ParseFormulaFile {
 public:
     ParseFormulaFile(const string &fileName);
     bool getNext(Formula &f);
-    uint32_t getFormulaCount() const;
     ~ParseFormulaFile();
 };
 

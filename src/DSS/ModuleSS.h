@@ -16,13 +16,9 @@ class ModuleSS : public ChildOf<DistributedSS> {
 public:
     ModuleSS(size_t id):m_id_module(id) {}
 
-    MetaState *getInitialMS();
-
     bool insertMS(MetaState *ms);
 
     MetaState *findMetaStateByProductSCC(ProductSCC &productscc);
-
-    friend ostream &operator<<(ostream &os, const ModuleSS &ss);
 
     size_t getMetaStateCount() const;
 

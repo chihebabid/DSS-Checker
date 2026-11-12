@@ -6,7 +6,7 @@
 #define DISTRIBUTEDSTATESPACE_MISC_H
 #include <vector>
 #include <tl/formula.hh>
-#include "Legacy/ListMarking.h"
+#include "DSS/Marking.h"
 #include "Petri/TransitionFusionSet.h"
 #include "DSS/ProductSCC.h"
 
@@ -23,11 +23,6 @@ struct PElement_dss {
     TransitionFusionSet *m_fusion {nullptr};
 };
 
-/***********************************************************************/
-struct element_t {
-    Marking marking;
-    vector<Transition *> transitions;
-};
 /*************************************************************************/
 struct Element_dss : public PElement_dss {
 

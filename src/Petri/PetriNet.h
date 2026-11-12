@@ -14,14 +14,12 @@
 
 class Transition;
 
-class ListMarking;
 
 class MetaState;
 
 class SCC;
 
 using std::vector;
-typedef vector<string> vectorString;
 
 class PetriNet {
 public:

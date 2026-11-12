@@ -13,7 +13,6 @@
 #include <set>
 
 #include "Petri/PetriNet.h"
-#include "Legacy/NodeSG.h"
 #include "DSS/DistributedState.h"
 #include "misc.h"
 

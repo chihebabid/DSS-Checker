@@ -52,6 +52,3 @@ bool ParseFormulaFile::getNext(Formula &f) {
 }
 
 
-uint32_t ParseFormulaFile::getFormulaCount() const {
-    return m_formula_count;
-}

@@ -77,15 +77,6 @@ add_executable(distributedstatespace
         SpotMC/ParseFormulaFile.cpp
         SpotMC/ParseFormulaFile.h
 
-        # Legacy
-        Legacy/ArcSG.cpp
-        Legacy/ArcSG.h
-        Legacy/ListMarking.cpp
-        Legacy/ListMarking.h
-        Legacy/NodeSG.cpp
-        Legacy/NodeSG.h
-        Legacy/NodeSGSimplified.cpp
-        Legacy/NodeSGSimplified.h
 )
 
 target_link_libraries(distributedstatespace

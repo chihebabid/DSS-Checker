@@ -15,21 +15,6 @@ void TransitionFusionSet::addTransition(Transition *transition) {
     m_transitions.push_back(transition);
 }
 
-bool TransitionFusionSet::isFirable() {
-    for (const auto transition : m_transitions)
-        if (!transition->isLocallyFirable()) return false;
-    return true;
-}
-
-string TransitionFusionSet::getFusionName() {
-    return m_transitions[0]->getName();
-}
-
-int TransitionFusionSet::getLocalTransitionCount() {
-    return m_transitions.size();
-}
-
-
 /*
  * @brief Check whether module is synchronised on the transition fusion set
  */

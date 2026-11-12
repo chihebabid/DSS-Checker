@@ -21,10 +21,6 @@ public:
     [[nodiscard]] SCC *getSCC(size_t pos) const;
     // True if the component of module pos is "any" ("-")
     [[nodiscard]] bool isAny(size_t pos) const;
-    // Number of products of terminal SCCs of the modules other than module represented by this product:
-    // an "any" component stands for every terminal SCC of its metastate, another one counts for one
-    // if it is terminal, else the product represents nothing
-    size_t getRepresentedProductsCount(size_t module) const;
 
     /*
      * Partial order: a > b if a represents strictly more products than b

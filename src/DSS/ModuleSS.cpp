@@ -2,7 +2,6 @@
 // Created by chiheb on 13/07/22.
 //
 #include <algorithm>
-#include <set>
 #include <vector>
 #include <iostream>
 #include "DSS/ModuleSS.h"
@@ -26,10 +25,6 @@ static string productName(const ProductSCC &product) {
         res += product.isAny(module) ? "-" : sccName(product.getSCC(module), module);
     }
     return res;
-}
-
-MetaState *ModuleSS::getInitialMS() {
-    return m_metastates[0];
 }
 
 /*
@@ -102,7 +97,7 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
 
     // Compute total products that should appear in sync edges
     size_t total_products{1};
-    std::vector<std::vector<SCC *>> terminal_sccs_of(module_count); // terminal SCCs of the other modules
+    std::vector<std::vector<SCC *>> terminal_sccs_of(module_count); // Terminal SCCs of each other module
     for (size_t module{}; module < module_count; ++module) {
         if (module != m_id_module) {
             auto mss {getParent()->getModule(module)};
@@ -130,48 +125,52 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
             continue;
         }
 
-        // Products of terminal SCCs of the other modules covered by at least one sync arc.
-        // A product is counted once even if several arcs (e.g. of different fusions) cover it.
-        // Each product is a tuple of indices in terminal_sccs_of ("-" stands for every terminal SCC)
-        std::set<std::vector<size_t>> covered;
+        // result: number of distinct products of terminal SCCs of the other modules covered by the sync arcs
+        // leaving scc (union: a product covered by several arcs is counted once).
+        // A product (tuple of indices i_j in terminal_sccs_of[j]) is coded by the mixed-radix number
+        // i_j1 + n_j1 * (i_j2 + n_j2 * (...)), n_j being the number of terminal SCCs of module j
+        std::vector<bool> covered(total_products, false);
+        size_t result{};
         auto max_products {getMaxProductOfTerminalSCCs(ms, scc)};
         if (debug_sync_closed) {
             std::cout << "[sync-closed]   SCC " << sccName(scc, m_id_module) << ": terminal, "
                       << max_products.size() << " maximal product(s)\n";
         }
         for (const auto &elt : max_products) {
-            // Possible terminal SCCs (indices) of each other module for this product
-            std::vector<std::vector<size_t>> choices;
+            if (result == total_products) break; // Everything is already covered
+            // Codes of the products represented by elt, built module by module
+            std::vector<size_t> codes {0};
+            size_t radix {1};
             for (size_t module{}; module < module_count; ++module) {
                 if (module == m_id_module) continue;
                 const auto &terminals {terminal_sccs_of[module]};
+                // Terminal SCCs of the module allowed by elt: all of them for "-", else the one equal to its SCC
+                // (compared by content: the SCC of elt may belong to a merged metastate)
                 std::vector<size_t> indices;
                 for (size_t i{}; i < terminals.size(); ++i) {
-                    // SCCs are compared by content: equal SCCs may belong to distinct (merged) metastates
                     if (elt->isAny(module) || terminals[i]->isEqual(*elt->getSCC(module))) indices.push_back(i);
                 }
-                choices.push_back(std::move(indices));
-            }
-            // Cartesian product of the choices
-            std::vector<std::vector<size_t>> tuples {{}};
-            for (const auto &indices: choices) {
-                std::vector<std::vector<size_t>> next;
-                for (const auto &tuple: tuples) {
-                    for (const auto index: indices) {
-                        next.push_back(tuple);
-                        next.back().push_back(index);
-                    }
+                std::vector<size_t> next;
+                next.reserve(codes.size() * indices.size());
+                for (const auto code: codes) {
+                    for (const auto i: indices) next.push_back(code + i * radix);
                 }
-                tuples = std::move(next);
+                codes = std::move(next);
+                radix *= terminals.size();
             }
-            const size_t before {covered.size()};
-            covered.insert(tuples.begin(), tuples.end());
+            size_t new_products{};
+            for (const auto code: codes) {
+                if (!covered[code]) {
+                    covered[code] = true;
+                    ++new_products;
+                }
+            }
+            result += new_products;
             if (debug_sync_closed) {
                 std::cout << "[sync-closed]     product " << productName(*elt) << " represents "
-                          << tuples.size() << " product(s), " << covered.size() - before << " new\n";
+                          << codes.size() << " product(s), " << new_products << " not covered yet\n";
             }
         }
-        const size_t result {covered.size()};
 
         if (debug_sync_closed) {
             std::cout << "[sync-closed]     result = " << result << ", total_products = " << total_products
@@ -182,20 +181,6 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
             scc->setSyncClosed(true);
         }
     }
-
-    // for (const auto &scc : *(ms->getListSCCs())) {
-    //     // We compute sync-closure only for terminal SCCs
-    //     if (scc->isTerminal()) {
-    //         size_t count_represented_products{};
-    //         for (const auto &sync_arc : ms->getSyncSucc()) {
-    //             const auto &product {sync_arc->getSourceProduct()}; // no copy
-    //             if (product.getSCC(m_id_module) == scc) {
-    //                 count_represented_products+=product.getRepresentedProductsCount(m_id_module);
-    //             }
-    //         }
-    //
-    //     }
-    // }
 }
 void ModuleSS::markOthersCanLoop(const MetaState *ms) {
     if (!ms->hasLocalCycle()) return;
@@ -237,10 +222,4 @@ std::vector<const ProductSCC *> ModuleSS::getMaxProductOfTerminalSCCs(const Meta
         maximal_products.push_back(&product);
     }
     return maximal_products;
-}
-
-ostream &operator<<(ostream &os, const ModuleSS &ss) {
-    //os << dt.mo << '/' << dt.da << '/' << dt.yr;
-
-    return os;
 }

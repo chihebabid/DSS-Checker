@@ -71,7 +71,6 @@ private:
     bool m_sync {false};
     vector<transition_t> m_input_places;
     vector<transition_t> m_output_places;
-    vector<int> m_input_weights;
 
 };
 

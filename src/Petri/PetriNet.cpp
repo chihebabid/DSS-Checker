@@ -7,7 +7,6 @@
 #include "Petri/PetriNet.h"
 #include "misc.h"
 
-typedef vector<element_t> Pile;
 typedef vector<PElement> PStack;
 
 

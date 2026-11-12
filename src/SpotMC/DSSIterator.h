@@ -23,7 +23,7 @@ public:
 private:
     const DSSKripke *m_kripke;
     uint32_t m_current_edge {};
-    std::vector<std::pair<Marking *, Transition *>> m_succ; // (destination, fired transition or nullptr)
+    const std::vector<std::pair<Marking *, Transition *>> &m_succ; // (destination, fired transition or nullptr), cached by the DSSKripke
 };
 
 

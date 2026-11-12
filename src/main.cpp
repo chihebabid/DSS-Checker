@@ -1,67 +1,15 @@
 #include <iostream>
 #include "Petri/ConstructPetriFromFile.h"
 #include "time.h"
-#include <sys/wait.h>
 #include <spot/twaalgos/dot.hh>
 #include <CLI11.hpp>
-#include <spot/tl/parse.hh>
-#include <spot/tl/print.hh>
 #include <spot/twaalgos/translate.hh>
 #include <spot/twaalgos/emptiness.hh>
-#include <spot/tl/apcollect.hh>
 #include "DSS/DSSBuilder.h"
 #include "SpotMC/DSSKripke.h"
 #include "SpotMC/ParseFormulaFile.h"
 using namespace std;
 
-
-/**
- * Parse a file  containing a LTL formula and return its negation
- *
- * @param fileName Path to LTL formula
- * @return Formula
- */
-Formula negateFormula(const string &fileName) {
-    string input;
-    set<string> transitionSet;
-    ifstream file(fileName);
-
-    cout << "______________________________________" << endl;
-    cout << "Fetching formula ... " << endl;
-
-    if (!file.is_open()) {
-        cout << "Cannot open formula file" << endl;
-        exit(0);
-    }
-
-    getline(file, input);
-    cout << "        Loaded formula: " << input << endl;
-    file.close();
-
-    spot::parsed_formula pf = spot::parse_infix_psl(input);
-    if (pf.format_errors(std::cerr))
-        exit(0);
-
-    spot::formula fo = pf.f;
-    if (!fo.is_ltl_formula()) {
-        std::cerr << "Only LTL formulas are supported.\n";
-        exit(0);
-    }
-
-    spot::atomic_prop_set *p_list = spot::atomic_prop_collect(fo, nullptr);
-    for (const auto &i: *p_list) {
-        transitionSet.insert(i.ap_name());
-    }
-    cout << "Formula in SPIN format: ";
-    print_spin_ltl(std::cout, fo) << endl;
-
-    cout << "Building negation of the formula ... ";
-    spot::formula not_f = spot::formula::Not(pf.f);
-    cout << "done\n"
-         << endl;
-
-    return {not_f, transitionSet};
-}
 
 /**
 * Save a graph in a dot file
@@ -142,28 +90,10 @@ int main(int argc, char *argv[]) {
     cout << "Petri net information loaded successfully...\n";
     cout << "Petri net built from file : " << construire.getFileName() << endl;
 
-    vectorString transitions;
-    if (argc > 2) {
-        for (int i = 0; i < argc - 2; i++) {
-            transitions.push_back((string) argv[i + 2]);
-        }
-    }
-    //petri->renommerTransitions(liste_transitions);
-
-
-    clock_t start, finish;
-    double duration;
-
-    // DistributedState dss(petri);
-    DistributedState *dss;
-
-
     if (algorithm == "V1") {
         cout << "Building the distributed state space (V1) has been started..."
              << endl;
-        start = clock();
-        dss = petri->buildDSS();
-        finish = clock();
+        petri->buildDSS();
         cout << "Distributed state space successfully built." << endl;
     }  else {
         cout << "Building DSS (new version) has been started...\n";

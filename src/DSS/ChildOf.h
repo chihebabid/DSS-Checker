@@ -19,8 +19,6 @@ public:
 
     void setParent(Parent *parent) { m_parent = parent; }
 
-    [[nodiscard]] bool hasParent() const { return m_parent != nullptr; }
-
 protected:
     // Only meant to be used as a base class, never deleted through a ChildOf pointer
     ChildOf() = default;

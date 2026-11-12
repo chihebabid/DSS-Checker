@@ -71,7 +71,6 @@ private:
 
     vector<Marking *> m_nodes; // In insertion order
     unordered_set<Marking *, Marking::PtrHash, Marking::PtrEqual> m_nodes_index; // Same markings, for fast lookup
-    vector<string> m_transition_names;
     vector<SCC *> m_sccs;
     struct TarjanContext; // Working data of Tarjan algorithm
     void computeStrongConnectedComponents(Marking *v, TarjanContext &ctx);

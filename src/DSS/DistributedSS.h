@@ -28,8 +28,6 @@ public:
 
     ModuleSS *operator[](size_t index) const { return m_modules_list[index]; }
 
-    size_t getModuleCount() const { return m_modules_list.size(); }
-
     container_t::const_iterator begin() const { return m_modules_list.cbegin(); }
 
     container_t::const_iterator end() const { return m_modules_list.cend(); }

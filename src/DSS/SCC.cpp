@@ -2,11 +2,6 @@
 #include <algorithm>
 #include "DSS/SCC.h"
 #include "DSS/ArcSync.h"
-SCC::SCC() {
-    m_id = m_counter++;
-}
-
-
 Marking *SCC::findMarking(Marking *m) {
     auto it{std::find_if(m_list.begin(), m_list.end(), [m](const Marking *elt) { return *m == *elt; })};
     return it == m_list.end() ? nullptr : *it;
@@ -35,12 +30,6 @@ vector<Marking *> *SCC::getListStates() {
     return &m_list;
 }
 
-uint32_t SCC::getId() const {
-    return m_id;
-}
-
-
-uint32_t SCC::m_counter{0};
 
 
 void SCC::IteratorSucc::update() {

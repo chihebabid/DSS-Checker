@@ -22,10 +22,6 @@ class SCC : public ChildOf<MetaState> {
             return m_succ.begin();
         }
         std::vector<std::pair<SCC * ,Transition*>>::iterator end() { return m_succ.end(); }
-        std::vector<std::pair<SCC * ,Transition*>>& getSuccessors() {
-            update();
-            return m_succ;
-        }
     private:
         void update();
         SCC *m_ptr;
@@ -33,14 +29,13 @@ class SCC : public ChildOf<MetaState> {
     };
 
 public:
-    SCC();
+    SCC() = default;
     virtual ~SCC()=default;
     Marking *findMarking(Marking *m);
     size_t getCount() const;
     void addState(Marking *m);
     std::vector<Marking *> *getListStates();
     bool isEqual(const SCC &scc);
-    [[nodiscard]] uint32_t getId() const;
     std::vector<std::pair<SCC * ,Transition*>>::iterator beginSucc() {
         return m_iterator_succ.begin();
     }
@@ -67,8 +62,6 @@ public:
     bool isTerminal() const;
 private:
     std::vector<Marking *> m_list;
-    static uint32_t m_counter;
-    uint32_t m_id;
     IteratorSucc m_iterator_succ {this};
     bool m_sync_closed {};
     bool m_others_can_loop {};
