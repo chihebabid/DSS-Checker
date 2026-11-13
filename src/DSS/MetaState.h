@@ -25,7 +25,9 @@ class ModuleSS;
 class MetaState : public ChildOf<ModuleSS> {
 public:
     MetaState();
-    ~MetaState(); // defined in the .cpp: destroying the sync arcs requires the definition of ArcSync
+    // Destroys its sync arcs, markings and SCCs (not its names: they are shared with other metastates).
+    // Defined in the .cpp: destroying the sync arcs requires the definition of ArcSync
+    ~MetaState();
 
     // Sync arcs leaving this metastate; they are owned by the metastate
     const vector<unique_ptr<ArcSync>> &getSyncSucc() const;
@@ -44,6 +46,11 @@ public:
     [[nodiscard]] const vector<ProductSCC *> &getMergedNames() const { return m_merged_names; }
     // Destroy all the sync arcs
     void clearSyncArcs();
+    // Metastate into which this one has been merged during the construction (on the fly reduction), nullptr if none
+    void setMergedInto(MetaState *ms) { m_merged_into = ms; }
+    // Metastate representing this one: this one if it has not been merged during the construction, otherwise
+    // the representative of the metastate it has been merged into (the chain is compressed)
+    MetaState *getRepresentative();
     // Take ownership of sync_arc and become its parent
     void addSyncArc(unique_ptr<ArcSync> sync_arc);
     // Insertion rank of the metastate in its module (set by ModuleSS::insertMS())
@@ -71,6 +78,7 @@ private:
     size_t m_id_module;
     ProductSCC *m_name {};
     vector<ProductSCC *> m_merged_names; // Names of the metastates merged into this one (reduction)
+    MetaState *m_merged_into {nullptr};  // See setMergedInto()
     vector<unique_ptr<ArcSync>> m_sync_arcs;
     uint32_t m_id;
     static uint32_t m_counter;

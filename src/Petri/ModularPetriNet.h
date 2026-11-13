@@ -43,6 +43,9 @@ public:
 
     ListGlobalStates computeSynchronizedProduct(vector<ListLocalStates> &states_enabling_fusion);
 
+    // Free a list returned by computeSynchronizedProduct() (the markings are not freed)
+    static void freeGlobalStates(ListGlobalStates global_states);
+
     DistributedState *buildDSS();
 
     void addSync(const string transition_name);

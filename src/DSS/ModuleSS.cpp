@@ -3,6 +3,7 @@
 //
 #include <algorithm>
 #include <vector>
+#include <utility>
 #include <iostream>
 #include "DSS/ModuleSS.h"
 
@@ -61,6 +62,7 @@ MetaState *ModuleSS::findMetaStateByProductSCC(ProductSCC &productscc) {
     const auto [first, last] {m_name_index.equal_range(productscc.hash())};
     for (auto it {first}; it != last; ++it) {
         MetaState *candidate {it->second};
+        if (!contains(candidate)) continue; // merged on the fly
         if ((!found || candidate->getRank() < found->getRank()) && candidate->representsProductSCC(productscc)) {
             found = candidate;
         }
@@ -81,6 +83,57 @@ MetaState *ModuleSS::getMetaState(const int32_t &pos) {
  */
 vector<MetaState *> &ModuleSS::getListMetaStates() {
     return m_metastates;
+}
+
+std::vector<std::pair<std::uintptr_t, std::uintptr_t>> ModuleSS::syncSignature(MetaState *ms) const {
+    std::vector<std::pair<std::uintptr_t, std::uintptr_t>> signature;
+    signature.reserve(ms->getSyncSucc().size());
+    for (const auto &arc: ms->getSyncSucc()) {
+        MetaState *dest {arc->getDestination()->getRepresentative()};
+        signature.emplace_back(reinterpret_cast<std::uintptr_t>(arc->getFusion()),
+                               dest == ms ? 0 : reinterpret_cast<std::uintptr_t>(dest));
+    }
+    std::sort(signature.begin(), signature.end());
+    signature.erase(std::unique(signature.begin(), signature.end()), signature.end());
+    return signature;
+}
+
+MetaState *ModuleSS::mergeIfEquivalent(MetaState *ms) {
+    const auto signature {syncSignature(ms)};
+    size_t key {ms->contentHash()};
+    for (const auto &[fusion, dest]: signature) {
+        key = (key ^ fusion) * 1099511628211ULL;
+        key = (key ^ dest) * 1099511628211ULL;
+    }
+    const auto [first, last] {m_complete_index.equal_range(key)};
+    for (auto it {first}; it != last; ++it) {
+        MetaState *candidate {it->second};
+        if (candidate == ms || !contains(candidate) || !(*candidate == *ms)) continue;
+        if (syncSignature(candidate) != signature) continue;
+        // As in the final reduction, the first inserted metastate represents the other one
+        MetaState *kept {candidate->getRank() < ms->getRank() ? candidate : ms};
+        MetaState *merged {kept == ms ? candidate : ms};
+        kept->absorbNames(*merged); // also indexes the names in this module
+        merged->setMergedInto(kept);
+        merged->clearSyncArcs();
+        merged->setParent(nullptr);
+        it->second = kept;
+        ++m_merged_count;
+        return kept;
+    }
+    m_complete_index.emplace(key, ms);
+    return nullptr;
+}
+
+size_t ModuleSS::finishMerges() {
+    m_complete_index = {};
+    if (m_merged_count == 0) return 0;
+    std::erase_if(m_metastates, [this](const MetaState *ms) { return !contains(ms); });
+    std::erase_if(m_name_index, [this](const auto &entry) { return !contains(entry.second); });
+    for (const auto ms: m_metastates) {
+        for (const auto &arc: ms->getSyncSucc()) arc->setDestination(arc->getDestination()->getRepresentative());
+    }
+    return std::exchange(m_merged_count, 0);
 }
 
 size_t ModuleSS::reduceByBisimulation() {

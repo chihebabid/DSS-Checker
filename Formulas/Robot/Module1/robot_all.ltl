@@ -1,0 +1,10 @@
+(p_move && !([]r_begin_move <-> []r_stops)) U <>r_end_move
+(p_started <-> !(p_move <-> p_moved))
+(p_start U (p_start || (<>r_stops U p_moved)))
+p_move && (p_moved -> (p_sop U (!(p_move <-> <>p_sop) -> []r_begin_move)))
+((r_begin_move U (r_begin_move || !r_begin_move)) -> !(p_started <-> r_starts)) U ((r_stops U p_moved) || ((r_begin_move U (r_begin_move || !r_begin_move)) -> !(p_started <-> r_starts)))
+<>p_start || ((p_started U p_start) U (p_sop U (!(p_moved <-> r_stops) || <>r_stops)))
+!<>((p_move || r_begin_move || (!r_end_move U (r_stops U (p_started || r_stops)))) U []p_started)
+[]([]p_moved || (p_moved U (p_start || r_starts)))
+(p_move <-> r_stops) U ((p_move <-> r_stops) || !<>(!<>(p_sop U (p_sop || r_end_move)) U ((p_sop || r_stops) && !<>(p_sop U (p_sop || r_end_move)))))
+(p_move <-> r_stops) U ((p_move <-> r_stops) || !<>(!<>(p_sop U (p_sop || r_end_move)) U ((p_sop || r_stops) && !<>(p_sop U (p_sop || r_end_move)))))

@@ -35,8 +35,9 @@ bool ParseFormulaFile::getNext(Formula &f) {
             std::cerr << "Only LTL formulas are supported.\n";
             return false;
         }
-        spot::atomic_prop_set *p_list = spot::atomic_prop_collect(fo, nullptr);
-        for (const auto &i: *p_list) {
+        spot::atomic_prop_set p_list;
+        spot::atomic_prop_collect(fo, &p_list);
+        for (const auto &i: p_list) {
             transitionSet.insert(i.ap_name());
         }
         cout << "\tFormula in SPIN format: ";

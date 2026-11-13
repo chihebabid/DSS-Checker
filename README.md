@@ -38,9 +38,16 @@ Print:
 ```
 ### Reduction
 
-By default, once the DSS is built, the metastates of each module are reduced by bisimulation: metastates with the
-same markings whose synchronisation arcs (same fusion) lead to equivalent metastates are merged. The coarsest such
-equivalence is computed by partition refinement. Use `--no-reduction` to keep all the metastates.
+By default, the metastates of each module are reduced by bisimulation: metastates with the
+same markings whose synchronisation arcs (same fusion) lead to equivalent metastates are merged.
+
+- During the construction, as soon as the metastates reachable from a metastate have been built (post-order of the
+  depth-first search), it is merged with a metastate having the same markings and the same arcs (same fusions, same
+  destinations): the merged metastate frees its arcs right away.
+- Once the DSS is built, the coarsest equivalence is computed by partition refinement. It finds the merges that
+  cannot be decided during the construction, in particular inside cycles of metastates.
+
+Use `--no-reduction` to keep all the metastates.
 
 ### Fairness
 

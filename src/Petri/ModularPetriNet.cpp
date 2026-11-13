@@ -183,7 +183,7 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
         for (int j = 0; j < getModuleCount() && canBeActive; j++) {
             if (fusion->participate(j) && fusion->participatePartially(j)) {
                 canBeActive = false;
-                auto list_states = list_ms[j]->getListMarkings(); //  m_dss->getLocalStates(product,j);
+                const auto &list_states = list_ms[j]->getListMarkings();
                 for (int index = 0; index < list_states.size() && !canBeActive; index++) {
                     m_modules[j]->setMarking(list_states[index]);
                     if (fusion->isLocallyFirable(j)) {
@@ -197,7 +197,7 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
             // Compute local markings that enable the transition fusion set
             states_enabling_fusion.resize(getModuleCount());
             for (int j = 0; j < getModuleCount(); j++) {
-                auto list_states = list_ms[j]->getListMarkings();
+                const auto &list_states = list_ms[j]->getListMarkings();
                 // states_enabling_fusion.at(j)= NULL;
                 states_enabling_fusion[j] = new vector<Marking *>();
                 if (fusion->participate(j)) {
@@ -212,6 +212,11 @@ void ModularPetriNet::extractEnabledFusionReduced(vector<MetaState *> &list_ms,
                 }
             }
             ListGlobalStates list_globalstates = computeSynchronizedProduct(states_enabling_fusion);
+            // The product copies the markings: the local lists are no longer needed
+            for (auto &local_states: states_enabling_fusion) {
+                delete local_states;
+                local_states = nullptr;
+            }
             RElement_dss elt;
             elt.m_gs = list_globalstates;
             elt.m_fusion = fusion;
@@ -267,6 +272,10 @@ void ModularPetriNet::extractEnabledFusion(ProductSCC *product,
             }
 
             ListGlobalStates list_globalstates = computeSynchronizedProduct(states_enabling_fusion);
+            for (auto &local_states: states_enabling_fusion) {
+                delete local_states;
+                local_states = nullptr;
+            }
             Element_dss elt;
             elt.m_gs = list_globalstates;
             elt.m_fusion = fusion;
@@ -274,6 +283,12 @@ void ModularPetriNet::extractEnabledFusion(ProductSCC *product,
             list_elt.push_back(elt);
         }
     }
+}
+
+void ModularPetriNet::freeGlobalStates(ListGlobalStates global_states) {
+    if (!global_states) return;
+    for (auto local_states: *global_states) delete local_states;
+    delete global_states;
 }
 
 ListGlobalStates ModularPetriNet::computeSynchronizedProduct(vector<ListLocalStates> &states_enabling_fusion) {

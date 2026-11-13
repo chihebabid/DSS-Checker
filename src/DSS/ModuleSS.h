@@ -6,6 +6,7 @@
 #define DISTRIBUTEDSTATESPACE_MODULESS_H
 
 #include <memory>
+#include <cstdint>
 #include <unordered_map>
 #include <vector>
 #include "DSS/ArcSync.h"
@@ -47,12 +48,30 @@ public:
      */
     size_t reduceByBisimulation();
 
+    /*
+     * On the fly reduction, called during the construction once all the sync arcs leaving ms have been built.
+     * ms and a metastate whose arcs are complete too, with the same markings and the same set of
+     * (fusion, destination) arcs (an arc from a metastate to itself counts as a loop), have the same successors:
+     * they are bisimilar and merged. As in the final reduction, the first inserted one represents the other one.
+     * The merged metastate loses its arcs and leaves the module; the arcs leading to it are redirected by
+     * finishMerges(). Otherwise ms becomes a candidate for the next ones.
+     * @return the metastate representing both, nullptr if ms has not been merged
+     */
+    MetaState *mergeIfEquivalent(MetaState *ms);
+
+    // End of the on the fly reduction: redirect the arcs to the representatives and remove the merged metastates
+    // from the module. @return the number of metastates removed
+    size_t finishMerges();
+
     // Record the initial state of the module: the name of the initial metastates and the initial marking
     void setInitialState(const ProductSCC *name, const Marking &marking);
 
     // Initial marking, in the metastate that represents the initial name. After a reduction, this metastate
     // may be another one than the first inserted one, and its first marking may not be the initial marking
     [[nodiscard]] Marking *getInitialMarking();
+
+    // Name of the initial metastates (see setInitialState())
+    [[nodiscard]] const ProductSCC *getInitialName() const { return m_initial_name; }
 
     void computeSyncClosedSCC(const MetaState *ms);
 
@@ -70,8 +89,15 @@ private:
      * The products belong to the arcs of ms: the pointers are valid as long as these arcs exist.
      */
     std::vector<const ProductSCC *> getMaxProductOfTerminalSCCs(const MetaState *ms, const SCC *scc) const;
+    // Arcs of ms as a sorted set of (fusion, representative of the destination); 0 for ms itself
+    std::vector<std::pair<std::uintptr_t, std::uintptr_t>> syncSignature(MetaState *ms) const;
     vector<MetaState *> m_metastates;
     size_t m_id_module;
+    // Metastates whose arcs are complete, indexed by the hash of their markings and of their signature
+    // (see mergeIfEquivalent()). The signature may change afterwards (destinations merged): an outdated entry
+    // only misses a merge, the final reduction finds it
+    std::unordered_multimap<size_t, MetaState *> m_complete_index;
+    size_t m_merged_count {}; // Metastates merged on the fly, not removed from m_metastates yet
     // Name index: hash of a name -> metastates having this name (entries are checked by a full comparison,
     // so an outdated entry is harmless)
     std::unordered_multimap<size_t, MetaState *> m_name_index;

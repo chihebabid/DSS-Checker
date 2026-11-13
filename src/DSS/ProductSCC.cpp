@@ -2,38 +2,43 @@
 #include "DSS/ProductSCC.h"
 #include "DSS/MetaState.h"
 
+static_assert(alignof(SCC) > 1, "the lowest bit of an SCC pointer is used as a flag (ProductSCC::Component)");
+
 void ProductSCC::addSCC(SCC *scc, const bool any) {
-    m_product.push_back({scc, any});
-    m_hash_valid = false;
+    m_product.emplace_back(scc, any);
+    m_hash = 0;
 }
 
 size_t ProductSCC::computeHash() const {
     size_t hash {m_product.size()};
-    for (const auto &[scc, any]: m_product) {
-        const size_t h {any ? 0x9e3779b97f4a7c15ULL : scc->contentHash()};
+    for (const auto &component: m_product) {
+        const size_t h {component.any() ? 0x9e3779b97f4a7c15ULL : component.scc()->contentHash()};
         hash = hash * 1099511628211ULL ^ h;
     }
-    m_hash = hash;
-    m_hash_valid = true;
+    m_hash = hash != 0 ? hash : 1; // 0 means "not computed"
     return m_hash;
 }
 
 SCC *ProductSCC::getSCC(const size_t pos) const {
-    return m_product[pos].scc;
+    return m_product[pos].scc();
+}
+
+void ProductSCC::replaceSCC(const size_t pos, SCC *scc) {
+    m_product[pos] = Component {scc, m_product[pos].any()};
 }
 
 bool ProductSCC::isAny(const size_t pos) const {
-    return m_product[pos].any;
+    return m_product[pos].any();
 }
 
 std::partial_ordering ProductSCC::compare(const Component &a, const Component &b) {
-    if (!a.any && !b.any) {
-        return a.scc->isEqual(*b.scc) ? std::partial_ordering::equivalent : std::partial_ordering::unordered;
+    if (!a.any() && !b.any()) {
+        return a.scc()->isEqual(*b.scc()) ? std::partial_ordering::equivalent : std::partial_ordering::unordered;
     }
-    if (a.any && b.any) {
+    if (a.any() && b.any()) {
         return std::partial_ordering::equivalent;
     }
-    if (a.any) {
+    if (a.any()) {
         return std::partial_ordering::greater;
     }
     return std::partial_ordering::less;

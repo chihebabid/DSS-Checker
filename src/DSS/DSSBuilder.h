@@ -11,6 +11,7 @@
 #include <iosfwd>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 class DSSBuilder {
@@ -54,16 +55,25 @@ private:
     void buildInitialMS();
 
     // Metastate reached from marking by the local transitions of module, computed once per (module, marking).
-    // It is never inserted in the DSS: its initial SCC is only used to name destination metastates
-    // (the SCC of a marking only depends on the marking), so the destination metastate itself is only
-    // computed when it is new
+    // Its initial SCC is used to name destination metastates (the SCC of a marking only depends on the marking),
+    // so the destination metastate itself is only computed when it is new (see takeReferenceMetaState())
     MetaState *getReferenceMetaState(int module, const Marking &marking);
+
+    // A new metastate of module, with the same markings as reference (a reference metastate): the reference
+    // itself the first time it is asked for, a copy afterwards (several metastates may have the same markings
+    // and different names)
+    MetaState *takeReferenceMetaState(int module, MetaState *reference);
+
+    // Free the metastates that are no longer used once the DSS is built (see the .cpp)
+    void freeUnusedMetaStates(const vector<vector<MetaState *>> &built);
 
     ModularPetriNet *m_petri;
     bool m_reduction;
     DistributedSS m_dss;
     // Reference metastates of each module, indexed by their initial marking
     std::vector<std::unordered_map<Marking *, MetaState *, Marking::PtrHash, Marking::PtrEqual>> m_reference_ms;
+    // Reference metastates that have become metastates of the DSS (see takeReferenceMetaState())
+    std::unordered_set<MetaState *> m_taken_references;
 };
 
 

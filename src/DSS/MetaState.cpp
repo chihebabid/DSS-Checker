@@ -63,7 +63,22 @@ void MetaState::absorbNames(const MetaState &merged) {
     }
 }
 
-MetaState::~MetaState() = default;
+MetaState::~MetaState() {
+    for (const auto scc: m_sccs) delete scc;
+    for (const auto marking: m_nodes) delete marking;
+}
+
+MetaState *MetaState::getRepresentative() {
+    MetaState *representative {this};
+    while (representative->m_merged_into) representative = representative->m_merged_into;
+    // Path compression
+    for (MetaState *ms {this}; ms != representative;) {
+        MetaState *next {ms->m_merged_into};
+        ms->m_merged_into = representative;
+        ms = next;
+    }
+    return representative;
+}
 
 void MetaState::clearSyncArcs() {
     m_sync_arcs.clear();

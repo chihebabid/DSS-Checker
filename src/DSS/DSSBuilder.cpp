@@ -35,6 +35,72 @@ MetaState *DSSBuilder::getReferenceMetaState(const int module, const Marking &ma
     return reference;
 }
 
+MetaState *DSSBuilder::takeReferenceMetaState(const int module, MetaState *reference) {
+    // The first time, the reference itself becomes the metastate. It stays alive (merged metastates are not
+    // destroyed), and its markings and SCCs, used by the names, do not change
+    if (m_taken_references.insert(reference).second) return reference;
+    return m_petri->getModule(module)->getMetaState(*reference->getListMarkings()[0]);
+}
+
+/*
+ * @brief Free the metastates that are no longer in the DSS: the metastates merged by the reduction and the
+ *        reference metastates that have not become metastates of the DSS.
+ *        The names and the source products of the sync arcs may point to SCCs of these metastates: such a
+ *        component is first redirected to the same SCC (same markings, same first marking, so that the names are
+ *        unchanged) in a metastate of the DSS. A metastate still referenced after that is kept.
+ * @param built the metastates of each module before the reduction
+ */
+void DSSBuilder::freeUnusedMetaStates(const vector<vector<MetaState *>> &built) {
+    const size_t module_count {ModularPetriNet::getModuleCount()};
+    std::unordered_set<MetaState *> dead;
+    for (size_t module {}; module < module_count; ++module) {
+        for (const auto ms: built[module]) {
+            if (!m_dss[module]->contains(ms)) dead.insert(ms);
+        }
+        for (const auto &[marking, reference]: m_reference_ms[module]) {
+            if (!m_dss[module]->contains(reference)) dead.insert(reference);
+        }
+    }
+    // The references are only used while building
+    m_reference_ms.assign(module_count, {});
+    m_taken_references.clear();
+    if (dead.empty()) return;
+
+    // SCCs of the metastates of the DSS, indexed by their first marking (component i of a product is an SCC of module i)
+    vector<std::unordered_map<const Marking *, SCC *, Marking::PtrHash, Marking::PtrEqual>> live_sccs(module_count);
+    for (size_t module {}; module < module_count; ++module) {
+        for (const auto ms: m_dss[module]->getListMetaStates()) {
+            for (const auto scc: *ms->getListSCCs()) live_sccs[module].emplace(scc->getListStates()->at(0), scc);
+        }
+    }
+    std::unordered_set<MetaState *> kept;
+    const auto redirect = [&](ProductSCC &product) {
+        for (size_t module {}; module < module_count; ++module) {
+            SCC *scc {product.getSCC(module)};
+            if (!dead.contains(scc->getParent())) continue;
+            const auto it {live_sccs[module].find(scc->getListStates()->at(0))};
+            if (it != live_sccs[module].end() && it->second->getCount() == scc->getCount()) {
+                product.replaceSCC(module, it->second);
+            } else {
+                kept.insert(scc->getParent());
+            }
+        }
+    };
+    for (size_t module {}; module < module_count; ++module) {
+        if (const auto initial_name {m_dss[module]->getInitialName()}; initial_name) {
+            redirect(*const_cast<ProductSCC *>(initial_name));
+        }
+        for (const auto ms: m_dss[module]->getListMetaStates()) {
+            if (ms->getProductSCCName()) redirect(*ms->getProductSCCName());
+            for (const auto name: ms->getMergedNames()) redirect(*name);
+            for (const auto &arc: ms->getSyncSucc()) redirect(arc->getSourceProduct());
+        }
+    }
+    for (const auto ms: dead) {
+        if (!kept.contains(ms)) delete ms;
+    }
+}
+
 /*
  * @brief Build the DSS
  */
@@ -65,14 +131,36 @@ void DSSBuilder::buildInitialMS() {
         m_dss[module]->setInitialState(productscc, *list_metastates[module]->getListMarkings()[0]);
     }
 
+    // Depth-first search on the products of metastates. A frame is expanded (its enabled fusions are fired) when
+    // it reaches the top of the stack, and stays there until all the frames pushed after it are done: then all the
+    // metastates reachable from it have been built, and those that can be merged have been (post-order), so that
+    // its metastates can be merged on the fly with equivalent ones.
+    // The enabled fusions (and the products of markings enabling them) are only computed when a frame is
+    // expanded, and freed once fired: the stack does not keep them for all the pending products
+    struct Frame {
+        vector<MetaState *> metastates;
+        bool expanded {false};
+    };
     vector<RElement_dss> list_fusions;
-    m_petri->extractEnabledFusionReduced(list_metastates, list_fusions);
-    vector<RListProductFusion> stack_fusion;
-    stack_fusion.push_back(list_fusions);
+    vector<Frame> stack_frames;
+    stack_frames.push_back({std::move(list_metastates)});
 
-    while (!stack_fusion.empty()) {
-        list_fusions = stack_fusion.back();
-        stack_fusion.pop_back();
+    while (!stack_frames.empty()) {
+        if (stack_frames.back().expanded) {
+            // Post-order: on the fly reduction of the metastates of the frame
+            if (m_reduction) {
+                const auto &metastates {stack_frames.back().metastates};
+                for (size_t module {}; module < metastates.size(); ++module) {
+                    m_dss[module]->mergeIfEquivalent(metastates[module]);
+                }
+            }
+            stack_frames.pop_back();
+            continue;
+        }
+        stack_frames.back().expanded = true;
+        vector<MetaState *> source_metastates {stack_frames.back().metastates}; // copy: the stack may grow
+        list_fusions.clear();
+        m_petri->extractEnabledFusionReduced(source_metastates, list_fusions);
         for (const auto &elt: list_fusions) {
             for (int index_global_state {}; index_global_state < elt.m_gs->size(); index_global_state++) {
                 vector<Marking *> *global_state = elt.m_gs->at(index_global_state);
@@ -131,8 +219,7 @@ void DSSBuilder::buildInitialMS() {
 #endif
                     if (!m_dss[module]->findMetaStateByProductSCC(*dest_productscc)) {
                         // New destination metastate: computed from the reached marking
-                        MetaState *dest_ms {m_petri->getModule(module)->getMetaState(
-                            *dest_references[module]->getListMarkings()[0])};
+                        MetaState *dest_ms {takeReferenceMetaState(module, dest_references[module])};
                         auto arc_sync{std::make_unique<ArcSync>()};
                         MetaState *source_ms = elt.getMetaState(module);
                         arc_sync->setData(startProduct, fusion, dest_ms);
@@ -156,27 +243,29 @@ void DSSBuilder::buildInitialMS() {
 #endif
 
                 }
-
                 // Otherwise, the name only served to look the destination metastates up
                 if (!named) delete dest_productscc;
 
-                if (!exist) {
-                    vector<RElement_dss> new_list_fusions;
-                    m_petri->extractEnabledFusionReduced(list_dest_metastates, new_list_fusions);
-                    stack_fusion.push_back(new_list_fusions);
-                }
+                if (!exist) stack_frames.push_back({std::move(list_dest_metastates)});
             }
         }
+        for (const auto &elt: list_fusions) ModularPetriNet::freeGlobalStates(elt.m_gs);
     }
-    // Reduction of the metastates by bisimulation
+    // Metastates built, before the reduction merges some of them
+    vector<vector<MetaState *>> built(ModularPetriNet::getModuleCount());
+    for (size_t module {}; module < ModularPetriNet::getModuleCount(); ++module) {
+        built[module] = m_dss[module]->getListMetaStates();
+    }
+    // End of the on the fly reduction, then reduction of the metastates by bisimulation (coarsest equivalence)
+    for (size_t module {}; module < ModularPetriNet::getModuleCount(); ++module) m_dss[module]->finishMerges();
     if (m_reduction) {
         size_t before {}, removed {};
         for (size_t module {}; module < ModularPetriNet::getModuleCount(); ++module) {
             before += m_dss[module]->getMetaStateCount();
             removed += m_dss[module]->reduceByBisimulation();
         }
-        cout << "Reduction by bisimulation: " << before << " -> " << before - removed << " metastates" << endl;
     }
+    freeUnusedMetaStates(built);
     // Lazy version for computing Sync-closure property
     for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
         for (auto ms: m_dss[module]->getListMetaStates()) {

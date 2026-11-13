@@ -30,6 +30,7 @@ public:
     [[nodiscard]] MetaState *getDestination() const;
 
     [[nodiscard]] const ProductSCC &getSourceProduct() const;
+    ProductSCC &getSourceProduct() { return m_source; }
 
     // True if module is synchronised on the fusion of this arc.
     // If not, the component of this module in the source product is "any" (see ProductSCC::isAny):
