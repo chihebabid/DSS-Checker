@@ -25,8 +25,11 @@
  */
 class DSSKripke : public spot::twa {
 public:
-    // aps: atomic propositions (transition names) of the formula
-    DSSKripke(const spot::bdd_dict_ptr &dict_ptr, ModuleSS *metagraph, const std::set<std::string> &aps);
+    // aps: atomic propositions (transition names) of the formula.
+    // fairness: executions under fairness of the synchronisations (see getSuccessors()); otherwise every
+    // execution is considered, as in the symbolic observation graphs (LTL\X without fairness)
+    DSSKripke(const spot::bdd_dict_ptr &dict_ptr, ModuleSS *metagraph, const std::set<std::string> &aps,
+              bool fairness = false);
 
     ~DSSKripke() override;
 
@@ -53,6 +56,7 @@ public:
 
 private:
     ModuleSS *m_metagraph;
+    bool m_fairness;
     std::map<std::string, bdd> m_ap_vars; // BDD variable of each atomic proposition
     bdd m_no_ap {bddtrue};                // All the atomic propositions are false
     mutable Marking m_divergence {0};

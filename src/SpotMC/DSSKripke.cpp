@@ -7,8 +7,9 @@
 #include "Petri/Transition.h"
 #include "Petri/ModularPetriNet.h"
 
-DSSKripke::DSSKripke(const spot::bdd_dict_ptr &dict_ptr, ModuleSS *metagraph, const std::set<std::string> &aps)
-        : spot::twa(dict_ptr), m_metagraph(metagraph) {
+DSSKripke::DSSKripke(const spot::bdd_dict_ptr &dict_ptr, ModuleSS *metagraph, const std::set<std::string> &aps,
+                     const bool fairness)
+        : spot::twa(dict_ptr), m_metagraph(metagraph), m_fairness(fairness) {
     set_generalized_buchi(0); // No acceptance set: every infinite run is accepting
     for (const auto &ap: aps) {
         const bdd var {bdd_ithvar(register_ap(ap))};
@@ -52,9 +53,11 @@ bdd DSSKripke::edgeCondition(const Transition *t) const {
  *     formula), so they are not edges labelled by "no transition".
  *  2. For every marking of the closure: its local transitions, and the synchronisations in which the module
  *     takes part and that can be fired from it.
- *  3. An edge to the divergence state if the module may stop moving forever: a marking of the closure is in
+ *  3. An edge to the divergence state if the module may stop moving forever.
+ *     Without fairness (default): a marking of the closure is in
  *     a sync-closed SCC or in an SCC where another module can loop, or the closure contains a cycle
  *     (the other modules can synchronise forever without the module).
+ *     Under fairness: only a marking of the closure in a sync-closed SCC.
  */
 const DSSKripke::Successors &DSSKripke::getSuccessors(Marking *marking) const {
     if (const auto it {m_successors.find(marking)}; it != m_successors.end()) return it->second;
@@ -104,10 +107,12 @@ const DSSKripke::Successors &DSSKripke::getSuccessors(Marking *marking) const {
     }
 
     // 2. and 3.
-    bool diverge {closure_cycle};
+    // Under fairness, only a sync-closed SCC lets the module stop moving forever: the other modules looping
+    // (othersCanLoop) or synchronising forever without the module (cycle in the closure) is not enough
+    bool diverge {!m_fairness && closure_cycle};
     for (Marking *m: closure) {
         SCC *scc {m->getSCCContainer()};
-        diverge = diverge || scc->isSyncClosed() || scc->othersCanLoop();
+        diverge = diverge || scc->isSyncClosed() || (!m_fairness && scc->othersCanLoop());
         // Local transitions
         for (const auto &[t, dest]: m->getListSucc()) {
             successors.emplace_back(dest, t);

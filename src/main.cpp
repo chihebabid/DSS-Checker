@@ -64,6 +64,11 @@ int main(int argc, char *argv[]) {
     string algorithm = "DSS";
     app.add_option("--algorithm", algorithm, "DSS building algorithm (default: DSS)")->group("Algorithm");
 
+    bool fairness{false};
+    app.add_flag("--fairness,!--no-fairness", fairness,
+                 "Model checking under fairness: a module waiting for a synchronisation only stops forever in a "
+                 "sync-closed SCC (default: disabled)")->group("Algorithm");
+
     bool reduction{true};
     app.add_flag("--reduction,!--no-reduction", reduction,
                  "Reduce the metastates by bisimulation (default: enabled)")->group("Algorithm");
@@ -127,7 +132,7 @@ int main(int argc, char *argv[]) {
                 auto moduleGraph{builder.getModuleGraph(index_module)};
                 // build a twa graph of the SOG
 
-                auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph, negate_formula.propositions);
+                auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph, negate_formula.propositions, fairness);
                 auto start_intersect{clock()};
                 auto res{(k->intersecting_run(af) == nullptr)};
                 auto finish_intersect{clock()};

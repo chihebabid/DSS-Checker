@@ -28,6 +28,7 @@ Options:
 Algorithm:
 --algorithm TEXT            DSS building algorithm (default: DSS)
 --reduction,--no-reduction  Reduce the metastates by bisimulation (default: enabled)
+--fairness,--no-fairness    Model checking under fairness (default: disabled)
 
 
 Print:
@@ -40,6 +41,13 @@ Print:
 By default, once the DSS is built, the metastates of each module are reduced by bisimulation: metastates with the
 same markings whose synchronisation arcs (same fusion) lead to equivalent metastates are merged. The coarsest such
 equivalence is computed by partition refinement. Use `--no-reduction` to keep all the metastates.
+
+### Fairness
+
+The LTL\X properties are checked on the executions of the module of the formula (the transitions of the other
+modules are not seen). By default (`--no-fairness`), every execution is considered: a module may wait forever
+while the other modules loop, or synchronise forever without it. With `--fairness`, a module only stops forever
+in a sync-closed SCC.
 
 ### Rendering the graph
 
