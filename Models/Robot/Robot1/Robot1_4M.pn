@@ -1,0 +1,86 @@
+Module : 4
+Places
+  Marquage : 2;
+   r_stopped
+End
+Transitions
+   r_starts,r_stops;
+End
+Input
+   r_starts [ r_stopped ]
+End
+Output
+   r_stops [ r_stopped ]
+End
+Places
+  Marquage : 0;
+   initialized,off
+End
+Transitions
+   r_starts,r_stops,p_sop,p_started;
+End
+Input
+   r_stops [ off ]
+   p_started [ initialized ]
+End
+Output
+   r_starts [ initialized ]
+   p_sop [ off ]
+End
+Places
+  Marquage : 3;
+   p_i1
+  Marquage : 0;
+   initialize,p_i2
+End
+Transitions
+   r_starts,p_sop,p_start,p_started;
+End
+Input
+   r_starts [ initialize ]
+   p_start [ p_i1 ]
+   p_started [ p_i2 ]
+End
+Output
+   p_sop [ p_i1 ]
+   p_start [ p_i2 ]
+   p_start [ initialize ]
+End
+Places
+  Marquage : 2;
+   access
+  Marquage : 0;
+   move,moved,p_m,p_rdy,p_rel,r_active,r_moving,rp_sc
+End
+Transitions
+   r_starts,r_begin_move,r_end_move,r_stops,p_intoSC,p_relSC,p_move,p_moved,p_sop,p_started;
+End
+Input
+   r_begin_move [ move ]
+   r_begin_move [ r_active ]
+   r_end_move [ r_moving ]
+   r_stops [ r_active ]
+   p_intoSC [ p_rdy ]
+   p_intoSC [ access ]
+   p_relSC [ p_rel ]
+   p_move [ rp_sc ]
+   p_moved [ moved ]
+   p_moved [ p_m ]
+   p_sop [ p_rdy ]
+End
+Output
+   r_starts [ r_active ]
+   r_begin_move [ r_moving ]
+   r_end_move [ moved ]
+   r_end_move [ r_active ]
+   p_intoSC [ rp_sc ]
+   p_relSC [ access ]
+   p_relSC [ p_rdy ]
+   p_move [ p_m ]
+   p_move [ move ]
+   p_moved [ p_rel ]
+   p_started [ p_rdy ]
+End
+Sync
+   r_starts,r_stops,p_sop,p_started
+End

@@ -1,0 +1,13 @@
+!r_stops U r_starts
+[](r_starts -> <>r_stops)
+[]<>r_starts
+!p_started U r_starts
+[](p_sop -> <>r_stops)
+[](r_starts -> <>p_started)
+!r_starts U p_start
+[](p_start -> <>p_started)
+[](p_sop -> <>p_start)
+[](p_intoSC -> <>p_relSC)
+[](r_begin_move -> <>r_end_move)
+[](p_move -> <>p_moved)
+[]<>p_intoSC

@@ -120,7 +120,7 @@ FF2a_5 [ Eat_5 ]
 FF2b_5 [ Eat_5 ]
 End_1 [ Fork_5 ]
 End_5 [ Fork_5 ]
-End_5 [ Eat_5 ]
+End_5 [ Think_5 ]
 
 
 End

@@ -53,6 +53,9 @@ public:
     MetaState *getRepresentative();
     // Take ownership of sync_arc and become its parent
     void addSyncArc(unique_ptr<ArcSync> sync_arc);
+    // Remove the arcs equal to a previous one (same label, same destination, equivalent start products), keeping the
+    // order of the others; returns the number of removed arcs
+    size_t removeDuplicateSyncArcs();
     // Insertion rank of the metastate in its module (set by ModuleSS::insertMS())
     [[nodiscard]] size_t getRank() const { return m_rank; }
     void setRank(size_t rank) { m_rank = rank; }

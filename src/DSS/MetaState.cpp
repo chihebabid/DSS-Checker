@@ -89,6 +89,27 @@ void MetaState::addSyncArc(unique_ptr<ArcSync> sync_arc) {
     m_sync_arcs.push_back(std::move(sync_arc));
 }
 
+size_t MetaState::removeDuplicateSyncArcs() {
+    struct Hash {
+        size_t operator()(const ArcSync *arc) const {
+            size_t hash {arc->getSourceProduct().hash()};
+            hash = (hash ^ reinterpret_cast<std::uintptr_t>(arc->getFusion())) * 1099511628211ULL;
+            return (hash ^ reinterpret_cast<std::uintptr_t>(arc->getDestination())) * 1099511628211ULL;
+        }
+    };
+    struct Equal {
+        bool operator()(const ArcSync *a, const ArcSync *b) const {
+            return a->getFusion() == b->getFusion() && a->getDestination() == b->getDestination()
+                   && a->getSourceProduct() == b->getSourceProduct();
+        }
+    };
+    std::unordered_set<const ArcSync *, Hash, Equal> seen;
+    seen.reserve(m_sync_arcs.size());
+    const size_t before {m_sync_arcs.size()};
+    std::erase_if(m_sync_arcs, [&seen](const unique_ptr<ArcSync> &arc) { return !seen.insert(arc.get()).second; });
+    return before - m_sync_arcs.size();
+}
+
 const vector<unique_ptr<ArcSync>> &MetaState::getSyncSucc() const {
     return m_sync_arcs;
 }

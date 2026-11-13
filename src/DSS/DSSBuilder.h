@@ -54,15 +54,18 @@ private:
 
     void buildInitialMS();
 
-    // Metastate reached from marking by the local transitions of module, computed once per (module, marking).
-    // Its initial SCC is used to name destination metastates (the SCC of a marking only depends on the marking),
-    // so the destination metastate itself is only computed when it is new (see takeReferenceMetaState())
-    MetaState *getReferenceMetaState(int module, const Marking &marking);
+    // Index the markings of ms, a metastate of module, by their SCC (see findIndexedSCC())
+    void indexMetaState(int module, MetaState *ms);
 
-    // A new metastate of module, with the same markings as reference (a reference metastate): the reference
-    // itself the first time it is asked for, a copy afterwards (several metastates may have the same markings
-    // and different names)
-    MetaState *takeReferenceMetaState(int module, MetaState *reference);
+    // SCC of marking in a metastate of module already built, nullptr if no metastate of module contains marking.
+    // A metastate is closed under the local transitions, so the SCC of marking in it is the initial SCC of the
+    // metastate reached from marking: it names destination metastates without computing them
+    [[nodiscard]] SCC *findIndexedSCC(int module, const Marking &marking) const;
+
+    // Label of an arc of module for fusion: fusion if module participates in it, otherwise tau (the source product
+    // is kept). Seen from a module that does not participate, the fusions are indistinguishable: with the same
+    // label, the reduction by bisimulation can merge more metastates
+    TransitionFusionSet *arcLabel(TransitionFusionSet *fusion, int module);
 
     // Free the metastates that are no longer used once the DSS is built (see the .cpp)
     void freeUnusedMetaStates(const vector<vector<MetaState *>> &built);
@@ -70,10 +73,13 @@ private:
     ModularPetriNet *m_petri;
     bool m_reduction;
     DistributedSS m_dss;
-    // Reference metastates of each module, indexed by their initial marking
-    std::vector<std::unordered_map<Marking *, MetaState *, Marking::PtrHash, Marking::PtrEqual>> m_reference_ms;
-    // Reference metastates that have become metastates of the DSS (see takeReferenceMetaState())
-    std::unordered_set<MetaState *> m_taken_references;
+    // For each module, the SCC of each marking of its metastates (the first one found: they are all equal), only
+    // used while building. Metastates are not destroyed while building, so the pointers stay valid
+    std::vector<std::unordered_map<const Marking *, SCC *, Marking::PtrHash, Marking::PtrEqual>> m_scc_index;
+    // Label of the arcs of the modules that do not participate in their fusion (see arcLabel()); it has no transition
+    TransitionFusionSet m_tau;
+    // Metastates computed to name a destination but not inserted in the DSS (freed with the unused metastates)
+    std::vector<std::vector<MetaState *>> m_orphans;
 };
 
 
