@@ -15,7 +15,8 @@
 
 class DSSBuilder {
 public:
-    DSSBuilder(ModularPetriNet *ptr);
+    // reduction: reduce the metastates by bisimulation once the DSS is built (see ModuleSS::reduceByBisimulation())
+    explicit DSSBuilder(ModularPetriNet *ptr, bool reduction = false);
 
     void build();
 
@@ -49,7 +50,6 @@ private:
     // Name of the source product of arc: the SCC of every module not synchronised on arc is displayed as "-"
     string getSourceProductName(const ArcSync *arc);
 
-    MetaState *reduce(MetaState *ms, const int &module);
 
     void buildInitialMS();
 
@@ -60,6 +60,7 @@ private:
     MetaState *getReferenceMetaState(int module, const Marking &marking);
 
     ModularPetriNet *m_petri;
+    bool m_reduction;
     DistributedSS m_dss;
     // Reference metastates of each module, indexed by their initial marking
     std::vector<std::unordered_map<Marking *, MetaState *, Marking::PtrHash, Marking::PtrEqual>> m_reference_ms;

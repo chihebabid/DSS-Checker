@@ -5,7 +5,9 @@
 #ifndef DISTRIBUTEDSTATESPACE_MODULESS_H
 #define DISTRIBUTEDSTATESPACE_MODULESS_H
 
+#include <memory>
 #include <unordered_map>
+#include <vector>
 #include "DSS/ArcSync.h"
 #include "DSS/ChildOf.h"
 #include "DSS/MetaState.h"
@@ -33,7 +35,24 @@ public:
 
     vector<MetaState *> &getListMetaStates();
 
-    void removeMetaState(MetaState *ms);
+    // True if ms is (still) a metastate of this module
+    [[nodiscard]] bool contains(const MetaState *ms) const { return ms->getParent() == this; }
+
+    /*
+     * Reduce the metastates by bisimulation: two metastates are equivalent if they have the same markings and,
+     * for each sync arc of one, the other has a sync arc with the same fusion to an equivalent metastate.
+     * The coarsest such equivalence is computed by partition refinement; each class is merged into its first
+     * inserted metastate (it takes over the names of the others, the arcs leading to them are redirected).
+     * @return the number of metastates removed
+     */
+    size_t reduceByBisimulation();
+
+    // Record the initial state of the module: the name of the initial metastates and the initial marking
+    void setInitialState(const ProductSCC *name, const Marking &marking);
+
+    // Initial marking, in the metastate that represents the initial name. After a reduction, this metastate
+    // may be another one than the first inserted one, and its first marking may not be the initial marking
+    [[nodiscard]] Marking *getInitialMarking();
 
     void computeSyncClosedSCC(const MetaState *ms);
 
@@ -56,8 +75,10 @@ private:
     // Name index: hash of a name -> metastates having this name (entries are checked by a full comparison,
     // so an outdated entry is harmless)
     std::unordered_multimap<size_t, MetaState *> m_name_index;
-    // Insertion rank of each metastate: among several candidates, the first inserted one is returned
-    std::unordered_map<const MetaState *, size_t> m_rank;
+    // Initial state (see setInitialState())
+    const ProductSCC *m_initial_name {nullptr};
+    std::unique_ptr<Marking> m_initial_marking;
+    // Next insertion rank (see MetaState::getRank()): among several candidates, the first inserted one is returned
     size_t m_next_rank {};
 };
 

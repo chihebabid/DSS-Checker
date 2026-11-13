@@ -64,6 +64,10 @@ int main(int argc, char *argv[]) {
     string algorithm = "DSS";
     app.add_option("--algorithm", algorithm, "DSS building algorithm (default: DSS)")->group("Algorithm");
 
+    bool reduction{true};
+    app.add_flag("--reduction,!--no-reduction", reduction,
+                 "Reduce the metastates by bisimulation (default: enabled)")->group("Algorithm");
+
     bool dot_output{false};
     app.add_flag("--dot-output", dot_output, "Save the output graph in a dot file")->group("Print");
 
@@ -97,7 +101,7 @@ int main(int argc, char *argv[]) {
         cout << "Distributed state space successfully built." << endl;
     }  else {
         cout << "Building DSS (new version) has been started...\n";
-        DSSBuilder builder(petri);
+        DSSBuilder builder(petri, reduction);
         auto start = std::chrono::steady_clock::now();//clock();
         builder.build();
         auto finish = std::chrono::steady_clock::now();

@@ -22,7 +22,7 @@ DSSKripke::~DSSKripke() {
 }
 
 const spot::state *DSSKripke::get_init_state() const {
-    return new DSSState(m_metagraph->getMetaState(0)->getListMarkings().at(0));
+    return new DSSState(m_metagraph->getInitialMarking());
 }
 
 DSSIterator *DSSKripke::succ_iter(const spot::state *s) const {

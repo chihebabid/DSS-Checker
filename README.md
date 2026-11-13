@@ -27,6 +27,7 @@ Options:
 
 Algorithm:
 --algorithm TEXT            DSS building algorithm (default: DSS)
+--reduction,--no-reduction  Reduce the metastates by bisimulation (default: enabled)
 
 
 Print:
@@ -34,6 +35,12 @@ Print:
 --svg-output                Render the output graph in an SVG file (requires Graphviz)
 --txt-output                Save the output graph in a formatted text file
 ```
+### Reduction
+
+By default, once the DSS is built, the metastates of each module are reduced by bisimulation: metastates with the
+same markings whose synchronisation arcs (same fusion) lead to equivalent metastates are merged. The coarsest such
+equivalence is computed by partition refinement. Use `--no-reduction` to keep all the metastates.
+
 ### Rendering the graph
 
 `--dot-output` writes a dot file that can be rendered with Graphviz (`dot -Tsvg model.pn.dot -o model.svg`).

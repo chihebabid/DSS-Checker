@@ -42,14 +42,19 @@ public:
     void absorbNames(const MetaState &merged);
     // Names of the metastates merged into this one
     [[nodiscard]] const vector<ProductSCC *> &getMergedNames() const { return m_merged_names; }
-    // Destroy the sync arcs leading to destination
-    void removeSyncArcsTo(const MetaState *destination);
     // Destroy all the sync arcs
     void clearSyncArcs();
     // Take ownership of sync_arc and become its parent
     void addSyncArc(unique_ptr<ArcSync> sync_arc);
+    // Insertion rank of the metastate in its module (set by ModuleSS::insertMS())
+    [[nodiscard]] size_t getRank() const { return m_rank; }
+    void setRank(size_t rank) { m_rank = rank; }
     uint32_t getArcCount();
-    bool operator==(MetaState &ms) const;
+    // Same markings (the order does not matter); the content hashes are compared first
+    bool operator==(const MetaState &ms) const;
+    // Hash of the markings of the metastate (independent of their order), consistent with operator==.
+    // Computed once: the markings of a metastate do not change after its computation
+    [[nodiscard]] size_t contentHash() const;
     [[nodiscard]] uint32_t getId() const;
     // Returns the marking of this metastate equal to *marking, nullptr if there is none
     Marking *existMarking(const Marking *marking) const;
@@ -72,6 +77,9 @@ private:
 
     vector<Marking *> m_nodes; // In insertion order
     unordered_set<Marking *, Marking::PtrHash, Marking::PtrEqual> m_nodes_index; // Same markings, for fast lookup
+    mutable size_t m_content_hash {};       // Cache of contentHash()
+    size_t m_rank {};
+    mutable bool m_content_hash_valid {false};
     vector<SCC *> m_sccs;
 };
 

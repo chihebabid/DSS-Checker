@@ -35,7 +35,7 @@ bool ModuleSS::insertMS(MetaState *ms) {
     ms->setIdModule(m_id_module);
     ms->setParent(this);
     m_metastates.push_back(ms);
-    m_rank[ms] = m_next_rank++;
+    ms->setRank(m_next_rank++);
     // Names it may already have
     indexName(ms, ms->getProductSCCName());
     for (const auto name: ms->getMergedNames()) indexName(ms, name);
@@ -43,7 +43,17 @@ bool ModuleSS::insertMS(MetaState *ms) {
 }
 
 void ModuleSS::indexName(MetaState *ms, const ProductSCC *name) {
-    if (name && m_rank.contains(ms)) m_name_index.emplace(name->hash(), ms);
+    if (name && contains(ms)) m_name_index.emplace(name->hash(), ms);
+}
+
+void ModuleSS::setInitialState(const ProductSCC *name, const Marking &marking) {
+    m_initial_name = name;
+    m_initial_marking = std::make_unique<Marking>(marking);
+}
+
+Marking *ModuleSS::getInitialMarking() {
+    MetaState *ms {findMetaStateByProductSCC(*const_cast<ProductSCC *>(m_initial_name))};
+    return ms ? ms->existMarking(m_initial_marking.get()) : nullptr;
 }
 
 MetaState *ModuleSS::findMetaStateByProductSCC(ProductSCC &productscc) {
@@ -51,7 +61,7 @@ MetaState *ModuleSS::findMetaStateByProductSCC(ProductSCC &productscc) {
     const auto [first, last] {m_name_index.equal_range(productscc.hash())};
     for (auto it {first}; it != last; ++it) {
         MetaState *candidate {it->second};
-        if ((!found || m_rank.at(candidate) < m_rank.at(found)) && candidate->representsProductSCC(productscc)) {
+        if ((!found || candidate->getRank() < found->getRank()) && candidate->representsProductSCC(productscc)) {
             found = candidate;
         }
     }
@@ -73,24 +83,104 @@ vector<MetaState *> &ModuleSS::getListMetaStates() {
     return m_metastates;
 }
 
-/*
- * @brief Remove a metastate
- */
-void ModuleSS::removeMetaState(MetaState *ms) {
-    // ms itself stays alive: its SCCs are still referenced by product SCCs of other modules.
-    // Its edges are owned by it: they are destroyed here.
-    ms->clearSyncArcs();
-
-    auto ptrMl = std::remove(m_metastates.begin(), m_metastates.end(), ms);
-    m_metastates.erase(ptrMl, m_metastates.end());
-    if (ms->getParent() == this) ms->setParent(nullptr); // detached from this module
-    std::erase_if(m_name_index, [ms](const auto &entry) { return entry.second == ms; });
-    m_rank.erase(ms);
-
-    // Remove every remaining edge leading to ms
-    for (const auto elt: m_metastates) {
-        elt->removeSyncArcsTo(ms);
+size_t ModuleSS::reduceByBisimulation() {
+    const size_t n {m_metastates.size()};
+    if (n < 2) return 0;
+    std::unordered_map<const MetaState *, uint32_t> position;
+    position.reserve(n);
+    for (uint32_t i {}; i < n; ++i) position.emplace(m_metastates[i], i);
+    // Sync arcs of each metastate: (fusion, position of the destination), in the order of getSyncSucc()
+    std::vector<std::vector<std::pair<const TransitionFusionSet *, uint32_t>>> arcs(n);
+    for (uint32_t i {}; i < n; ++i) {
+        for (const auto &arc: m_metastates[i]->getSyncSucc()) {
+            arcs[i].emplace_back(arc->getFusion(), position.at(arc->getDestination()));
+        }
     }
+
+    // Initial partition: same markings
+    std::vector<uint32_t> block(n);
+    size_t block_count {};
+    {
+        std::unordered_map<size_t, std::vector<uint32_t>> blocks_of_hash; // content hash -> blocks
+        std::vector<uint32_t> first_of_block;                           // a metastate of each block
+        for (uint32_t i {}; i < n; ++i) {
+            auto &candidates {blocks_of_hash[m_metastates[i]->contentHash()]};
+            const auto it {std::find_if(candidates.begin(), candidates.end(), [&](const uint32_t b) {
+                return *m_metastates[first_of_block[b]] == *m_metastates[i];
+            })};
+            if (it != candidates.end()) {
+                block[i] = *it;
+            } else {
+                block[i] = static_cast<uint32_t>(block_count++);
+                first_of_block.push_back(i);
+                candidates.push_back(block[i]);
+            }
+        }
+    }
+
+    // Refinement: the new block of a metastate is given by its block and the set of (fusion, block of the
+    // destination) of its arcs; it stops when no block is split any more
+    struct SignatureHash {
+        size_t operator()(const std::vector<uint64_t> &signature) const {
+            size_t hash {signature.size()};
+            for (const auto value: signature) hash = (hash ^ value) * 1099511628211ULL;
+            return hash;
+        }
+    };
+    std::vector<std::pair<uint64_t, uint64_t>> labels;
+    std::vector<uint64_t> signature;
+    while (true) {
+        std::unordered_map<std::vector<uint64_t>, uint32_t, SignatureHash> new_blocks;
+        new_blocks.reserve(block_count * 2);
+        std::vector<uint32_t> next(n);
+        for (uint32_t i {}; i < n; ++i) {
+            labels.clear();
+            for (const auto &[fusion, dest]: arcs[i]) {
+                labels.emplace_back(reinterpret_cast<uintptr_t>(fusion), block[dest]);
+            }
+            std::sort(labels.begin(), labels.end());
+            labels.erase(std::unique(labels.begin(), labels.end()), labels.end());
+            signature.assign(1, block[i]);
+            for (const auto &[fusion, dest_block]: labels) {
+                signature.push_back(fusion);
+                signature.push_back(dest_block);
+            }
+            next[i] = new_blocks.emplace(signature, static_cast<uint32_t>(new_blocks.size())).first->second;
+        }
+        block = std::move(next);
+        if (new_blocks.size() == block_count) break;
+        block_count = new_blocks.size();
+    }
+    if (block_count == n) return 0;
+
+    // Representative of each block: its first inserted metastate
+    std::vector<MetaState *> representative(block_count, nullptr);
+    for (uint32_t i {}; i < n; ++i) {
+        if (!representative[block[i]]) representative[block[i]] = m_metastates[i];
+    }
+    // Redirect the arcs to the representatives
+    for (uint32_t i {}; i < n; ++i) {
+        const auto &sync_arcs {m_metastates[i]->getSyncSucc()};
+        for (size_t k {}; k < sync_arcs.size(); ++k) {
+            MetaState *target {representative[block[arcs[i][k].second]]};
+            if (sync_arcs[k]->getDestination() != target) sync_arcs[k]->setDestination(target);
+        }
+    }
+    // Merge the other metastates into their representative. They stay alive (their SCCs are still referenced
+    // by product SCCs), but they lose their arcs and leave the module
+    size_t removed {};
+    for (uint32_t i {}; i < n; ++i) {
+        MetaState *ms {m_metastates[i]};
+        MetaState *target {representative[block[i]]};
+        if (target == ms) continue;
+        target->absorbNames(*ms); // also indexes the names in this module
+        ms->clearSyncArcs();
+        ms->setParent(nullptr);
+        ++removed;
+    }
+    std::erase_if(m_metastates, [this](const MetaState *ms) { return !contains(ms); });
+    std::erase_if(m_name_index, [this](const auto &entry) { return !contains(entry.second); });
+    return removed;
 }
 
 /*

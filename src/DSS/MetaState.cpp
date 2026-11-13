@@ -65,12 +65,6 @@ void MetaState::absorbNames(const MetaState &merged) {
 
 MetaState::~MetaState() = default;
 
-void MetaState::removeSyncArcsTo(const MetaState *destination) {
-    std::erase_if(m_sync_arcs, [destination](const unique_ptr<ArcSync> &arc) {
-        return arc->getDestination() == destination;
-    });
-}
-
 void MetaState::clearSyncArcs() {
     m_sync_arcs.clear();
 }
@@ -91,8 +85,26 @@ uint32_t MetaState::getArcCount() {
     return res;
 }
 
-bool MetaState::operator==(MetaState &ms) const {
+size_t MetaState::contentHash() const {
+    if (!m_content_hash_valid) {
+        // Sum of mixed hashes: independent of the order of the markings
+        size_t hash {m_nodes.size()};
+        for (const auto marking: m_nodes) {
+            size_t h {marking->hash()};
+            h ^= h >> 33;
+            h *= 0xff51afd7ed558ccdULL;
+            h ^= h >> 33;
+            hash += h;
+        }
+        m_content_hash = hash;
+        m_content_hash_valid = true;
+    }
+    return m_content_hash;
+}
+
+bool MetaState::operator==(const MetaState &ms) const {
     if (ms.m_nodes.size() != m_nodes.size()) return false;
+    if (ms.contentHash() != contentHash()) return false;
     // Markings are unique inside a metastate: same count and inclusion mean equality
     return std::all_of(ms.m_nodes.begin(), ms.m_nodes.end(),
                        [this](const Marking *marking) { return existMarking(marking) != nullptr; });
@@ -115,6 +127,7 @@ Marking *MetaState::insertMarking(Marking *m) {
     if (!inserted) return *it;
     m->setPosition(static_cast<uint32_t>(m_nodes.size()));
     m_nodes.push_back(m);
+    m_content_hash_valid = false;
     return nullptr;
 }
 

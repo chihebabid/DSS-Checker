@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <set>
 #include <random>
 #include <sstream>
 #include <memory>
@@ -19,7 +20,7 @@
 // Enable/disable reduction on the fly
 //#define REDUCTION
 
-DSSBuilder::DSSBuilder(ModularPetriNet *ptr) : m_petri(ptr) {
+DSSBuilder::DSSBuilder(ModularPetriNet *ptr, const bool reduction) : m_petri(ptr), m_reduction(reduction) {
     for (size_t i{}; i < ModularPetriNet::getModuleCount(); ++i) {
         m_dss.addModule(new ModuleSS(i));
     }
@@ -59,6 +60,10 @@ void DSSBuilder::buildInitialMS() {
     // Setting name for meta-states
     for (const auto lm: list_metastates)
         lm->setProductSCCName(productscc);
+    // Initial state of each module (its initial metastate may be merged into another one by the reduction)
+    for (size_t module {}; module < list_metastates.size(); ++module) {
+        m_dss[module]->setInitialState(productscc, *list_metastates[module]->getListMarkings()[0]);
+    }
 
     vector<RElement_dss> list_fusions;
     m_petri->extractEnabledFusionReduced(list_metastates, list_fusions);
@@ -162,29 +167,15 @@ void DSSBuilder::buildInitialMS() {
                 }
             }
         }
-        // Reducing
-        // for (const auto &elt: list_fusions) {
-        //     for (auto module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
-        //         auto *_ms = elt.getMetaState(module);
-        //         // _ms may itself have been merged into another metastate earlier in this loop
-        //         const auto &alive {m_dss[module]->getListMetaStates()};
-        //         if (std::find(alive.begin(), alive.end(), _ms) == alive.end()) continue;
-        //
-        //         if (auto ptrMS = reduce(_ms, module);ptrMS) {
-        //             // Redirect edges to ptrMS
-        //             // A comment
-        //             for (const auto &m: m_dss[module]->getListMetaStates()) {
-        //                 for (const auto &edge: m->getSyncSucc()) {
-        //                     if (edge->getDestination() == ptrMS) edge->setDestination(_ms);
-        //                 }
-        //             }
-        //             // _ms now also stands for the product SCCs represented by ptrMS
-        //             _ms->absorbNames(*ptrMS);
-        //             // Remove ptrMS
-        //             m_dss[module]->removeMetaState(ptrMS);
-        //         }
-        //     }
-        // }
+    }
+    // Reduction of the metastates by bisimulation
+    if (m_reduction) {
+        size_t before {}, removed {};
+        for (size_t module {}; module < ModularPetriNet::getModuleCount(); ++module) {
+            before += m_dss[module]->getMetaStateCount();
+            removed += m_dss[module]->reduceByBisimulation();
+        }
+        cout << "Reduction by bisimulation: " << before << " -> " << before - removed << " metastates" << endl;
     }
     // Lazy version for computing Sync-closure property
     for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
@@ -419,31 +410,6 @@ string DSSBuilder::getSourceProductName(const ArcSync *arc) {
  * @param module Module index
  * @return true if *ms can be fusedm else false
  */
-MetaState *DSSBuilder::reduce(MetaState *ms, const int &module) {
-    for (const auto &elt: m_dss[module]->getListMetaStates()) {
-        if (elt != ms && *elt == *ms) {
-            //Compare out edges
-            const auto &lEdges1 = ms->getSyncSucc();
-            const auto &lEdges2 = elt->getSyncSucc();
-            if (lEdges1.size() == lEdges2.size()) { // Check that all edges are the same
-                bool areSame = true;
-                for (const auto &edge1: lEdges1) {
-                    auto compare = [&edge1](const std::unique_ptr<ArcSync> &arc) {
-                        return edge1->getFusion() == arc->getFusion() && edge1->getDestination() == arc->getDestination();
-                    };
-                    auto res = std::find_if(lEdges2.begin(), lEdges2.end(), compare);
-                    if (res == lEdges2.end()) {
-                        areSame = false;
-                        break;
-                    }
-                }
-                if (areSame) return elt;
-            }
-        }
-    }
-    return nullptr;
-}
-
 void DSSBuilder::outputTXT() {
     uint32_t sumMS{}, sumStates{}, sumSCC{}, sumLocalEdges{}, sumSyncEdges{};
     for (const auto &module: m_dss) {
