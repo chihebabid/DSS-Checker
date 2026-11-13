@@ -4,10 +4,10 @@
 #include <iostream>
 #include <algorithm>
 #include <cctype>
+#include <map>
 #include "Petri/PetriNet.h"
 #include "misc.h"
 
-typedef vector<PElement> PStack;
 
 
 //////////////////////////////////
@@ -79,19 +79,6 @@ void PetriNet::setMarking(const Marking *marking) {
     for (int i = 0; i < m_places.size(); i++) {
         m_places[i].setTokens(marking->getTokens(i));
     }
-}
-
-///////////////////////////////////////////////////////////////
-// Renvoyer les libell�s des transitions franchissables
-///////////////////////////////////////////////////////////////
-vector<Transition *> PetriNet::getListFirableTransitions() {
-    vector<Transition *> transitions;
-    for (auto & transition : m_transitions)
-        if (transition.isFirable()) {
-            transitions.emplace_back(&transition);
-        }
-
-    return transitions;
 }
 
 void PetriNet::fire(Transition &t) {
@@ -194,61 +181,82 @@ Transition *PetriNet::getTransitionAddress(const string transition_name) {
 
 // Construction de Meta-graphe
 
+void PetriNet::buildLocalTransitions() {
+    m_local_transitions.clear();
+    for (auto &transition: m_transitions) {
+        if (transition.isSync()) continue; // a synchronised transition is never fired locally
+        LocalTransition local {&transition, {}, {}};
+        std::map<uint32_t, int> delta;
+        for (const auto &[place, weight]: transition.getInputPlaces()) {
+            const auto index {static_cast<uint32_t>(place - m_places.data())};
+            local.inputs.emplace_back(index, weight);
+            delta[index] -= weight;
+        }
+        for (const auto &[place, weight]: transition.getOutputPlaces()) {
+            delta[static_cast<uint32_t>(place - m_places.data())] += weight;
+        }
+        for (const auto &[index, d]: delta) {
+            if (d != 0) local.deltas.emplace_back(index, d);
+        }
+        m_local_transitions.push_back(std::move(local));
+    }
+    m_local_transitions_built = true;
+}
+
+/*
+ * Metastate reached from marking by local transitions (depth-first exploration).
+ * Markings are handled directly (no Place object involved, the current marking of the net is not
+ * modified); a new Marking is only allocated for a new state. The markings, their successors and the
+ * SCCs are produced in the same order as before.
+ */
 MetaState *PetriNet::getMetaState(const Marking &marking) {
-    //vector<Marquage> list_marq_inserted;
-    PStack pstack;
-    PElement elt;
-    auto *ms = new MetaState();
-    elt.marking = new Marking(marking);
-    setMarking(&marking);
-    elt.transitions = getListFirableTransitions();
-    pstack.push_back(elt);
-
-
-    ms->insertMarking(elt.marking);
-
-    while (pstack.size() > 0) {
-        PElement current_elt = pstack.back();
-        pstack.pop_back();
-
-        while (current_elt.transitions.size() > 0) {
-
-            Transition *transition = current_elt.transitions.back();
-            current_elt.transitions.pop_back();
-
-            // On doit tirer la transition correspondante apr�s avoir pr�ciser le marquage
-            setMarking(current_elt.marking);
-            //cout<<"\n The old  marquage="<<getMarkingName(getMarking())<<endl;
-            fire(*transition); // Franchissement
-
-            // Only allocate a node if the reached marking is a new one
-            Marking reached {getMarking()};
-            Marking *old_state = ms->existMarking(&reached);
-            Marking *new_state {nullptr};
-            if (!old_state) {
-                new_state = new Marking(std::move(reached));
-                ms->insertMarking(new_state);
+    if (!m_local_transitions_built) buildLocalTransitions();
+    // Local transitions enabled at m, in the order of m_transitions
+    const auto enabled = [this](const Marking &m) {
+        vector<uint32_t> result;
+        for (uint32_t i {}; i < m_local_transitions.size(); ++i) {
+            const auto &inputs {m_local_transitions[i].inputs};
+            if (std::all_of(inputs.begin(), inputs.end(), [&m](const auto &input) {
+                return m.getTokens(input.first) >= input.second;
+            })) {
+                result.push_back(i);
             }
-            // Indiquer si le marquage en question est récemment inséré
-            //if (!state_graph->existMarking(new_state)) list_marq_inserted.push_back(*new_state);
-            //cout<<"\n The old  marquage="<<current_elt.marking.get8BitsValue()<<endl;
-            //cout<<"firing of "<<(*transition).getName()<<endl;
-            //cout<<"\n The new  marquage="<<getMarkingName(*new_state)<<endl;
-            //if (old_state) cout<<"\n The found  marquage="<<getMarkingName(*old_state)<<endl;
+        }
+        return result;
+    };
 
-            //cout<<"\n The current  marquage (old)="<<getMarkingName(*current_elt.marking)<<endl;
-            if (!old_state) current_elt.marking->addSucc(transition, new_state);
-            else current_elt.marking->addSucc(transition, old_state);
+    auto *ms = new MetaState();
+    auto *initial = new Marking(marking);
+    ms->insertMarking(initial);
+    struct Element {
+        Marking *marking;
+        vector<uint32_t> transitions; // Enabled transitions not fired yet (the last one is fired first)
+    };
+    vector<Element> stack;
+    stack.push_back({initial, enabled(*initial)});
+    Marking reached {marking.getPlaceCount()}; // Reused for every firing
 
-
-            //cout<<"\n Ajout du noeud réusssi ="<<result;
-            //if (current_elt.transitions.size()>0) pstack.push_back(current_elt);
-            // Ajouter le marquage dans la pile et ses transitions franchissables
-            if (!old_state) {
-                elt.marking = new_state;
-                setMarking(elt.marking);
-                elt.transitions = getListFirableTransitions();
-                if (elt.transitions.size() > 0) pstack.push_back(elt);
+    while (!stack.empty()) {
+        Element current {std::move(stack.back())};
+        stack.pop_back();
+        while (!current.transitions.empty()) {
+            const LocalTransition &local {m_local_transitions[current.transitions.back()]};
+            current.transitions.pop_back();
+            // Firing
+            reached = *current.marking;
+            for (const auto &[place, delta]: local.deltas) {
+                reached.setTokens(place, static_cast<uint32_t>(static_cast<int>(reached.getTokens(place)) + delta));
+            }
+            if (Marking *old_state {ms->existMarking(&reached)}; old_state) {
+                current.marking->addSucc(local.transition, old_state);
+                continue;
+            }
+            // Only allocate a node if the reached marking is a new one
+            auto *new_state = new Marking(reached);
+            ms->insertMarking(new_state);
+            current.marking->addSucc(local.transition, new_state);
+            if (auto transitions {enabled(*new_state)}; !transitions.empty()) {
+                stack.push_back({new_state, std::move(transitions)});
             }
         }
     }

@@ -11,10 +11,6 @@
 #include "DSS/ProductSCC.h"
 
 
-struct PElement {
-    Marking *marking;
-    vector<Transition *> transitions;
-};
 #define ListLocalStates vector<Marking*>*
 #define ListGlobalStates vector<ListLocalStates>*
 

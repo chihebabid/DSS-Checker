@@ -4,6 +4,18 @@
 
 void ProductSCC::addSCC(SCC *scc, const bool any) {
     m_product.push_back({scc, any});
+    m_hash_valid = false;
+}
+
+size_t ProductSCC::computeHash() const {
+    size_t hash {m_product.size()};
+    for (const auto &[scc, any]: m_product) {
+        const size_t h {any ? 0x9e3779b97f4a7c15ULL : scc->contentHash()};
+        hash = hash * 1099511628211ULL ^ h;
+    }
+    m_hash = hash;
+    m_hash_valid = true;
+    return m_hash;
 }
 
 SCC *ProductSCC::getSCC(const size_t pos) const {

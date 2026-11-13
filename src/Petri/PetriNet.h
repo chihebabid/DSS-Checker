@@ -65,7 +65,16 @@ public:
 private:
     int m_number;
 
-    vector<Transition *> getListFirableTransitions();
+    // A local (non synchronised) transition, with the effect of its firing on each place
+    struct LocalTransition {
+        Transition *transition;
+        vector<std::pair<uint32_t, uint32_t>> inputs; // (place index, weight): needed tokens
+        vector<std::pair<uint32_t, int>> deltas;      // (place index, output - input) for the places it changes
+    };
+    // Local transitions, in the order of m_transitions; built at the first call of getMetaState()
+    vector<LocalTransition> m_local_transitions;
+    bool m_local_transitions_built {false};
+    void buildLocalTransitions();
 
     Place *getPlaceAddress(string placename);
 

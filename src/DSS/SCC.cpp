@@ -1,19 +1,30 @@
-#include <iostream>
-#include <algorithm>
 #include "DSS/SCC.h"
-#include "DSS/ArcSync.h"
-Marking *SCC::findMarking(Marking *m) {
-    auto it{std::find_if(m_list.begin(), m_list.end(), [m](const Marking *elt) { return *m == *elt; })};
-    return it == m_list.end() ? nullptr : *it;
+
+bool SCC::isEqual(const SCC &scc) const {
+    if (scc.m_list.size() != m_list.size()) return false;
+    if (m_list.empty()) return true;
+    if (this == &scc) return true;
+    // The marking of this metastate equal to the first marking of scc must belong to this SCC
+    // (hash lookup in the metastate instead of a linear search in the SCC)
+    const Marking *same {getParent()->existMarking(scc.m_list[0])};
+    return same && same->getSCCContainer() == this;
 }
 
-// Compare whether two SCCs are equal
-bool SCC::isEqual(const SCC &scc) {
-    if (scc.m_list.size() != this->m_list.size()) return false;
-    if (this->m_list.empty()) return true;
-    //assert (this->m_list.size()!=0);
-    if (findMarking(scc.m_list[0])) return true;
-    return false;
+size_t SCC::contentHash() const {
+    if (!m_hash_valid) {
+        // Sum of mixed hashes: independent of the order of the markings
+        size_t hash {m_list.size()};
+        for (const auto marking: m_list) {
+            size_t h {marking->hash()};
+            h ^= h >> 33;
+            h *= 0xff51afd7ed558ccdULL;
+            h ^= h >> 33;
+            hash += h;
+        }
+        m_hash = hash;
+        m_hash_valid = true;
+    }
+    return m_hash;
 }
 
 size_t SCC::getCount() const {
@@ -21,42 +32,11 @@ size_t SCC::getCount() const {
 }
 
 void SCC::addState(Marking *m) {
-    //if (!existMarking(m))
     m->setSCCContainer(this);
     m_list.emplace_back(m);
+    m_hash_valid = false;
 }
 
 vector<Marking *> *SCC::getListStates() {
     return &m_list;
-}
-
-
-
-void SCC::IteratorSucc::update() {
-    m_succ.clear();
-    for (const auto & marking : m_ptr->m_list) {
-        for (const auto & succ : marking->getListSucc()) {
-            m_succ.emplace_back(succ.second->getSCCContainer(), succ.first);
-        }
-    }
-    auto ms {m_ptr->getParent()};
-    auto module {ms->getIdModule()};
-    for(auto & edge : ms->getSyncSucc()) {
-        if (m_ptr==edge->getSourceProduct().getSCC(module)) {
-            m_succ.emplace_back(edge->getDestination()->getInitialSCC(),edge->getFusion()->getTransitionOfModule(module));
-        }
-    }
-}
-
-bool SCC::isTerminal() const {
-    auto it {beginSucc()};
-    while (it!=endSucc()) {
-        if ((*it).second && !((*it).second->isSync())) {
-            if ((*it).first!=this) {
-                return false;
-            }
-        }
-        ++it;
-    }
-    return true;
 }

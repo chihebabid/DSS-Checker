@@ -8,33 +8,30 @@
 #include <unordered_map>
 #include "DSS/MetaState.h"
 #include "DSS/ArcSync.h"
+#include "DSS/ModuleSS.h"
 
 MetaState::MetaState() {
     m_id = m_counter++;
 }
 
-vector<Marking *> MetaState::getListMarkings()  const {
+const vector<Marking *> &MetaState::getListMarkings() const {
     return m_nodes;
 }
-
-/*vector<InternalArc>* MetaState::getListArcs() {
-    return m_graph->getListArcs();
-}*/
 
 vector<SCC *> *MetaState::getListSCCs() const {
     return &m_sccs;
 }
 
-SCC *MetaState::findSCC(Marking *state) {
-    for (int i = 0; i < m_sccs.size(); i++) {
-        vector<Marking *> *list_states = m_sccs[i]->getListStates();
-        if (std::find(list_states->begin(), list_states->end(), state) != list_states->end()) return m_sccs.at(i);
-    }
-    return nullptr;
+SCC *MetaState::findSCC(Marking *state) const {
+    // A marking of this metastate knows its SCC
+    if (SCC *scc {state->getSCCContainer()}; scc && scc->getParent() == this) return scc;
+    // Otherwise, the marking of this metastate with the same tokens
+    const Marking *same {existMarking(state)};
+    return same ? same->getSCCContainer() : nullptr;
 }
 
-SCC *MetaState::getInitialSCC() {
-    return findSCC(m_nodes[0]);
+SCC *MetaState::getInitialSCC() const {
+    return m_nodes[0]->getSCCContainer();
 }
 
 
@@ -44,18 +41,26 @@ ProductSCC *MetaState::getProductSCCName() const {
 
 void MetaState::setProductSCCName(ProductSCC *name) {
     m_name = name;
+    if (ModuleSS *module {getParent()}; module) module->indexName(this, name);
 }
 
 
 bool MetaState::representsProductSCC(const ProductSCC &productscc) const {
-    if (m_name && *m_name == productscc) return true;
-    return std::any_of(m_merged_names.begin(), m_merged_names.end(),
-                       [&productscc](const ProductSCC *name) { return *name == productscc; });
+    // The (cached) hashes are compared first: the full comparison is only done when they are equal
+    const size_t hash {productscc.hash()};
+    if (m_name && m_name->hash() == hash && *m_name == productscc) return true;
+    return std::any_of(m_merged_names.begin(), m_merged_names.end(), [&productscc, hash](const ProductSCC *name) {
+        return name->hash() == hash && *name == productscc;
+    });
 }
 
 void MetaState::absorbNames(const MetaState &merged) {
+    const size_t first_new {m_merged_names.size()};
     if (merged.m_name) m_merged_names.emplace_back(merged.m_name);
     m_merged_names.insert(m_merged_names.end(), merged.m_merged_names.begin(), merged.m_merged_names.end());
+    if (ModuleSS *module {getParent()}; module) {
+        for (size_t i {first_new}; i < m_merged_names.size(); ++i) module->indexName(this, m_merged_names[i]);
+    }
 }
 
 MetaState::~MetaState() = default;
@@ -99,50 +104,6 @@ uint32_t MetaState::getId() const {
 
 uint32_t MetaState::m_counter {0};
 
-// Working data of Tarjan algorithm, only alive during computeSCCTarjan()
-struct MetaState::TarjanContext {
-    struct NodeInfo {
-        int index {-1}; // -1: not visited yet
-        int lowlink {0};
-        bool on_stack {false};
-    };
-    unordered_map<const Marking *, NodeInfo> infos;
-    int next_index {0};
-    vector<Marking *> stack;
-};
-
-void MetaState::computeStrongConnectedComponents(Marking *v, TarjanContext &ctx) {
-    auto &info_v {ctx.infos[v]}; // references stay valid: unordered_map never moves its elements
-    info_v.index = ctx.next_index;
-    info_v.lowlink = ctx.next_index;
-    ctx.next_index++;
-    ctx.stack.push_back(v);
-    info_v.on_stack = true;
-
-    // Consider successors of v
-    for (const auto &elt: v->getListSucc()) {
-        Marking *w = elt.second;
-        auto &info_w {ctx.infos[w]};
-        if (info_w.index == -1) {
-            computeStrongConnectedComponents(w, ctx);
-            info_v.lowlink = min(info_v.lowlink, info_w.lowlink);
-        } else if (info_w.on_stack) info_v.lowlink = min(info_v.lowlink, info_w.index);
-    }
-    // If v is a root node, pop the stack and generate an SCC
-    if (info_v.lowlink == info_v.index) {
-        SCC *scc = new SCC();
-        scc->setParent(this);
-        Marking *w;
-        do {
-            w = ctx.stack.back();
-            ctx.stack.pop_back();
-            ctx.infos[w].on_stack = false;
-            scc->addState(w);
-        } while (w != v);
-        m_sccs.emplace_back(scc);
-    }
-}
-
 Marking *MetaState::existMarking(const Marking *marking) const {
     // The lookup only reads *marking (hash and comparison)
     const auto it {m_nodes_index.find(const_cast<Marking *>(marking))};
@@ -152,16 +113,80 @@ Marking *MetaState::existMarking(const Marking *marking) const {
 Marking *MetaState::insertMarking(Marking *m) {
     const auto [it, inserted] {m_nodes_index.insert(m)};
     if (!inserted) return *it;
+    m->setPosition(static_cast<uint32_t>(m_nodes.size()));
     m_nodes.push_back(m);
     return nullptr;
 }
 
 
+/*
+ * Tarjan algorithm, iterative (no recursion: no stack overflow on large metastates).
+ * Markings are identified by their position in m_nodes (Marking::getPosition()). The SCCs, and the markings inside each SCC,
+ * are produced in the same order as by the recursive version.
+ * Then, the terminal SCCs are marked: no local transition leaves them.
+ */
 void MetaState::computeSCCTarjan() {
-    TarjanContext ctx;
-    ctx.infos.reserve(m_nodes.size());
-    for (auto &node: m_nodes) {
-        if (ctx.infos[node].index == -1) computeStrongConnectedComponents(node, ctx);
+    const size_t n {m_nodes.size()};
+
+    vector<int> index(n, -1), lowlink(n, 0);
+    vector<char> on_stack(n, 0);
+    vector<uint32_t> stack;
+    struct Frame {
+        uint32_t node;
+        size_t next_succ; // Next successor of node to consider
+    };
+    vector<Frame> call_stack;
+    int next_index {0};
+    const auto visit = [&](const uint32_t v) {
+        index[v] = lowlink[v] = next_index++;
+        stack.push_back(v);
+        on_stack[v] = 1;
+        call_stack.push_back({v, 0});
+    };
+
+    for (uint32_t root {}; root < n; ++root) {
+        if (index[root] != -1) continue;
+        visit(root);
+        while (!call_stack.empty()) {
+            Frame &frame {call_stack.back()};
+            const uint32_t v {frame.node};
+            const auto &succ {m_nodes[v]->getListSucc()};
+            if (frame.next_succ < succ.size()) {
+                const uint32_t w {succ[frame.next_succ++].second->getPosition()};
+                if (index[w] == -1) visit(w); // frame is no longer valid after this call
+                else if (on_stack[w]) lowlink[v] = min(lowlink[v], index[w]);
+                continue;
+            }
+            // All the successors of v have been considered
+            call_stack.pop_back();
+            if (!call_stack.empty()) {
+                const uint32_t parent {call_stack.back().node};
+                lowlink[parent] = min(lowlink[parent], lowlink[v]);
+            }
+            // If v is a root node, pop the stack and generate an SCC
+            if (lowlink[v] == index[v]) {
+                SCC *scc = new SCC();
+                scc->setParent(this);
+                uint32_t w;
+                do {
+                    w = stack.back();
+                    stack.pop_back();
+                    on_stack[w] = 0;
+                    scc->addState(m_nodes[w]);
+                } while (w != v);
+                m_sccs.emplace_back(scc);
+            }
+        }
+    }
+
+    for (const auto scc: m_sccs) {
+        const auto &markings {*scc->getListStates()};
+        scc->setTerminal(std::all_of(markings.begin(), markings.end(), [scc](const Marking *marking) {
+            const auto &succ {marking->getListSucc()};
+            return std::all_of(succ.begin(), succ.end(), [scc](const auto &elt) {
+                return elt.second->getSCCContainer() == scc;
+            });
+        }));
     }
 }
 

@@ -59,6 +59,10 @@ public:
 
     bool isLocallyFirable();
 
+    [[nodiscard]] const vector<transition_t> &getInputPlaces() const { return m_input_places; }
+
+    [[nodiscard]] const vector<transition_t> &getOutputPlaces() const { return m_output_places; }
+
     Transition()=default;
     Transition(const Transition &o)=default;
     Transition& operator=(const Transition&)=delete;

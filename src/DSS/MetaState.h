@@ -25,15 +25,16 @@ class ModuleSS;
 class MetaState : public ChildOf<ModuleSS> {
 public:
     MetaState();
-    virtual ~MetaState(); // defined in the .cpp: destroying the sync arcs requires the definition of ArcSync
+    ~MetaState(); // defined in the .cpp: destroying the sync arcs requires the definition of ArcSync
 
     // Sync arcs leaving this metastate; they are owned by the metastate
     const vector<unique_ptr<ArcSync>> &getSyncSucc() const;
-    vector<Marking *> getListMarkings() const;
+    [[nodiscard]] const vector<Marking *> &getListMarkings() const;
     vector<SCC *> *getListSCCs() const;
-    SCC *findSCC(Marking *state);
-    SCC *getInitialSCC();
+    SCC *findSCC(Marking *state) const;
+    SCC *getInitialSCC() const;
     ProductSCC *getProductSCCName() const;
+    // Also records the name in the index of the module of this metastate (if it has been inserted in one)
     void setProductSCCName(ProductSCC *name);
     // True if productscc is the name of this metastate or of a metastate merged into it
     bool representsProductSCC(const ProductSCC &productscc) const;
@@ -72,8 +73,6 @@ private:
     vector<Marking *> m_nodes; // In insertion order
     unordered_set<Marking *, Marking::PtrHash, Marking::PtrEqual> m_nodes_index; // Same markings, for fast lookup
     vector<SCC *> m_sccs;
-    struct TarjanContext; // Working data of Tarjan algorithm
-    void computeStrongConnectedComponents(Marking *v, TarjanContext &ctx);
 };
 
 #endif /* METASTATE_H_ */

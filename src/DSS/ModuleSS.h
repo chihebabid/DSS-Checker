@@ -5,6 +5,7 @@
 #ifndef DISTRIBUTEDSTATESPACE_MODULESS_H
 #define DISTRIBUTEDSTATESPACE_MODULESS_H
 
+#include <unordered_map>
 #include "DSS/ArcSync.h"
 #include "DSS/ChildOf.h"
 #include "DSS/MetaState.h"
@@ -18,7 +19,13 @@ public:
 
     bool insertMS(MetaState *ms);
 
+    // First metastate (in insertion order) named productscc, or into which a metastate named productscc
+    // has been merged; nullptr if there is none. Hash lookup in the name index
     MetaState *findMetaStateByProductSCC(ProductSCC &productscc);
+
+    // Record that ms (a metastate of this module) is now also named name.
+    // Called by MetaState::setProductSCCName() and MetaState::absorbNames()
+    void indexName(MetaState *ms, const ProductSCC *name);
 
     size_t getMetaStateCount() const;
 
@@ -46,6 +53,12 @@ private:
     std::vector<const ProductSCC *> getMaxProductOfTerminalSCCs(const MetaState *ms, const SCC *scc) const;
     vector<MetaState *> m_metastates;
     size_t m_id_module;
+    // Name index: hash of a name -> metastates having this name (entries are checked by a full comparison,
+    // so an outdated entry is harmless)
+    std::unordered_multimap<size_t, MetaState *> m_name_index;
+    // Insertion rank of each metastate: among several candidates, the first inserted one is returned
+    std::unordered_map<const MetaState *, size_t> m_rank;
+    size_t m_next_rank {};
 };
 
 

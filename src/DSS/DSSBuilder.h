@@ -10,6 +10,7 @@
 #include "DSS/DistributedSS.h"
 #include <iosfwd>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 class DSSBuilder {
@@ -52,8 +53,16 @@ private:
 
     void buildInitialMS();
 
+    // Metastate reached from marking by the local transitions of module, computed once per (module, marking).
+    // It is never inserted in the DSS: its initial SCC is only used to name destination metastates
+    // (the SCC of a marking only depends on the marking), so the destination metastate itself is only
+    // computed when it is new
+    MetaState *getReferenceMetaState(int module, const Marking &marking);
+
     ModularPetriNet *m_petri;
     DistributedSS m_dss;
+    // Reference metastates of each module, indexed by their initial marking
+    std::vector<std::unordered_map<Marking *, MetaState *, Marking::PtrHash, Marking::PtrEqual>> m_reference_ms;
 };
 
 

@@ -21,6 +21,10 @@ public:
     [[nodiscard]] SCC *getSCC(size_t pos) const;
     // True if the component of module pos is "any" ("-")
     [[nodiscard]] bool isAny(size_t pos) const;
+    // Hash consistent with operator== ("any" components are all equivalent); cached
+    [[nodiscard]] size_t hash() const {
+        return m_hash_valid ? m_hash : computeHash();
+    }
 
     /*
      * Partial order: a > b if a represents strictly more products than b
@@ -40,7 +44,10 @@ private:
         bool any;
     };
     static std::partial_ordering compare(const Component &a, const Component &b);
+    size_t computeHash() const;
     std::vector<Component> m_product;
+    mutable size_t m_hash {};          // Cache of hash()
+    mutable bool m_hash_valid {false};
 };
 
 #endif // PRODUCTSCC_H

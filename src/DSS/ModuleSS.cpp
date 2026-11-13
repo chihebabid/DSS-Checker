@@ -11,7 +11,7 @@
 #include "Petri/ModularPetriNet.h"
 
 // Set to false to remove the trace of computeSyncClosedSCC()
-static constexpr bool debug_sync_closed {true};
+static constexpr bool debug_sync_closed {false};
 
 // Name of an SCC of a module (debug)
 static string sccName(SCC *scc, const size_t module) {
@@ -35,14 +35,27 @@ bool ModuleSS::insertMS(MetaState *ms) {
     ms->setIdModule(m_id_module);
     ms->setParent(this);
     m_metastates.push_back(ms);
+    m_rank[ms] = m_next_rank++;
+    // Names it may already have
+    indexName(ms, ms->getProductSCCName());
+    for (const auto name: ms->getMergedNames()) indexName(ms, name);
     return true;
 }
 
+void ModuleSS::indexName(MetaState *ms, const ProductSCC *name) {
+    if (name && m_rank.contains(ms)) m_name_index.emplace(name->hash(), ms);
+}
+
 MetaState *ModuleSS::findMetaStateByProductSCC(ProductSCC &productscc) {
-    for (const auto &elt: m_metastates) {
-        if (elt->representsProductSCC(productscc)) return elt;
+    MetaState *found {nullptr};
+    const auto [first, last] {m_name_index.equal_range(productscc.hash())};
+    for (auto it {first}; it != last; ++it) {
+        MetaState *candidate {it->second};
+        if ((!found || m_rank.at(candidate) < m_rank.at(found)) && candidate->representsProductSCC(productscc)) {
+            found = candidate;
+        }
     }
-    return nullptr;
+    return found;
 }
 
 size_t ModuleSS::getMetaStateCount() const {
@@ -71,6 +84,8 @@ void ModuleSS::removeMetaState(MetaState *ms) {
     auto ptrMl = std::remove(m_metastates.begin(), m_metastates.end(), ms);
     m_metastates.erase(ptrMl, m_metastates.end());
     if (ms->getParent() == this) ms->setParent(nullptr); // detached from this module
+    std::erase_if(m_name_index, [ms](const auto &entry) { return entry.second == ms; });
+    m_rank.erase(ms);
 
     // Remove every remaining edge leading to ms
     for (const auto elt: m_metastates) {

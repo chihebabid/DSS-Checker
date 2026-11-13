@@ -23,6 +23,15 @@ DSSBuilder::DSSBuilder(ModularPetriNet *ptr) : m_petri(ptr) {
     for (size_t i{}; i < ModularPetriNet::getModuleCount(); ++i) {
         m_dss.addModule(new ModuleSS(i));
     }
+    m_reference_ms.resize(ModularPetriNet::getModuleCount());
+}
+
+MetaState *DSSBuilder::getReferenceMetaState(const int module, const Marking &marking) {
+    auto &references {m_reference_ms[module]};
+    if (const auto it {references.find(const_cast<Marking *>(&marking))}; it != references.end()) return it->second;
+    MetaState *reference {m_petri->getModule(module)->getMetaState(marking)};
+    references.emplace(reference->getListMarkings()[0], reference);
+    return reference;
 }
 
 /*
@@ -77,20 +86,18 @@ void DSSBuilder::buildInitialMS() {
 
                 fusion->fire();
 
-                // Build obtained destination Meta-states and check whether they exist or not
-                MetaState *dest_ms;
+                // Name of the destination metastates: product of the initial SCCs of the reached markings.
+                // The destination metastates themselves are only computed below, when they are new
                 //cout << "Build destination meta-states" << endl;
                 auto *dest_productscc = new ProductSCC();
-                vector<MetaState *> dest_list_metastates;
-                dest_list_metastates.resize(ModularPetriNet::getModuleCount());
+                vector<MetaState *> dest_references(ModularPetriNet::getModuleCount(), nullptr);
                 for (int module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
 
-                    dest_ms =  m_petri->getModule(module)->getMetaState(m_petri->getModule(module)->getMarking());
-                    dest_list_metastates[module] = dest_ms;
-                    dest_productscc->addSCC(dest_ms->getInitialSCC());
+                    dest_references[module] = getReferenceMetaState(module, m_petri->getModule(module)->getMarking());
+                    dest_productscc->addSCC(dest_references[module]->getInitialSCC());
 #ifdef REDUCTION
                     } else dest_productscc->addSCC(elt.getMetaState(module)->getProductSCCName()->getSCC(module));
 #endif
@@ -112,21 +119,23 @@ void DSSBuilder::buildInitialMS() {
                 // Check whether the computed product SCC exists or not
                 vector<MetaState *> list_dest_metastates;
                 bool exist = false;
+                bool named = false; // dest_productscc has been given to a metastate as its name
                 for (int module{}; module < ModularPetriNet::getModuleCount(); ++module) {
 #ifdef REDUCTION
                     if (fusion->participate(module)) {
 #endif
                     if (!m_dss[module]->findMetaStateByProductSCC(*dest_productscc)) {
+                        // New destination metastate: computed from the reached marking
+                        MetaState *dest_ms {m_petri->getModule(module)->getMetaState(
+                            *dest_references[module]->getListMarkings()[0])};
                         auto arc_sync{std::make_unique<ArcSync>()};
                         MetaState *source_ms = elt.getMetaState(module);
-                        arc_sync->setData(startProduct, fusion, dest_list_metastates[module]);
+                        arc_sync->setData(startProduct, fusion, dest_ms);
                         source_ms->addSyncArc(std::move(arc_sync));
-                        //dest_list_metatstates.at(module)->addSyncArc(arc_sync);
-                        m_dss[module]->insertMS(dest_list_metastates[module]);
-
-
-                        dest_list_metastates.at(module)->setProductSCCName(dest_productscc);
-                        list_dest_metastates.push_back(dest_list_metastates[module]);
+                        m_dss[module]->insertMS(dest_ms);
+                        dest_ms->setProductSCCName(dest_productscc);
+                        named = true;
+                        list_dest_metastates.push_back(dest_ms);
                     } else {
                         exist = true;
                         auto arc_sync{std::make_unique<ArcSync>()};
@@ -142,6 +151,9 @@ void DSSBuilder::buildInitialMS() {
 #endif
 
                 }
+
+                // Otherwise, the name only served to look the destination metastates up
+                if (!named) delete dest_productscc;
 
                 if (!exist) {
                     vector<RElement_dss> new_list_fusions;

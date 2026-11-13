@@ -55,6 +55,11 @@ public:
 
     [[nodiscard]] SCC *getSCCContainer() const { return m_scc_container; }
 
+    // Position of the marking in its metastate (insertion order), set by MetaState::insertMarking()
+    [[nodiscard]] uint32_t getPosition() const { return m_position; }
+
+    void setPosition(uint32_t position) { m_position = position; }
+
     void setSCCContainer(SCC *c) { m_scc_container = c; }
 
     // Prints the token counts, e.g. (1,0,2)
@@ -73,6 +78,7 @@ private:
     std::vector<token_t> m_data;
     succ_list_t m_succ;
     SCC *m_scc_container {nullptr};
+    uint32_t m_position {};
 };
 
 #endif //DISTRIBUTEDSTATESPACE_MARKING_H
