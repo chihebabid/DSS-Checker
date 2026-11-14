@@ -4,8 +4,8 @@ bool SCC::isEqual(const SCC &scc) const {
     if (scc.m_list.size() != m_list.size()) return false;
     if (m_list.empty()) return true;
     if (this == &scc) return true;
-    // The marking of this metastate equal to the first marking of scc must belong to this SCC
-    // (hash lookup in the metastate instead of a linear search in the SCC)
+    // The marking of this local graph equal to the first marking of scc must belong to this SCC
+    // (hash lookup in the graph instead of a linear search in the SCC)
     const Marking *same {getParent()->existMarking(scc.m_list[0])};
     return same && same->getSCCContainer() == this;
 }
@@ -37,6 +37,6 @@ void SCC::addState(Marking *m) {
     m_hash_valid = false;
 }
 
-vector<Marking *> *SCC::getListStates() {
+std::vector<Marking *> *SCC::getListStates() {
     return &m_list;
 }

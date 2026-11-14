@@ -33,82 +33,23 @@ DSSBuilder::DSSBuilder(ModularPetriNet *ptr, const bool reduction) : m_petri(ptr
     for (size_t i{}; i < ModularPetriNet::getModuleCount(); ++i) {
         m_dss.addModule(new ModuleSS(i));
     }
-    m_scc_index.resize(ModularPetriNet::getModuleCount());
-    m_orphans.resize(ModularPetriNet::getModuleCount());
     m_tau.setName("tau");
-}
-
-void DSSBuilder::indexMetaState(const int module, MetaState *ms) {
-    auto &index {m_scc_index[module]};
-    for (const auto scc: *ms->getListSCCs()) {
-        for (const auto marking: *scc->getListStates()) index.emplace(marking, scc);
-    }
 }
 
 TransitionFusionSet *DSSBuilder::arcLabel(TransitionFusionSet *fusion, const int module) {
     return fusion->participate(module) ? fusion : &m_tau;
 }
 
-SCC *DSSBuilder::findIndexedSCC(const int module, const Marking &marking) const {
-    const auto &index {m_scc_index[module]};
-    const auto it {index.find(&marking)};
-    return it == index.end() ? nullptr : it->second;
-}
-
 /*
- * @brief Free the metastates that are no longer in the DSS: the metastates merged by the reduction and the
- *        metastates computed to name a destination that have not been inserted in the DSS.
- *        The names and the source products of the sync arcs may point to SCCs of these metastates: such a
- *        component is first redirected to the same SCC (same markings, same first marking, so that the names are
- *        unchanged) in a metastate of the DSS. A metastate still referenced after that is kept.
+ * @brief Free the metastates merged by the reduction. Their markings and SCCs, to which names and source products
+ *        refer, are in local graphs that are kept (see PetriNet::getLocalGraph())
  * @param built the metastates of each module before the reduction
  */
 void DSSBuilder::freeUnusedMetaStates(const vector<vector<MetaState *>> &built) {
-    const size_t module_count {ModularPetriNet::getModuleCount()};
-    std::unordered_set<MetaState *> dead;
-    for (size_t module {}; module < module_count; ++module) {
+    for (size_t module {}; module < ModularPetriNet::getModuleCount(); ++module) {
         for (const auto ms: built[module]) {
-            if (!m_dss[module]->contains(ms)) dead.insert(ms);
+            if (!m_dss[module]->contains(ms)) delete ms;
         }
-        for (const auto ms: m_orphans[module]) dead.insert(ms);
-    }
-    // The index is only used while building
-    m_scc_index.assign(module_count, {});
-    m_orphans.assign(module_count, {});
-    if (dead.empty()) return;
-
-    // SCCs of the metastates of the DSS, indexed by their first marking (component i of a product is an SCC of module i)
-    vector<std::unordered_map<const Marking *, SCC *, Marking::PtrHash, Marking::PtrEqual>> live_sccs(module_count);
-    for (size_t module {}; module < module_count; ++module) {
-        for (const auto ms: m_dss[module]->getListMetaStates()) {
-            for (const auto scc: *ms->getListSCCs()) live_sccs[module].emplace(scc->getListStates()->at(0), scc);
-        }
-    }
-    std::unordered_set<MetaState *> kept;
-    const auto redirect = [&](ProductSCC &product) {
-        for (size_t module {}; module < module_count; ++module) {
-            SCC *scc {product.getSCC(module)};
-            if (!dead.contains(scc->getParent())) continue;
-            const auto it {live_sccs[module].find(scc->getListStates()->at(0))};
-            if (it != live_sccs[module].end() && it->second->getCount() == scc->getCount()) {
-                product.replaceSCC(module, it->second);
-            } else {
-                kept.insert(scc->getParent());
-            }
-        }
-    };
-    for (size_t module {}; module < module_count; ++module) {
-        if (const auto initial_name {m_dss[module]->getInitialName()}; initial_name) {
-            redirect(*const_cast<ProductSCC *>(initial_name));
-        }
-        for (const auto ms: m_dss[module]->getListMetaStates()) {
-            if (ms->getProductSCCName()) redirect(*ms->getProductSCCName());
-            for (const auto name: ms->getMergedNames()) redirect(*name);
-            for (const auto &arc: ms->getSyncSucc()) redirect(arc->getSourceProduct());
-        }
-    }
-    for (const auto ms: dead) {
-        if (!kept.contains(ms)) delete ms;
     }
 }
 
@@ -131,7 +72,6 @@ void DSSBuilder::buildInitialMS() {
     for (int module {}; module < ModularPetriNet::getModuleCount(); ++module) {
         ms = m_petri->getModule(module)->getMetaState(m_petri->getModule(module)->getMarking());
         m_dss[module]->insertMS(ms);
-        indexMetaState(module, ms);
         list_metastates.push_back(ms);
         productscc->addSCC(ms->getInitialSCC());
     }
@@ -159,9 +99,16 @@ void DSSBuilder::buildInitialMS() {
 
     while (!stack_frames.empty()) {
         if (stack_frames.back().expanded) {
-            // Post-order: on the fly reduction of the metastates of the frame
+            // Post-order. A metastate is in a single frame: its arcs, all added when the frame was expanded, are
+            // complete. Its sync-closure can be computed (it only needs its arcs and the SCCs of the metastates of
+            // the frame), then its arcs compacted (the other components of their source products are no longer
+            // needed), which lowers the memory peak. Then on the fly reduction of the metastates of the frame
+            const auto &metastates {stack_frames.back().metastates};
+            for (size_t module {}; module < metastates.size(); ++module) {
+                m_dss[module]->computeSyncClosedSCC(metastates[module]);
+            }
+            for (const auto ms: metastates) ms->compactSyncArcs();
             if (m_reduction) {
-                const auto &metastates {stack_frames.back().metastates};
                 for (size_t module {}; module < metastates.size(); ++module) {
                     m_dss[module]->mergeIfEquivalent(metastates[module]);
                 }
@@ -209,10 +156,9 @@ void DSSBuilder::buildInitialMS() {
                     if (fusion->participate(module)) {
 #endif
 
-                    SCC *dest_scc {findIndexedSCC(module, reached_markings[module])};
+                    SCC *dest_scc {m_petri->getModule(module)->findComputedSCC(reached_markings[module])};
                     if (!dest_scc) {
                         computed[module] = m_petri->getModule(module)->getMetaState(reached_markings[module]);
-                        indexMetaState(module, computed[module]);
                         dest_scc = computed[module]->getInitialSCC();
                     }
                     dest_productscc->addSCC(dest_scc);
@@ -238,7 +184,7 @@ void DSSBuilder::buildInitialMS() {
                     // Its destination metastates have been found or built for the first one: nothing was computed
                     delete dest_productscc;
                     for (int module {}; module < ModularPetriNet::getModuleCount(); ++module) {
-                        if (computed[module]) m_orphans[module].push_back(computed[module]);
+                        delete computed[module]; // Its local graph is kept
                     }
                     continue;
                 }
@@ -273,9 +219,9 @@ void DSSBuilder::buildInitialMS() {
                 }
                 // Otherwise, the name only served to look the destination metastates up
                 if (!named) delete dest_productscc;
-                // Not expected (see above), but such a metastate is indexed and may be used by names: freed at the end
+                // Not expected (see above); its local graph is kept
                 for (int module {}; module < ModularPetriNet::getModuleCount(); ++module) {
-                    if (computed[module]) m_orphans[module].push_back(computed[module]);
+                    delete computed[module]; // Its local graph is kept
                 }
 
                 if (!exist) stack_frames.push_back({std::move(list_dest_metastates)});
@@ -299,15 +245,9 @@ void DSSBuilder::buildInitialMS() {
     }
     // The redirection of the arcs by finishMerges() and reduceByBisimulation() may make arcs of a metastate equal
     for (size_t module {}; module < ModularPetriNet::getModuleCount(); ++module) {
-        for (const auto ms: m_dss[module]->getListMetaStates()) ms->removeDuplicateSyncArcs();
+        for (const auto ms: m_dss[module]->getListMetaStates()) ms->compactSyncArcs();
     }
     freeUnusedMetaStates(built);
-    // Lazy version for computing Sync-closure property
-    for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
-        for (auto ms: m_dss[module]->getListMetaStates()) {
-            m_dss[module]->computeSyncClosedSCC(ms);
-        }
-    }
     // SCCs where a module may stay forever because another module can loop forever
     for (size_t module{};module<ModularPetriNet::getModuleCount();++module) {
         for (auto ms: m_dss[module]->getListMetaStates()) {
@@ -351,7 +291,7 @@ void DSSBuilder::writeDot(std::ostream &myfile, vector<SyncLoop> *loops) {
                 }
                 myfile << "label=\"" << sccName << "\"" << endl;
                 // A sync-closed SCC is drawn in bold green
-                if (scc->isSyncClosed()) myfile << "style=\"dashed,bold\";color=green;fontcolor=green" << endl;
+                if (ms->isSyncClosed(scc)) myfile << "style=\"dashed,bold\";color=green;fontcolor=green" << endl;
                 else myfile << "style=dashed;color=black;fontcolor=black" << endl;
                 myfile << "}" << endl;
             }
@@ -359,7 +299,7 @@ void DSSBuilder::writeDot(std::ostream &myfile, vector<SyncLoop> *loops) {
             for (const auto &source: ms->getListMarkings()) {
                 if (!loops) {
                     std::cout<<petri->getMarkingName(*source)<<"is "<<source->getSCCContainer()->isTerminal()<<"\n";
-                    std::cout<<petri->getMarkingName(*source)<<"closure is "<<source->getSCCContainer()->isSyncClosed()<<"\n";
+                    std::cout<<petri->getMarkingName(*source)<<"closure is "<<ms->isSyncClosed(source->getSCCContainer())<<"\n";
                 }
                 auto sourceName = petri->getMarkingName(*source);
                 const auto &lsucc = source->getListSucc();
@@ -521,6 +461,12 @@ string DSSBuilder::getProductSCCName(const ProductSCC *pss) {
 }
 
 string DSSBuilder::getSourceProductName(const ArcSync *arc) {
+    if (arc->isCompact()) {
+        // Only the component of the module of the arc is known
+        const auto module {static_cast<int>(arc->getParent()->getIdModule())};
+        const auto scc {arc->getSourceSCC(module)};
+        return scc ? m_petri->getModule(module)->getSCCName(scc) : "-";
+    }
     string res;
     for (int module = 0; module < ModularPetriNet::getModuleCount(); ++module) {
         const auto scc {arc->getSourceSCC(module)};
@@ -551,6 +497,14 @@ void DSSBuilder::outputTXT() {
     cout << "#SCCs: " << sumSCC << endl;
     cout << "#Local edges: " << sumLocalEdges << endl;
     cout << "#Sync edges:" << sumSyncEdges << endl;
+    // The markings are stored once per distinct local graph (shared by the metastates having the same markings)
+    size_t graphs {}, stored {};
+    for (int module {}; module < ModularPetriNet::getModuleCount(); ++module) {
+        graphs += m_petri->getModule(module)->getLocalGraphCount();
+        stored += m_petri->getModule(module)->getStoredMarkingCount();
+    }
+    cout << "#Local graphs stored: " << graphs << endl;
+    cout << "#States stored: " << stored << endl;
 }
 
 ModuleSS* DSSBuilder::getModuleGraph(const size_t index) const {

@@ -20,7 +20,14 @@ size_t ProductSCC::computeHash() const {
 }
 
 SCC *ProductSCC::getSCC(const size_t pos) const {
-    return m_product[pos].scc();
+    return component(pos).scc();
+}
+
+void ProductSCC::keepOnly(const size_t pos) {
+    static_assert(alignof(SCC) > reduced_bit, "the two lowest bits of an SCC pointer are used as flags");
+    const Component kept {component(pos)};
+    m_product = {}; // Frees the components
+    m_hash = kept.bits() | reduced_bit;
 }
 
 void ProductSCC::replaceSCC(const size_t pos, SCC *scc) {
@@ -28,7 +35,7 @@ void ProductSCC::replaceSCC(const size_t pos, SCC *scc) {
 }
 
 bool ProductSCC::isAny(const size_t pos) const {
-    return m_product[pos].any();
+    return component(pos).any();
 }
 
 std::partial_ordering ProductSCC::compare(const Component &a, const Component &b) {

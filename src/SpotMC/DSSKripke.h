@@ -16,8 +16,8 @@
 
 /*
  * Automaton of the state space of one module, to be intersected with the automaton of a formula.
- * States are markings: the run goes from a marking to another one, by local transitions or by
- * synchronisations (sync arcs of the metastates). The atomic propositions of the formula are
+ * States are markings of metastates (DSSStateKey): the run goes from a marking to another one, by local transitions
+ * or by synchronisations (sync arcs of the metastates). The atomic propositions of the formula are
  * transition names, carried by the edges.
  *
  * It derives from spot::twa and not from spot::kripke: Spot assumes that all the edges leaving a
@@ -45,22 +45,22 @@ public:
 
     [[nodiscard]] size_t getIdModule() const { return m_metagraph->getIdModule(); }
 
-    // Successor of a marking: (destination marking, fired transition of the module or nullptr)
-    using Successors = std::vector<std::pair<Marking *, Transition *>>;
+    // Successor of a state: (destination, fired transition of the module or nullptr)
+    using Successors = std::vector<std::pair<DSSStateKey, Transition *>>;
 
-    // Successors of marking, as seen by Spot (computed once, then cached).
+    // Successors of state, as seen by Spot (computed once, then cached).
     // Synchronisations in which the module does not take part are invisible: the module keeps its marking
     // but moves to the destination metastate. They are not edges: they are followed by a closure, and the
-    // successors of marking are those of every marking of its closure (see DSSKripke.cpp)
-    const Successors &getSuccessors(Marking *marking) const;
+    // successors of state are those of every state of its closure (see DSSKripke.cpp)
+    const Successors &getSuccessors(const DSSStateKey &state) const;
 
 private:
     ModuleSS *m_metagraph;
     bool m_fairness;
     std::map<std::string, bdd> m_ap_vars; // BDD variable of each atomic proposition
     bdd m_no_ap {bddtrue};                // All the atomic propositions are false
-    mutable Marking m_divergence {0};
-    mutable std::unordered_map<Marking *, Successors> m_successors; // Cache of getSuccessors()
+    mutable Marking m_divergence {0};                 // Marking of the divergence state (without metastate)
+    mutable std::unordered_map<DSSStateKey, Successors, DSSStateKey::Hash> m_successors; // Cache of getSuccessors()
 };
 
 

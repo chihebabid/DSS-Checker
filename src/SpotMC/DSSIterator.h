@@ -10,10 +10,10 @@
 
 class DSSKripke;
 
-// Successors of a marking in a DSSKripke
+// Successors of a state in a DSSKripke
 class DSSIterator : public spot::twa_succ_iterator {
 public:
-    DSSIterator(Marking *marking, const DSSKripke *kripke);
+    DSSIterator(const DSSStateKey &state, const DSSKripke *kripke);
     bool first() override;
     bool next() override;
     bool done() const override;
@@ -23,7 +23,7 @@ public:
 private:
     const DSSKripke *m_kripke;
     uint32_t m_current_edge {};
-    const std::vector<std::pair<Marking *, Transition *>> &m_succ; // (destination, fired transition or nullptr), cached by the DSSKripke
+    const std::vector<std::pair<DSSStateKey, Transition *>> &m_succ; // (destination, fired transition or nullptr), cached by the DSSKripke
 };
 
 

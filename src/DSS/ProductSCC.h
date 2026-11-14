@@ -25,6 +25,11 @@ public:
     void replaceSCC(size_t pos, SCC *scc);
     // True if the component of module pos is "any" ("-")
     [[nodiscard]] bool isAny(size_t pos) const;
+    // Keep only the component pos and free the others (kept in the place of the cache of the hash). Afterwards,
+    // getSCC() and isAny() give this component whatever the position, and the product can no longer be compared,
+    // hashed or extended
+    void keepOnly(size_t pos);
+    [[nodiscard]] bool isReduced() const { return m_product.empty() && (m_hash & reduced_bit); }
     // Hash consistent with operator== ("any" components are all equivalent); cached
     [[nodiscard]] size_t hash() const {
         return m_hash != 0 ? m_hash : computeHash();
@@ -53,11 +58,19 @@ private:
             : m_bits {reinterpret_cast<std::uintptr_t>(scc) | static_cast<std::uintptr_t>(any)} {}
         [[nodiscard]] SCC *scc() const { return reinterpret_cast<SCC *>(m_bits & ~std::uintptr_t {1}); }
         [[nodiscard]] bool any() const { return m_bits & 1; }
+        [[nodiscard]] std::uintptr_t bits() const { return m_bits; }
+        explicit Component(std::uintptr_t bits) : m_bits {bits} {}
     private:
         std::uintptr_t m_bits;
     };
     static std::partial_ordering compare(const Component &a, const Component &b);
     size_t computeHash() const;
+    // Set in m_hash, with the kept component, by keepOnly(). A product without components is reduced only if this
+    // bit is set: the hash of an empty product is 1 (see computeHash())
+    static constexpr std::uintptr_t reduced_bit {2};
+    [[nodiscard]] Component component(const size_t pos) const {
+        return isReduced() ? Component {m_hash & ~reduced_bit} : m_product[pos];
+    }
     std::vector<Component> m_product;
     mutable size_t m_hash {};          // Cache of hash(); 0: not computed yet
 };

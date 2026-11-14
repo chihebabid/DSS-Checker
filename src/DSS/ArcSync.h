@@ -29,6 +29,7 @@ public:
 
     [[nodiscard]] MetaState *getDestination() const;
 
+    // The source product; it is no longer available once the arc is compact (see compact())
     [[nodiscard]] const ProductSCC &getSourceProduct() const;
     ProductSCC &getSourceProduct() { return m_source; }
 
@@ -40,6 +41,12 @@ public:
 
     // SCC of module in the source product, or nullptr if module is not synchronised on this arc
     [[nodiscard]] SCC *getSourceSCC(size_t module) const;
+
+    // Keep only the component of module (the module of the metastate of the arc) of the source product, and free
+    // the others: once the DSS is built, only the sync-closure needs them. Afterwards, isSynchronised() and
+    // getSourceSCC() may only be called with this module
+    void compact(size_t module) { if (!isCompact()) m_source.keepOnly(module); }
+    [[nodiscard]] bool isCompact() const { return m_source.isReduced(); }
 private:
     TransitionFusionSet *m_fusion;
     ProductSCC m_source;

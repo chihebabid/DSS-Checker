@@ -6,6 +6,8 @@
 #include <cctype>
 #include <map>
 #include "Petri/PetriNet.h"
+#include "DSS/MetaState.h"
+#include "DSS/SCC.h"
 #include "misc.h"
 
 
@@ -203,13 +205,42 @@ void PetriNet::buildLocalTransitions() {
     m_local_transitions_built = true;
 }
 
+PetriNet::~PetriNet() = default;
+
+MetaState *PetriNet::getMetaState(const Marking &marking) {
+    return new MetaState(getLocalGraph(marking));
+}
+
+SCC *PetriNet::findComputedSCC(const Marking &marking) const {
+    const auto it {m_scc_index.find(&marking)};
+    return it == m_scc_index.end() ? nullptr : it->second;
+}
+
+LocalGraph *PetriNet::getLocalGraph(const Marking &marking) {
+    // marking in the initial SCC of a graph: this graph is the set of the markings reached from it
+    if (SCC *scc {findComputedSCC(marking)}; scc && scc == scc->getParent()->getInitialSCC()) return scc->getParent();
+    std::unique_ptr<LocalGraph> graph {exploreLocalGraph(marking)};
+    const size_t hash {graph->contentHash()};
+    const auto [first, last] {m_graph_index.equal_range(hash)};
+    for (auto it {first}; it != last; ++it) {
+        if (*it->second == *graph) return it->second; // The new graph is destroyed
+    }
+    LocalGraph *stored {graph.get()};
+    m_graphs.push_back(std::move(graph));
+    m_graph_index.emplace(hash, stored);
+    for (const auto scc: stored->getListSCCs()) {
+        for (const auto m: *scc->getListStates()) m_scc_index.emplace(m, scc);
+    }
+    return stored;
+}
+
 /*
- * Metastate reached from marking by local transitions (depth-first exploration).
+ * Local graph reached from marking by local transitions (depth-first exploration).
  * Markings are handled directly (no Place object involved, the current marking of the net is not
  * modified); a new Marking is only allocated for a new state. The markings, their successors and the
  * SCCs are produced in the same order as before.
  */
-MetaState *PetriNet::getMetaState(const Marking &marking) {
+std::unique_ptr<LocalGraph> PetriNet::exploreLocalGraph(const Marking &marking) {
     if (!m_local_transitions_built) buildLocalTransitions();
     // Local transitions enabled at m, in the order of m_transitions
     const auto enabled = [this](const Marking &m) {
@@ -225,9 +256,9 @@ MetaState *PetriNet::getMetaState(const Marking &marking) {
         return result;
     };
 
-    auto *ms = new MetaState();
+    auto graph {std::make_unique<LocalGraph>()};
     auto *initial = new Marking(marking);
-    ms->insertMarking(initial);
+    graph->insertMarking(initial);
     struct Element {
         Marking *marking;
         vector<uint32_t> transitions; // Enabled transitions not fired yet (the last one is fired first)
@@ -247,13 +278,13 @@ MetaState *PetriNet::getMetaState(const Marking &marking) {
             for (const auto &[place, delta]: local.deltas) {
                 reached.setTokens(place, static_cast<uint32_t>(static_cast<int>(reached.getTokens(place)) + delta));
             }
-            if (Marking *old_state {ms->existMarking(&reached)}; old_state) {
+            if (Marking *old_state {graph->existMarking(&reached)}; old_state) {
                 current.marking->addSucc(local.transition, old_state);
                 continue;
             }
             // Only allocate a node if the reached marking is a new one
             auto *new_state = new Marking(reached);
-            ms->insertMarking(new_state);
+            graph->insertMarking(new_state);
             current.marking->addSucc(local.transition, new_state);
             if (auto transitions {enabled(*new_state)}; !transitions.empty()) {
                 stack.push_back({new_state, std::move(transitions)});
@@ -261,8 +292,8 @@ MetaState *PetriNet::getMetaState(const Marking &marking) {
         }
     }
 
-    ms->computeSCCTarjan();
-    return ms;
+    graph->computeSCCTarjan();
+    return graph;
 }
 
 
@@ -277,7 +308,7 @@ void PetriNet::printMetaStateEx(MetaState *ms) {
         cout<<list_arcs->at(i).getTransition()->getName()<<"==> ";
         cout<<getMarkingName(*list_arcs->at(i).getDestination())<<")"<<endl;
     }
-    vector<SCC*>* list_sccs=ms->getListSCCs();
+    const vector<SCC*>* list_sccs=ms->getListSCCs();
     cout<<"Number of SCCs: "<<list_sccs->size()<<endl;
     for (int i=0;i<list_sccs->size();i++) {
         cout<<"SCC n°"<<i<<endl;

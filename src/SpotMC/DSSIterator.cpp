@@ -5,8 +5,8 @@
 #include "SpotMC/DSSIterator.h"
 #include "Petri/Transition.h"
 #include "SpotMC/DSSKripke.h"
-DSSIterator::DSSIterator(Marking *marking, const DSSKripke *kripke)
-        : m_kripke(kripke), m_succ(kripke->getSuccessors(marking)) {
+DSSIterator::DSSIterator(const DSSStateKey &state, const DSSKripke *kripke)
+        : m_kripke(kripke), m_succ(kripke->getSuccessors(state)) {
 }
 
 

@@ -70,13 +70,17 @@ public:
     // may be another one than the first inserted one, and its first marking may not be the initial marking
     [[nodiscard]] Marking *getInitialMarking();
 
+    // Metastate that represents the initial name (the one containing getInitialMarking())
+    [[nodiscard]] MetaState *getInitialMetaState();
+
     // Name of the initial metastates (see setInitialState())
     [[nodiscard]] const ProductSCC *getInitialName() const { return m_initial_name; }
 
-    void computeSyncClosedSCC(const MetaState *ms);
+    // Mark the terminal SCCs of ms that are sync-closed in ms (see MetaState::isSyncClosed())
+    void computeSyncClosedSCC(MetaState *ms);
 
     // If ms has a cycle of local transitions, mark all the SCCs of the metastates of the other modules
-    // having the same name (see SCC::othersCanLoop)
+    // having the same name (see MetaState::othersCanLoop())
     void markOthersCanLoop(const MetaState *ms);
 
     size_t getIdModule() const { return m_id_module; }

@@ -55,7 +55,7 @@ public:
 
     [[nodiscard]] SCC *getSCCContainer() const { return m_scc_container; }
 
-    // Position of the marking in its metastate (insertion order), set by MetaState::insertMarking()
+    // Position of the marking in its local graph (insertion order), set by LocalGraph::insertMarking()
     [[nodiscard]] uint32_t getPosition() const { return m_position; }
 
     void setPosition(uint32_t position) { m_position = position; }

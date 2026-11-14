@@ -5,8 +5,11 @@
 #if !defined(AFX_PETRINET_H__91DDDBD6_8669_4EC2_A0F5_E20F2FAFDC37__INCLUDED_)
 #define AFX_PETRINET_H__91DDDBD6_8669_4EC2_A0F5_E20F2FAFDC37__INCLUDED_
 
+#include <memory>
 #include <set>
+#include <unordered_map>
 #include "DSS/Marking.h"
+#include "DSS/LocalGraph.h"
 #include "Petri/Place.h"
 #if _MSC_VER > 1000
 #pragma once
@@ -55,9 +58,28 @@ public:
 
     PetriNet()=default;
 
-    virtual ~PetriNet()=default;
+    virtual ~PetriNet();
 
+    // A new metastate whose markings are those reached from marking by local transitions. Its local graph is shared
+    // with the metastates having the same markings (see getLocalGraph())
     MetaState *getMetaState(const Marking &marking);
+
+    // Local graph of the markings reached from marking by local transitions. Graphs are stored once: if marking is in
+    // the initial SCC of a graph already computed, this graph is returned without exploring (all its markings are
+    // reached from marking); otherwise, after the exploration, a graph equal to an existing one is replaced by it
+    LocalGraph *getLocalGraph(const Marking &marking);
+
+    // SCC of marking in a local graph already computed, nullptr if no graph contains it. The SCC of a marking only
+    // depends on the marking (a graph is closed under the local transitions)
+    [[nodiscard]] SCC *findComputedSCC(const Marking &marking) const;
+
+    // Number of local graphs stored and of markings in them
+    [[nodiscard]] size_t getLocalGraphCount() const { return m_graphs.size(); }
+    [[nodiscard]] size_t getStoredMarkingCount() const {
+        size_t count {};
+        for (const auto &graph: m_graphs) count += graph->getListMarkings().size();
+        return count;
+    }
 
     void printMetaStateEx(MetaState *ms);
 
@@ -75,6 +97,15 @@ private:
     vector<LocalTransition> m_local_transitions;
     bool m_local_transitions_built {false};
     void buildLocalTransitions();
+    // Explore the markings reached from marking: a new local graph, with its SCCs
+    std::unique_ptr<LocalGraph> exploreLocalGraph(const Marking &marking);
+
+    // The local graphs computed, owned until the end (the names of the metastates refer to their SCCs)
+    vector<std::unique_ptr<LocalGraph>> m_graphs;
+    // Local graphs indexed by their content hash, to find an equal one
+    std::unordered_multimap<size_t, LocalGraph *> m_graph_index;
+    // SCC of each marking of the local graphs (in the first graph containing it)
+    std::unordered_map<const Marking *, SCC *, Marking::PtrHash, Marking::PtrEqual> m_scc_index;
 
     Place *getPlaceAddress(string placename);
 

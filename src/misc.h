@@ -4,11 +4,17 @@
 
 #ifndef DISTRIBUTEDSTATESPACE_MISC_H
 #define DISTRIBUTEDSTATESPACE_MISC_H
+#include <set>
+#include <string>
 #include <vector>
 #include <tl/formula.hh>
 #include "DSS/Marking.h"
 #include "Petri/TransitionFusionSet.h"
 #include "DSS/ProductSCC.h"
+
+using std::set;
+using std::string;
+using std::vector;
 
 
 #define ListLocalStates vector<Marking*>*

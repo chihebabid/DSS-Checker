@@ -56,6 +56,8 @@ add_executable(distributedstatespace
         DSS/DistributedSS.h
         DSS/Marking.cpp
         DSS/Marking.h
+        DSS/LocalGraph.cpp
+        DSS/LocalGraph.h
         DSS/MetaGraph.cpp
         DSS/MetaGraph.h
         DSS/MetaState.cpp

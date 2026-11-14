@@ -53,8 +53,12 @@ void ModuleSS::setInitialState(const ProductSCC *name, const Marking &marking) {
 }
 
 Marking *ModuleSS::getInitialMarking() {
-    MetaState *ms {findMetaStateByProductSCC(*const_cast<ProductSCC *>(m_initial_name))};
+    MetaState *ms {getInitialMetaState()};
     return ms ? ms->existMarking(m_initial_marking.get()) : nullptr;
+}
+
+MetaState *ModuleSS::getInitialMetaState() {
+    return findMetaStateByProductSCC(*const_cast<ProductSCC *>(m_initial_name));
 }
 
 MetaState *ModuleSS::findMetaStateByProductSCC(ProductSCC &productscc) {
@@ -239,7 +243,7 @@ size_t ModuleSS::reduceByBisimulation() {
 /*
  * @brief Compute the sync-closure property of the terminal SCCs of all metastates
  */
-void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
+void ModuleSS::computeSyncClosedSCC(MetaState *ms) {
     const size_t module_count {ModularPetriNet::getModuleCount()};
 
     if (debug_sync_closed) {
@@ -336,7 +340,7 @@ void ModuleSS::computeSyncClosedSCC(const MetaState *ms) {
         }
         // Some product of terminal SCCs of the other modules is covered by no sync arc
         if (total_products > result) {
-            scc->setSyncClosed(true);
+            ms->setSyncClosed(scc);
         }
     }
 }
@@ -351,7 +355,7 @@ void ModuleSS::markOthersCanLoop(const MetaState *ms) {
             const auto found_ms {getParent()->getModule(module)->findMetaStateByProductSCC(*name)};
             if (!found_ms) continue;
             for (const auto &scc: *found_ms->getListSCCs()) {
-                scc->setOthersCanLoop(true);
+                found_ms->setOthersCanLoop(scc);
             }
         }
     }
