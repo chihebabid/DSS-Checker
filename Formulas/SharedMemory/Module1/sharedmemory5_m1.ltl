@@ -1,0 +1,20 @@
+!End_Own_Acc_1_1 W Begin_Own_Acc_1
+[](Begin_Own_Acc_1 -> !End_Own_Acc_1_1)
+[](End_Own_Acc_1_1 -> !Begin_Own_Acc_1)
+[](End_Own_Acc_1_1 -> (!Begin_Own_Acc_1 U End_Own_Acc_1_1))
+<>End_Own_Acc_1_1 -> <>Begin_Own_Acc_1
+[]<>End_Own_Acc_1_1 -> []<>Begin_Own_Acc_1
+[]<>Begin_Own_Acc_1 -> []<>End_Own_Acc_1_1
+<>[]!End_Own_Acc_1_1 -> <>[]!Begin_Own_Acc_1
+[](Begin_Own_Acc_1 -> <>End_Own_Acc_1_1) || <>[]!Begin_Own_Acc_1
+!End_Own_Acc_1_1
+!Begin_Own_Acc_1 U End_Own_Acc_1_1
+!Begin_Own_Acc_1 W End_Own_Acc_1_1
+[](!Begin_Own_Acc_1 W End_Own_Acc_1_1)
+[](!Begin_Own_Acc_1)
+[](!End_Own_Acc_1_1)
+<>[]!End_Own_Acc_1_1
+<>[]!Begin_Own_Acc_1
+<>[]End_Own_Acc_1_1
+[](End_Own_Acc_1_1 -> []!End_Own_Acc_1_1)
+[](Begin_Own_Acc_1 -> <>[]!Begin_Own_Acc_1)
