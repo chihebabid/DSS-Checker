@@ -1,5 +1,5 @@
 # set minimum cmake version
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.20)
 
 # include MPI
 #find_package(MPI REQUIRED)
