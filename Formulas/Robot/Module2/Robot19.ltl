@@ -1,1 +1,0 @@
-[]((r_begin_move <-> r_stops) || []r_end_move) || ![]r_end_move
