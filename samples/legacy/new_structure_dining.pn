@@ -1,0 +1,32 @@
+Module : 2
+Places
+	Marquage : 1
+   p1,r 
+	Marquage : 0
+   p2,p3
+End
+Transitions
+	   tp1,tp2,tp3,tq2,tq3 ;
+End
+Structure
+   tp1 : (p1) , (p2) ;
+   tp2  : (p2) , (p3) ;
+   tp3  : (p3) , (p1) ;
+   tq2  : (re) , (NIL) ;
+   tq3  : (NIL) , (r) ;
+End
+Places
+   q1      : 1
+   q2,q3     : 0
+End
+Transitions
+   tq1,tq2,tq3    : 
+End
+Structure
+   tq1 : (q1) , (q2) ;
+   tq2  : (q2) , (q3) ;
+   tq3  : (q3) , (q1) ;
+End
+Sync
+	tq2,tq3
+End

@@ -1,0 +1,55 @@
+Module : 2
+Places
+	Marquage : 1
+   p1,r1;      
+	Marquage : 0
+   p2,p3,p4,p5,p6;
+End
+Transitions
+	   tp1,tp2,tp3,tp4,tp5,tq2,tq5 ;
+End
+Input
+   tp1 [ p1  ]
+   tp2  [ p2 ]
+   tp3  [ r1,p3 ]
+   tp4  [ p4,p5 ]
+   tp5  [ p6 ]
+   tq2  [ r1 ]
+End
+
+Output
+	 tp1 [ p2,p3 ]
+   tp2  [ p4 ]
+   tp3  [ p5 ]
+   tp4  [ p6 ]
+   tp5  [ p1 ]
+   tq5  [ r1 ]
+End
+Places
+	Marquage : 1
+   q1,r2;      
+	Marquage : 0
+   q2,q3,q4,q5,q6;
+End
+Transitions
+   tq1,tq2,tq3,tq4,tq5,tp2,tp5 ;
+End
+Input
+   tq1 [ q1  ]
+   tq2  [ q2 ]
+   tq3  [ r2,q3 ]
+   tq4  [ q4,q5 ]
+   tq5  [ q6 ]
+   tp2  [ r2 ]
+End
+Output
+	 tq1 [ q2,q3 ]
+   tq2  [ q4 ]
+   tq3  [ q5 ]
+   tq4  [ q6 ]
+   tq5  [ q1 ]
+   tp5  [ r2 ]
+End
+Sync
+	tp2,tp5,tq2,tq5
+End

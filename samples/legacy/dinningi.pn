@@ -1,0 +1,46 @@
+Module : 2
+Places
+   F1_Medita,F2_Medita,F3_Medita,F4_Medita,F5_Medita,Palito_1,Palito_2,Palito_3,Palito_4,Palito_5      : 5
+   F1_Come,F2_Come,F3_Come,F4_Come,F5_Come           : 1
+End
+Transitions
+   F1_Inicia,F2_Inicia,F3_Inicia,F4_Inicia,F5_Inicia,
+   F1_Termina,F2_Termina,F3_Termina,F4_Termina,F5_Termina    : 
+End
+Structure
+   F1_Inicia : (F1_Medita,Palito_1,Palito_2) , (F1_Come) ;
+   F2_Inicia : (F2_Medita,Palito_2,Palito_3) , (F2_Come) ;
+   F3_Inicia : (F3_Medita,Palito_3,Palito_4) , (F3_Come) ;
+   F4_Inicia : (F4_Medita,Palito_4,Palito_5) , (F4_Come) ;
+   F5_Inicia : (F5_Medita,Palito_5,Palito_1) , (F5_Come) ;
+
+   F1_Termina : (F1_Come),(F1_Medita,Palito_1,Palito_2) ;
+   F2_Termina : (F2_Come),(F2_Medita,Palito_2,Palito_3) ;
+   F3_Termina : (F3_Come),(F3_Medita,Palito_3,Palito_4) ;
+   F4_Termina : (F4_Come),(F4_Medita,Palito_4,Palito_5) ;
+   F5_Termina : (F5_Come),(F5_Medita,Palito_5,Palito_1) ;
+End
+Places
+   F1_Medita,F2_Medita,F3_Medita,F4_Medita,F5_Medita,Palito_1,Palito_2,Palito_3,Palito_4,Palito_5      : 5
+   F1_Come,F2_Come,F3_Come,F4_Come,F5_Come           : 1
+End
+Transitions
+   F1_Inicia,F2_Inicia,F3_Inicia,F4_Inicia,F5_Inicia,
+   F1_Termina,F2_Termina,F3_Termina,F4_Termina,F5_Termina    : 
+End
+Structure
+   F1_Inicia : (F1_Medita,Palito_1,Palito_2) , (F1_Come) ;
+   F2_Inicia : (F2_Medita,Palito_2,Palito_3) , (F2_Come) ;
+   F3_Inicia : (F3_Medita,Palito_3,Palito_4) , (F3_Come) ;
+   F4_Inicia : (F4_Medita,Palito_4,Palito_5) , (F4_Come) ;
+   F5_Inicia : (F5_Medita,Palito_5,Palito_1) , (F5_Come) ;
+
+   F1_Termina : (F1_Come),(F1_Medita,Palito_1,Palito_2) ;
+   F2_Termina : (F2_Come),(F2_Medita,Palito_2,Palito_3) ;
+   F3_Termina : (F3_Come),(F3_Medita,Palito_3,Palito_4) ;
+   F4_Termina : (F4_Come),(F4_Medita,Palito_4,Palito_5) ;
+   F5_Termina : (F5_Come),(F5_Medita,Palito_5,Palito_1) ;
+End
+Sync
+	F1_Inicia
+End
