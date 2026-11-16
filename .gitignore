@@ -93,5 +93,6 @@ cmake-build-debug/
 # JetBrains IDE settings (kept locally)
 .idea/
 
+# Skills
 skills/
 
