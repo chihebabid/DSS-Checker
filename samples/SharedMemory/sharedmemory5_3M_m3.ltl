@@ -1,0 +1,20 @@
+!End_Own_Acc_1_1 W Begin_Own_Acc_1
+!End_Ext_Acc_1_2 W Begin_Ext_Acc_1_2
+!Begin_Ext_Acc_1_2 W Req_Ext_Acc_1
+[](End_Own_Acc_1_1 -> (End_Own_Acc_1_1 U (!End_Own_Acc_1_1 W Begin_Own_Acc_1)))
+[](Begin_Own_Acc_1 -> (Begin_Own_Acc_1 U (!Begin_Own_Acc_1 W End_Own_Acc_1_1)))
+[](Begin_Ext_Acc_1_2 -> (Begin_Ext_Acc_1_2 U (!Begin_Ext_Acc_1_2 W End_Ext_Acc_1_2)))
+[](Begin_Ext_Acc_2_1 -> (Begin_Ext_Acc_2_1 U (!End_Own_Acc_1_1 W End_Ext_Acc_2_1)))
+[]<>End_Own_Acc_1_1 -> []<>Begin_Own_Acc_1
+[]<>End_Ext_Acc_1_2 -> []<>Req_Ext_Acc_1
+<>[]!Begin_Own_Acc_1 -> <>[]!End_Own_Acc_1_1
+[](Begin_Own_Acc_1 -> <>End_Own_Acc_1_1)
+[](Begin_Ext_Acc_1_2 -> <>End_Ext_Acc_1_2)
+[](Req_Ext_Acc_1 -> <>(Begin_Ext_Acc_1_2 || Begin_Ext_Acc_1_3))
+<>Begin_Own_Acc_1
+[]!Begin_Own_Acc_1
+[]<>Begin_Own_Acc_1
+!Begin_Own_Acc_1 U End_Own_Acc_1_1
+!End_Own_Acc_1_1 U Begin_Own_Acc_1
+!Begin_Ext_Acc_2_1 W Begin_Own_Acc_1
+[](Begin_Ext_Acc_2_1 -> <>End_Ext_Acc_2_1)
