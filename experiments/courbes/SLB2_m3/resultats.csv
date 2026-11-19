@@ -1,0 +1,41 @@
+cas,propriete,module,formule,dss_temps_s,dss_verdict,ltsmin_temps_s,ltsmin_verdict,ltsmin_etats,ltsmin_arcs,ltsmin_mem_mo,dss_construction_s,ltsmin_construction_s
+SLB2-m3 (LTSmin onthefly),1,2,!lb_idle_receive_notification_2 W lb_route_to_1_1,8.2e-05,violee,0.029,violee,15,35,71.9,0.005,
+SLB2-m3 (LTSmin onthefly),2,2,!lb_balancing_receive_notification_2 W lb_balance_to_1_5,0.00014,violee,0.032,violee,103,285,79.0,0.005,
+SLB2-m3 (LTSmin onthefly),3,2,!lb_balance_to_1_5 W lb_receive_client_1,4.3e-05,verifiee,0.034,verifiee,296,912,73.0,0.005,
+SLB2-m3 (LTSmin onthefly),4,2,[](lb_idle_receive_notification_2 -> (lb_idle_receive_not...,0.00023,violee,0.038,violee,24,63,78.0,0.005,
+SLB2-m3 (LTSmin onthefly),5,2,[](lb_route_to_1_1 -> (lb_route_to_1_1 U (!lb_route_to_1_...,0.00043,violee,0.036,violee,171,501,79.9,0.005,
+SLB2-m3 (LTSmin onthefly),6,2,[](lb_balance_to_1_5 -> (lb_balance_to_1_5 U (!lb_balance...,0.000434,violee,0.043,violee,1433,4519,89.3,0.005,
+SLB2-m3 (LTSmin onthefly),7,2,[](lb_receive_client_2 -> (lb_receive_client_2 U (!lb_idl...,0.000158,violee,0.044,violee,15,38,77.7,0.005,
+SLB2-m3 (LTSmin onthefly),8,2,[]<>lb_idle_receive_notification_2 -> []<>lb_route_to_1_1,0.000102,violee,0.03,violee,10,26,66.8,0.005,
+SLB2-m3 (LTSmin onthefly),9,2,[]<>lb_balancing_receive_notification_2 -> []<>lb_receive...,0.000161,violee,0.038,violee,76,172,78.3,0.005,
+SLB2-m3 (LTSmin onthefly),10,2,<>[]!lb_route_to_1_1 -> <>[]!lb_idle_receive_notification_2,0.000104,violee,0.027,violee,10,26,66.6,0.005,
+SLB2-m3 (LTSmin onthefly),11,2,[](lb_route_to_1_1 -> <>lb_idle_receive_notification_2),0.000135,violee,0.032,violee,32,81,78.2,0.005,
+SLB2-m3 (LTSmin onthefly),12,2,[](lb_balance_to_1_5 -> <>lb_balancing_receive_notificati...,0.00024,violee,0.034,violee,684,2166,84.1,0.005,
+SLB2-m3 (LTSmin onthefly),13,2,[](lb_receive_client_1 -> <>(lb_balance_to_1_5 || lb_no_b...,7.8e-05,violee,0.035,violee,57,134,78.3,0.005,
+SLB2-m3 (LTSmin onthefly),14,2,<>lb_route_to_1_1,3.3e-05,violee,0.032,violee,9,21,68.7,0.005,
+SLB2-m3 (LTSmin onthefly),15,2,[]!lb_route_to_1_1,3.5e-05,violee,0.035,violee,27,68,72.0,0.005,
+SLB2-m3 (LTSmin onthefly),16,2,[]<>lb_route_to_1_1,6.5e-05,violee,0.029,violee,10,25,70.8,0.005,
+SLB2-m3 (LTSmin onthefly),17,2,!lb_route_to_1_1 U lb_idle_receive_notification_2,3.4e-05,violee,0.033,violee,17,44,77.8,0.005,
+SLB2-m3 (LTSmin onthefly),18,2,!lb_idle_receive_notification_2 U lb_route_to_1_1,3.1e-05,violee,0.03,violee,15,35,71.9,0.005,
+SLB2-m3 (LTSmin onthefly),19,2,!lb_receive_client_2 W lb_route_to_1_1,2.7e-05,violee,0.03,violee,11,26,70.7,0.005,
+SLB2-m3 (LTSmin onthefly),20,2,[](lb_receive_client_2 -> <>lb_route_to_2_4),0.000129,violee,0.03,violee,11,26,70.8,0.005,
+SLB2-m3 (LTSmin complet),1,2,!lb_idle_receive_notification_2 W lb_route_to_1_1,8.2e-05,violee,0.042,violee,15,35,98.4,0.005,0.293
+SLB2-m3 (LTSmin complet),2,2,!lb_balancing_receive_notification_2 W lb_balance_to_1_5,0.00014,violee,0.049,violee,103,285,105.7,0.005,0.293
+SLB2-m3 (LTSmin complet),3,2,!lb_balance_to_1_5 W lb_receive_client_1,4.3e-05,verifiee,0.042,verifiee,296,912,100.2,0.005,0.293
+SLB2-m3 (LTSmin complet),4,2,[](lb_idle_receive_notification_2 -> (lb_idle_receive_not...,0.00023,violee,0.046,violee,24,63,104.7,0.005,0.293
+SLB2-m3 (LTSmin complet),5,2,[](lb_route_to_1_1 -> (lb_route_to_1_1 U (!lb_route_to_1_...,0.00043,violee,0.048,violee,171,501,106.6,0.005,0.293
+SLB2-m3 (LTSmin complet),6,2,[](lb_balance_to_1_5 -> (lb_balance_to_1_5 U (!lb_balance...,0.000434,violee,0.056,violee,1433,4519,116.0,0.005,0.293
+SLB2-m3 (LTSmin complet),7,2,[](lb_receive_client_2 -> (lb_receive_client_2 U (!lb_idl...,0.000158,violee,0.048,violee,15,38,104.4,0.005,0.293
+SLB2-m3 (LTSmin complet),8,2,[]<>lb_idle_receive_notification_2 -> []<>lb_route_to_1_1,0.000102,violee,0.044,violee,10,26,93.0,0.005,0.293
+SLB2-m3 (LTSmin complet),9,2,[]<>lb_balancing_receive_notification_2 -> []<>lb_receive...,0.000161,violee,0.044,violee,76,172,104.8,0.005,0.293
+SLB2-m3 (LTSmin complet),10,2,<>[]!lb_route_to_1_1 -> <>[]!lb_idle_receive_notification_2,0.000104,violee,0.04,violee,10,26,93.1,0.005,0.293
+SLB2-m3 (LTSmin complet),11,2,[](lb_route_to_1_1 -> <>lb_idle_receive_notification_2),0.000135,violee,0.046,violee,32,81,104.9,0.005,0.293
+SLB2-m3 (LTSmin complet),12,2,[](lb_balance_to_1_5 -> <>lb_balancing_receive_notificati...,0.00024,violee,0.051,violee,684,2166,110.5,0.005,0.293
+SLB2-m3 (LTSmin complet),13,2,[](lb_receive_client_1 -> <>(lb_balance_to_1_5 || lb_no_b...,7.8e-05,violee,0.05,violee,57,134,104.7,0.005,0.293
+SLB2-m3 (LTSmin complet),14,2,<>lb_route_to_1_1,3.3e-05,violee,0.044,violee,9,21,95.1,0.005,0.293
+SLB2-m3 (LTSmin complet),15,2,[]!lb_route_to_1_1,3.5e-05,violee,0.048,violee,27,68,98.6,0.005,0.293
+SLB2-m3 (LTSmin complet),16,2,[]<>lb_route_to_1_1,6.5e-05,violee,0.04,violee,10,25,97.4,0.005,0.293
+SLB2-m3 (LTSmin complet),17,2,!lb_route_to_1_1 U lb_idle_receive_notification_2,3.4e-05,violee,0.045,violee,17,44,104.5,0.005,0.293
+SLB2-m3 (LTSmin complet),18,2,!lb_idle_receive_notification_2 U lb_route_to_1_1,3.1e-05,violee,0.041,violee,15,35,98.4,0.005,0.293
+SLB2-m3 (LTSmin complet),19,2,!lb_receive_client_2 W lb_route_to_1_1,2.7e-05,violee,0.037,violee,11,26,97.4,0.005,0.293
+SLB2-m3 (LTSmin complet),20,2,[](lb_receive_client_2 -> <>lb_route_to_2_4),0.000129,violee,0.038,violee,11,26,97.4,0.005,0.293

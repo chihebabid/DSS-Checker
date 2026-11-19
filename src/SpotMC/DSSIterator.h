@@ -24,6 +24,7 @@ private:
     const DSSKripke *m_kripke;
     uint32_t m_current_edge {};
     const std::vector<std::pair<DSSStateKey, Transition *>> &m_succ; // (destination, fired transition or nullptr), cached by the DSSKripke
+    bdd m_state_label; // Values of the state-based propositions in the source state
 };
 
 

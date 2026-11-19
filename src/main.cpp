@@ -8,6 +8,7 @@
 #include "DSS/DSSBuilder.h"
 #include "SpotMC/DSSKripke.h"
 #include "SpotMC/ParseFormulaFile.h"
+#include "SpotMC/Propositions.h"
 using namespace std;
 
 
@@ -126,21 +127,27 @@ int main(int argc, char *argv[]) {
 
                 spot::twa_graph_ptr af{formula2Automaton(negate_formula.f, my_bdd_dict, dot_formula)};
 
-                // Get module index
-                auto index_module{petri->getModule(negate_formula.propositions)};
-                if (index_module == static_cast<decltype(index_module)>(-1)) {
+                // Module having all the atomic propositions: transitions, and places for the state-based ones
+                const auto propositions {resolvePropositions(negate_formula.propositions)};
+                if (!propositions) {
                     // Note: Spot reads a name starting with F, G or X (FF1a_1) as an operator applied to the rest
                     // (F(F1a_1)): such transition names must be double-quoted in the formula ("FF1a_1")
-                    std::cout << "\tError: no module has all the transitions of the formula:";
+                    std::cout << "\tError: no module has all the transitions and places of the formula:";
                     for (const auto &proposition: negate_formula.propositions) std::cout << " " << proposition;
                     std::cout << "\n\tProperty skipped (names starting with F, G or X must be double-quoted)\n";
                     continue;
                 }
+                const auto index_module {propositions->module};
                 std::cout << "\tProperty will be checked against module #" << index_module << std::endl;
+                if (!propositions->predicates.empty()) {
+                    std::cout << "\tState-based propositions:";
+                    for (const auto &predicate: propositions->predicates) std::cout << " [" << predicate.name << "]";
+                    std::cout << std::endl;
+                }
                 auto moduleGraph{builder.getModuleGraph(index_module)};
                 // build a twa graph of the SOG
 
-                auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph, negate_formula.propositions, fairness);
+                auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph, *propositions, fairness);
                 auto start_intersect{clock()};
                 auto res{(k->intersecting_run(af) == nullptr)};
                 auto finish_intersect{clock()};

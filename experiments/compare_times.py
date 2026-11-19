@@ -1,36 +1,36 @@
 #!/usr/bin/env python3
 """
-Compare les temps d'exécution DSS-Checker (run_mc.sh) et LTSmin (verif_all.sh)
-à partir des sorties de ces scripts (le script ne lance aucune vérification).
+Compares the running times of DSS-Checker (run_mc.sh) and LTSmin (verif_all.sh)
+from the outputs of these scripts (this script does not run any verification).
 
-Usage :
-  ./compare_times.py --case LABEL SORTIE_RUN_MC SORTIE_VERIF_ALL [--case ...] [-o courbes]
+Usage:
+  ./compare_times.py --case LABEL RUN_MC_OUTPUT VERIF_ALL_OUTPUT [--case ...] [-o courbes]
 
-  SORTIE_RUN_MC    : au choix
-                     - le tableau affiché par run_mc.sh, enregistré dans un fichier
-                       (ex. ./run_mc.sh M.pn P.ltl | tee dss_A2_m1.txt)
-                     - ou le log complet mc_<modèle>_<props>_<date>.log écrit par run_mc.sh
-  SORTIE_VERIF_ALL : resume.txt écrit par verif_all.sh (ou son dossier resultats/<...>/),
-                     ou l'affichage de verif_all.sh enregistré avec tee.
+  RUN_MC_OUTPUT    : either
+                     - the table printed by run_mc.sh, saved to a file
+                       (e.g. ./run_mc.sh M.pn P.ltl | tee dss_A2_m1.txt)
+                     - or the full log mc_<model>_<props>_<date>.log written by run_mc.sh
+  VERIF_ALL_OUTPUT : resume.txt written by verif_all.sh (or its folder resultats/<...>/),
+                     or the output of verif_all.sh saved with tee.
 
-Exemple :
+Example:
   ./compare_times.py \
-      --case A2-m1 dss_A2_m1.txt resultats/SharedMemory5_A2_p_m1_volee/resume.txt \
+      --case A2-m1 dss_A2_m1.txt resultats/SharedMemory5_A2_p_m1_onthefly/resume.txt \
       --case A3-m1 mc_SharedMemory5_A3_3M_sharedmemory5_3M_m1_20261117_180000.log \
-                   resultats/SharedMemory5_A3_p_m1_volee \
+                   resultats/SharedMemory5_A3_p_m1_onthefly \
       -o courbes
 
-Sorties (dans le dossier -o, défaut : courbes) :
-  - <cas>_par_propriete.png : temps de vérification de chaque propriété, deux outils,
-    échelle log. Vert = propriété vérifiée, rouge = violée ; cercle noir = verdicts
-    différents entre les deux outils.
-  - <cas>_cumul.png : temps cumulé (construction du DSS incluse ; construction de
-    l'espace d'états LTSmin incluse en mode « complet »).
-  - comparaison_cas.png (au moins deux cas) : temps total par cas.
-  - resultats.csv : toutes les mesures.
+Outputs (in the -o folder, default: courbes):
+  - <case>_par_propriete.png: checking time of each property for both tools,
+    log scale. Green = property verified, red = violated; black circle = the two
+    tools give different verdicts.
+  - <case>_cumul.png: cumulative time (DSS construction included; LTSmin state
+    space construction included in "full" (complet) mode).
+  - comparaison_cas.png (at least two cases): total time per case.
+  - resultats.csv: all measurements.
 
-La i-ème propriété de DSS-Checker (#i-1) est appariée à prop<i> de LTSmin
-(ltl2action.sh numérote dans l'ordre des lignes non vides du fichier .ltl).
+The i-th DSS-Checker property (#i-1) is paired with LTSmin prop<i>
+(ltl2action.sh numbers the non-empty lines of the .ltl file in order).
 """
 import argparse
 import csv
@@ -41,17 +41,17 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 
-# Couleurs : statut vert/rouge (verdict), encre neutre pour le reste.
-GREEN = "#0ca30c"      # propriété vérifiée
-RED = "#d03b3b"        # propriété violée
-GRAY = "#8a8984"       # verdict inconnu / erreur
+# Colours: green/red status (verdict), neutral ink for everything else.
+GREEN = "#0ca30c"      # property verified
+RED = "#d03b3b"        # property violated
+GRAY = "#8a8984"       # unknown verdict / error
 INK = "#0b0b0b"
 INK_2 = "#52514e"
 GRID = "#e1e0d9"
 AXIS = "#c3c2b7"
 SURFACE = "#fcfcfb"
 
-# Identité de l'outil : forme du marqueur + style de trait (la couleur porte le verdict).
+# Tool identity: marker shape + line style (colour carries the verdict).
 TOOLS = {
     "dss": dict(label="DSS-Checker", marker="o", linestyle="-", line=INK_2),
     "ltsmin": dict(label="LTSmin", marker="s", linestyle="--", line="#9a9890"),
@@ -64,7 +64,7 @@ class Prop:
     formula: str = ""
     module: str = ""
     dss_time: float | None = None   # s
-    dss_ok: bool | None = None      # True = vérifiée, False = violée, None = inconnu
+    dss_ok: bool | None = None      # True = verified, False = violated, None = unknown
     lts_time: float | None = None
     lts_ok: bool | None = None
     lts_states: str = ""
@@ -77,13 +77,13 @@ class Case:
     label: str
     props: list[Prop] = field(default_factory=list)
     dss_build: float | None = None  # s
-    lts_build: float | None = None  # s (mode complet uniquement)
+    lts_build: float | None = None  # s (full mode only)
 
 
 # ----------------------------------------------------------------- parsing
 
 def parse_dss(path):
-    """Sortie de run_mc.sh : tableau résumé affiché, ou log complet de distributedstatespace."""
+    """run_mc.sh output: printed summary table, or full distributedstatespace log."""
     text = Path(path).read_text(errors="replace")
     if "***** Property#" in text:
         return parse_dss_full_log(text)
@@ -114,11 +114,11 @@ def parse_dss_full_log(text):
 
 
 def parse_dss_summary(text):
-    """Tableau affiché par run_mc.sh :
+    """Table printed by run_mc.sh (French labels):
          Construction du DSS : 684 ms
          #     Module  Résultat   Durée vérif(s) Formule
          0     0       VERIFIEE   0.000223       !End_Own_Acc_5_5 W ...
-    (la formule y est tronquée à 60 caractères)."""
+    (the formula is truncated to 60 characters)."""
     props, build = [], None
     for line in text.splitlines():
         if m := re.search(r"Construction du DSS\s*:\s*([\d.]+)\s*ms", line):
@@ -135,32 +135,32 @@ def parse_dss_summary(text):
             p.dss_time = None
         props.append(p)
     if not props:
-        sys.exit(f"Aucune propriété trouvée dans la sortie DSS-Checker ({len(text)} caractères lus)")
+        sys.exit(f"No property found in the DSS-Checker output ({len(text)} characters read)")
     return props, build
 
 
 def parse_ltsmin_resume(path):
-    """resume.txt écrit par verif_all.sh."""
+    """resume.txt written by verif_all.sh."""
     path = Path(path)
     if path.is_dir():
         path = path / "resume.txt"
     rows, build = {}, None
     for line in path.read_text(errors="replace").splitlines():
-        if m := re.search(r"Construction complète\s*:.*?,\s*([\d.]+)\s*s", line):
+        if m := re.search(r"(?:Construction complète|Full construction)\s*:.*?,\s*([\d.]+)\s*s", line):
             build = float(m.group(1))
             continue
         cols = [c.strip() for c in line.split("|")]
         if len(cols) < 6 or not (m := re.fullmatch(r"prop(\d+)", cols[0])):
             continue
         res = cols[5].upper()
-        ok = None if res.startswith("ERREUR") else (not res.startswith("NON"))
+        ok = None if res.startswith(("ERREUR", "ERROR")) else (not res.startswith(("NON", "NOT")))
         try:
             t = float(cols[1])
         except ValueError:
             t = None
         rows[int(m.group(1))] = dict(time=t, ok=ok, states=cols[2], arcs=cols[3], mem=cols[4])
     if not rows:
-        sys.exit(f"Aucune propriété trouvée dans la sortie LTSmin {path}")
+        sys.exit(f"No property found in the LTSmin output {path}")
     return rows, build
 
 
@@ -174,7 +174,7 @@ def build_case(label, dss_log, lts_resume):
         p.lts_states, p.lts_arcs, p.lts_mem = r["states"], r["arcs"], r["mem"]
     case = Case(label, sorted(by_idx.values(), key=lambda p: p.index), dss_build, lts_build)
     if len(props) != len(rows):
-        print(f"[{label}] attention : {len(props)} propriétés DSS-Checker, {len(rows)} LTSmin", file=sys.stderr)
+        print(f"[{label}] warning: {len(props)} DSS-Checker properties, {len(rows)} LTSmin", file=sys.stderr)
     return case
 
 
@@ -202,12 +202,12 @@ def legend_handles(plt, with_mismatch):
                 markerfacecolor="white", markeredgecolor=INK_2, markersize=8, linewidth=2,
                 label=t["label"]) for t in TOOLS.values()]
     h += [Line2D([], [], linestyle="", marker="o", markersize=8, markerfacecolor=GREEN,
-                 markeredgecolor="white", label="Propriété vérifiée"),
+                 markeredgecolor="white", label="Property verified"),
           Line2D([], [], linestyle="", marker="o", markersize=8, markerfacecolor=RED,
-                 markeredgecolor="white", label="Propriété violée")]
+                 markeredgecolor="white", label="Property violated")]
     if with_mismatch:
         h.append(Line2D([], [], linestyle="", marker="o", markersize=13, markerfacecolor="none",
-                        markeredgecolor=INK, markeredgewidth=1.5, label="Verdicts différents"))
+                        markeredgecolor=INK, markeredgewidth=1.5, label="Different verdicts"))
     return h
 
 
@@ -219,11 +219,11 @@ def plot_series(ax, xs, ys, oks, tool):
     px, py, pok = zip(*pts)
     ax.plot(px, py, color=t["line"], linestyle=t["linestyle"], linewidth=2, zorder=2)
     ax.scatter(px, py, marker=t["marker"], s=64, c=[verdict_color(o) for o in pok],
-               edgecolors="white", linewidths=1.5, zorder=3)   # anneau clair sur chevauchement
+               edgecolors="white", linewidths=1.5, zorder=3)   # light ring where points overlap
 
 
 def floor_times(values):
-    """Échelle log : remplace 0 par un plancher visible."""
+    """Log scale: replaces 0 by a visible floor."""
     pos = [v for v in values if v]
     floor = (min(pos) / 2) if pos else 1e-6
     return [None if v is None else max(v, floor) for v in values]
@@ -235,7 +235,7 @@ def plot_case(plt, case, outdir):
     lts_t = floor_times([p.lts_time for p in case.props])
     mism = [p for p in case.props if p.dss_ok is not None and p.lts_ok is not None and p.dss_ok != p.lts_ok]
 
-    # --- temps par propriété
+    # --- time per property
     fig, ax = plt.subplots(figsize=(max(8, 0.45 * len(xs) + 3), 5), facecolor=SURFACE)
     style_axes(ax)
     plot_series(ax, xs, dss_t, [p.dss_ok for p in case.props], "dss")
@@ -246,11 +246,11 @@ def plot_case(plt, case, outdir):
                 ax.scatter([p.index], [y], s=230, facecolors="none", edgecolors=INK, linewidths=1.5, zorder=4)
     ax.set_yscale("log")
     ax.set_xticks(xs)
-    ax.set_xlabel("Propriété", color=INK_2)
-    ax.set_ylabel("Temps de vérification (s, échelle log)", color=INK_2)
-    title = f"{case.label} : temps de vérification par propriété"
+    ax.set_xlabel("Property", color=INK_2)
+    ax.set_ylabel("Checking time (s, log scale)", color=INK_2)
+    title = f"{display(case.label)}: checking time per property"
     if case.dss_build is not None:
-        title += f"\nconstruction du DSS : {case.dss_build:.3f} s (non incluse)"
+        title += f"\nDSS construction: {case.dss_build:.3f} s (not included)"
     ax.set_title(title, color=INK, fontsize=12, loc="left")
     ax.legend(handles=legend_handles(plt, bool(mism)), frameon=False, fontsize=9,
               loc="upper left", bbox_to_anchor=(1.01, 1))
@@ -259,7 +259,7 @@ def plot_case(plt, case, outdir):
     fig.savefig(f1, dpi=150)
     plt.close(fig)
 
-    # --- temps cumulé
+    # --- cumulative time
     def cumul(start, vals):
         acc, out = start or 0.0, []
         for v in vals:
@@ -274,12 +274,12 @@ def plot_case(plt, case, outdir):
     plot_series(ax, xs, cumul(case.lts_build, [p.lts_time for p in case.props]),
                 [p.lts_ok for p in case.props], "ltsmin")
     ax.set_xticks(xs)
-    ax.set_xlabel("Nombre de propriétés vérifiées", color=INK_2)
-    ax.set_ylabel("Temps cumulé (s)", color=INK_2)
-    note = "DSS-Checker : construction du DSS incluse"
+    ax.set_xlabel("Number of properties checked", color=INK_2)
+    ax.set_ylabel("Cumulative time (s)", color=INK_2)
+    note = "DSS-Checker: DSS construction included"
     if case.lts_build is not None:
-        note += " ; LTSmin : construction de l'espace d'états incluse"
-    ax.set_title(f"{case.label} : temps cumulé\n{note}", color=INK, fontsize=12, loc="left")
+        note += "; LTSmin: state space construction included"
+    ax.set_title(f"{display(case.label)}: cumulative time\n{note}", color=INK, fontsize=12, loc="left")
     ax.legend(handles=legend_handles(plt, False), frameon=False, fontsize=9,
               loc="upper left", bbox_to_anchor=(1.01, 1))
     fig.tight_layout()
@@ -290,7 +290,7 @@ def plot_case(plt, case, outdir):
 
 
 def plot_cases(plt, cases, outdir):
-    labels = [c.label for c in cases]
+    labels = [display(c.label) for c in cases]
     xs = list(range(len(cases)))
     dss = [(c.dss_build or 0) + sum(p.dss_time or 0 for p in c.props) for c in cases]
     lts = [(c.lts_build or 0) + sum(p.lts_time or 0 for p in c.props) for c in cases]
@@ -302,14 +302,19 @@ def plot_cases(plt, cases, outdir):
                 markerfacecolor="white", markeredgecolor=INK_2, linewidth=2, label=t["label"])
     ax.set_yscale("log")
     ax.set_xticks(xs, labels, rotation=30 if len(cases) > 5 else 0, ha="right" if len(cases) > 5 else "center")
-    ax.set_ylabel("Temps total (s, échelle log)", color=INK_2)
-    ax.set_title("Temps total par cas (construction + toutes les propriétés)", color=INK, fontsize=12, loc="left")
+    ax.set_ylabel("Total time (s, log scale)", color=INK_2)
+    ax.set_title("Total time per case (construction + all properties)", color=INK, fontsize=12, loc="left")
     ax.legend(frameon=False, fontsize=9, loc="upper left", bbox_to_anchor=(1.01, 1))
     fig.tight_layout()
     f = outdir / "comparaison_cas.png"
     fig.savefig(f, dpi=150)
     plt.close(fig)
     return f
+
+
+def display(label):
+    """Case label as shown on figures: French LTSmin mode names in English."""
+    return re.sub(r"\b(volee|volée)\b", "onthefly", re.sub(r"\bcomplet\b", "full", label))
 
 
 def safe(s):
@@ -335,9 +340,9 @@ def write_csv(cases, path):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--case", nargs=3, action="append", required=True,
-                    metavar=("LABEL", "SORTIE_RUN_MC", "SORTIE_VERIF_ALL"),
-                    help="un cas à comparer (répéter l'option pour plusieurs cas)")
-    ap.add_argument("-o", "--outdir", default="courbes", help="dossier de sortie (défaut : courbes)")
+                    metavar=("LABEL", "RUN_MC_OUTPUT", "VERIF_ALL_OUTPUT"),
+                    help="a case to compare (repeat the option for several cases)")
+    ap.add_argument("-o", "--outdir", default="courbes", help="output folder (default: courbes)")
     args = ap.parse_args()
 
     try:
@@ -345,12 +350,12 @@ def main():
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
     except ImportError:
-        sys.exit("matplotlib manquant : sudo apt install python3-matplotlib  (ou pip install matplotlib)")
+        sys.exit("matplotlib missing: sudo apt install python3-matplotlib  (or pip install matplotlib)")
 
     for label, dss_out, lts_out in args.case:
         for f in (dss_out, lts_out):
             if not Path(f).exists():
-                sys.exit(f"[{label}] fichier introuvable : {f}")
+                sys.exit(f"[{label}] file not found: {f}")
 
     outdir = Path(args.outdir).resolve()
     outdir.mkdir(parents=True, exist_ok=True)
@@ -363,7 +368,7 @@ def main():
         ok_l = sum(p.lts_ok is True for p in c.props)
         ko_l = sum(p.lts_ok is False for p in c.props)
         print(f"[{c.label}] DSS-Checker {ok_d} V / {ko_d} X  |  LTSmin {ok_l} V / {ko_l} X  |  "
-              f"désaccords : {[p.index for p in mism] or 'aucun'}")
+              f"disagreements: {[p.index for p in mism] or 'none'}")
         print(f"   {f1}\n   {f2}")
     if len(cases) >= 2:
         print(f"   {plot_cases(plt, cases, outdir)}")

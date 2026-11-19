@@ -1,0 +1,1 @@
+!(action == "client_send_2") W (action == "client_send_1")

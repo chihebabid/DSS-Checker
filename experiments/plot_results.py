@@ -7,12 +7,18 @@ Usage :
   ./plot_results.py courbes/A2_m1/resultats.csv [autre/resultats.csv ...] [-o courbes/figures]
 
 Each CSV row "cas" is read as "<model> (LTSmin <mode>)"; the tools compared are
-DSS-Checker and LTSmin <mode> (one per mode found: volee, complet).
+DSS-Checker and LTSmin <mode> (one per mode found: onthefly, complet), shown on the
+figures as "LTSmin onthefly" and "LTSmin full" (the former name volee is read as onthefly).
 
 Models named "<base>-m<k>" (one per module, e.g. A2-m1, A2-m2, A2-m3) are also merged
 into a model "<base>-all" whose formulas are renumbered in module order (m1 1..20,
 m2 21..40, m3 41..60); its figures mark the module of each formula
 (dashed separators, or marker shape on the log-log figures).
+
+LTSmin runs whose explored states reach the capacity of its state table (2^24 states
+with --state=table, as used by verif_all.sh) stop exploring without any error: their
+time and explored states are lower bounds. Such points get an arrow pointing in the
+direction of the true value.
 
 Outputs (PDF + PNG) in the -o folder:
   time-plots/<model>          : time of each formula for every tool (as create_figure)
@@ -40,9 +46,23 @@ PROPERTY_COLORS = {"T": "green", "F": "red", "U": "black"}
 TOOL_COLORS = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b"]
 MODULE_MARKERS = ["o", "s", "^", "D", "v", "P"]
 MODULE_RE = re.compile(r"(.*?)[-_ ]m(\d+)")
+LTSMIN_TABLE_LIMIT = 2 ** 24   # pnml2lts-seq / etf2lts-seq --state=table capacity
+TRUNCATION_MARGIN = 1024       # runs within this many states of the limit are truncated
+LOWER_BOUND_LABEL = "LTSmin lower bound\n(state table full,\n2$^{24}$ states)"
 
 
 # ----------------------------------------------------------------- data
+
+MODE_NAMES = {"volee": "onthefly", "complet": "full"}
+
+
+def display(tool):
+    """Tool name as shown on figures (LTSmin-onthefly -> LTSmin onthefly)."""
+    if tool.startswith("LTSmin-"):
+        mode = tool[len("LTSmin-"):]
+        return f"LTSmin {MODE_NAMES.get(mode, mode)}"
+    return tool
+
 
 def to_float(s):
     try:
@@ -61,11 +81,13 @@ def load(csv_files):
         with open(f, newline="") as fh:
             for r in csv.DictReader(fh):
                 m = re.fullmatch(r"\s*(.*?)\s*\(LTSmin\s+(\w+)\)\s*", r["cas"])
-                model, lts_tool = (m.group(1), f"LTSmin-{m.group(2)}") if m else (r["cas"], "LTSmin")
+                mode = "onthefly" if m and m.group(2) == "volee" else (m.group(2) if m else "")
+                model, lts_tool = (m.group(1), f"LTSmin-{mode}") if m else (r["cas"], "LTSmin")
                 formula = int(r["propriete"])
                 row = data[model].setdefault(formula, dict(
                     times={}, verdicts={}, property="U", explored_states=None,
-                    formula_text=r["formule"], module=None, local_formula=formula))
+                    formula_text=r["formule"], module=None, local_formula=formula,
+                    truncated=set()))
                 row["times"][DSS] = to_float(r["dss_temps_s"])
                 row["verdicts"][DSS] = VERDICT.get(r["dss_verdict"], "U")
                 row["times"][lts_tool] = to_float(r["ltsmin_temps_s"])
@@ -73,6 +95,8 @@ def load(csv_files):
                 states = to_float(r["ltsmin_etats"])
                 if states is not None:
                     row["explored_states"] = int(states)
+                    if states >= LTSMIN_TABLE_LIMIT - TRUNCATION_MARGIN:
+                        row["truncated"].add(lts_tool)
     # ground truth: LTSmin verdict (as pnml2lts-mc in plot-results.py), else DSS-Checker
     for formulas in data.values():
         for row in formulas.values():
@@ -153,6 +177,18 @@ def plot_time(t):
 
 # ----------------------------------------------------------------- figures
 
+def lower_bound_arrow(ax, x, y, dx, dy, color):
+    """Arrow starting at the point (x, y), pointing towards (dx, dy) in screen space."""
+    ax.annotate("", xy=(x, y), xytext=(dx * 16, dy * 16), textcoords="offset points",
+                arrowprops=dict(arrowstyle="<-", color=color, linewidth=1.2, shrinkA=0, shrinkB=4))
+
+
+def lower_bound_handle(arrow=r"$\uparrow$"):
+    from matplotlib.lines import Line2D
+    return Line2D([], [], linestyle="", marker=arrow, markersize=10, color="black",
+                  label=LOWER_BOUND_LABEL)
+
+
 def simple_white(ax):
     """Approximates the plotly 'simple_white' template with mirrored axes."""
     for s in ax.spines.values():
@@ -165,8 +201,8 @@ def simple_white(ax):
 
 def save(fig, path):
     path.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(path.with_suffix(".pdf"))
-    fig.savefig(path.with_suffix(".png"), dpi=150)
+    fig.savefig(path.with_suffix(".pdf"), bbox_inches="tight")
+    fig.savefig(path.with_suffix(".png"), dpi=150, bbox_inches="tight")
 
 
 def figure_width(formulas):
@@ -179,9 +215,15 @@ def create_figure(plt, model, formulas):
     fig, ax = plt.subplots(figsize=(figure_width(formulas), 5))
     simple_white(ax)
     xs = sorted(formulas)
+    truncated = False
     for i, tool in enumerate(tools_of(formulas)):
+        color = TOOL_COLORS[i % len(TOOL_COLORS)]
         ax.scatter(xs, [plot_time(formulas[x]["times"].get(tool)) for x in xs],
-                   marker="x", color=TOOL_COLORS[i % len(TOOL_COLORS)], label=tool)
+                   marker="x", color=color, label=display(tool))
+        for x in xs:
+            if tool in formulas[x]["truncated"]:
+                lower_bound_arrow(ax, x, plot_time(formulas[x]["times"].get(tool)), 0, 1, color)
+                truncated = True
     ax.set_yscale("log")
     lo, hi = ax.get_ylim()
     ax.set_ylim(lo, hi * 3)   # room for the module labels
@@ -191,7 +233,10 @@ def create_figure(plt, model, formulas):
     ax.set_xlabel("formula")
     ax.set_ylabel("time (s)")
     ax.set_title(model)
-    ax.legend(title="tool", frameon=False, loc="upper left", bbox_to_anchor=(1.01, 1))
+    handles, _ = ax.get_legend_handles_labels()
+    if truncated:
+        handles.append(lower_bound_handle())
+    ax.legend(handles=handles, title="tool", frameon=False, loc="upper left", bbox_to_anchor=(1.01, 1))
     fig.tight_layout()
     return fig
 
@@ -200,7 +245,7 @@ def create_figure_explored_states(plt, model, formulas):
     """LTSmin explored states for each formula, with the mean per verdict."""
     fig, ax = plt.subplots(figsize=(figure_width(formulas), 5))
     simple_white(ax)
-    plotted = False
+    plotted = truncated_any = False
     for i, p in enumerate(("T", "F")):
         pts = [(x, r["explored_states"]) for x, r in sorted(formulas.items())
                if r["property"] == p and r["explored_states"] is not None]
@@ -211,8 +256,12 @@ def create_figure_explored_states(plt, model, formulas):
         mean = sum(ys) / len(ys)
         color = PROPERTY_COLORS[p]
         ax.scatter(xs, ys, marker="o", color=color, label=p)
+        truncated = [x for x in xs if formulas[x]["truncated"]]
+        for x in truncated:
+            lower_bound_arrow(ax, x, formulas[x]["explored_states"], 0, 1, color)
+        truncated_any |= bool(truncated)
         ax.plot([min(xs), max(xs)], [mean, mean], color=color, linewidth=1.5)
-        ax.annotate(f"mean = {mean:.2E}", xy=(1.01, mean), xycoords=("axes fraction", "data"),
+        ax.annotate(f"mean {'≥' if truncated else '='} {mean:.2E}", xy=(1.01, mean), xycoords=("axes fraction", "data"),
                     color=color, va="center", ha="left", fontsize=9)
     if not plotted:
         plt.close(fig)
@@ -225,9 +274,12 @@ def create_figure_explored_states(plt, model, formulas):
     ax.set_xlabel("formula")
     ax.set_ylabel("# explored states (LTSmin)")
     ax.set_title(model)
-    ax.legend(title="property", frameon=False, loc="upper left", bbox_to_anchor=(1.01, 0.9))
+    handles, _ = ax.get_legend_handles_labels()
+    if truncated_any:
+        handles.append(lower_bound_handle())
+    ax.legend(handles=handles, title="property", frameon=False, loc="upper left", bbox_to_anchor=(1.01, 0.9))
     fig.tight_layout()
-    fig.subplots_adjust(right=0.75 if len(formulas) <= 25 else 0.83)
+    fig.subplots_adjust(right=(0.75 if len(formulas) <= 25 else 0.83) - (0.08 if truncated_any else 0))
     return fig
 
 
@@ -245,6 +297,13 @@ def create_log_figure(plt, model, formulas, tool_x, tool_y):
                 xs, ys = zip(*pts)
                 ax.scatter(xs, ys, marker=MODULE_MARKERS[j % len(MODULE_MARKERS)] if by_module else "o",
                            facecolors="none", edgecolors=color)
+    truncated = False
+    for r in formulas.values():
+        dx, dy = int(tool_x in r["truncated"]), int(tool_y in r["truncated"])
+        if dx or dy:
+            truncated = True
+            lower_bound_arrow(ax, plot_time(r["times"].get(tool_x)), plot_time(r["times"].get(tool_y)),
+                              dx, dy, PROPERTY_COLORS[r["property"]])
     from matplotlib.lines import Line2D
     present = {r["property"] for r in formulas.values()}
     handles = [Line2D([], [], linestyle="", marker="o", markerfacecolor="none", markeredgecolor=c,
@@ -253,18 +312,19 @@ def create_log_figure(plt, model, formulas, tool_x, tool_y):
         handles += [Line2D([], [], linestyle="", marker=MODULE_MARKERS[j % len(MODULE_MARKERS)],
                            markerfacecolor="none", markeredgecolor="black", label=f"module {k}")
                     for j, k in enumerate(modules)]
+    if truncated:
+        handles.append(lower_bound_handle(r"$\nearrow$" if tool_x != DSS else r"$\uparrow$"))
     ax.plot([ZERO, TIMEOUT], [ZERO, TIMEOUT], color="black", linewidth=1)
     ax.set_xscale("log")
     ax.set_yscale("log")
     ax.set_xlim(ZERO, TIMEOUT)
     ax.set_ylim(ZERO, TIMEOUT)
     ax.set_aspect("equal")
-    ax.set_xlabel(f"{tool_x} (s)")
-    ax.set_ylabel(f"{tool_y} (s)")
+    ax.set_xlabel(f"{display(tool_x)} (s)")
+    ax.set_ylabel(f"{display(tool_y)} (s)")
     ax.set_title(model)
     ax.legend(handles=handles, title="property", frameon=False, loc="upper left", bbox_to_anchor=(1.01, 1))
-    fig.tight_layout()
-    return fig
+    return fig   # no tight_layout: it shrinks the square axes; save() crops to the legend
 
 
 # ----------------------------------------------------------------- main
@@ -316,7 +376,7 @@ def main():
             plt.close(fig)
             written.append(path)
 
-        print(f"[{model}] {len(formulas)} formulas, tools: {', '.join(tools_of(formulas))}")
+        print(f"[{model}] {len(formulas)} formulas, tools: {', '.join(map(display, tools_of(formulas)))}")
         for p in written:
             print(f"   {p}.pdf / .png")
 

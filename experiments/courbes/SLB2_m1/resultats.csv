@@ -1,0 +1,41 @@
+cas,propriete,module,formule,dss_temps_s,dss_verdict,ltsmin_temps_s,ltsmin_verdict,ltsmin_etats,ltsmin_arcs,ltsmin_mem_mo,dss_construction_s,ltsmin_construction_s
+SLB2-m1 (LTSmin onthefly),1,0,!client_receive_1 W client_send_1,0.000102,verifiee,0.033,verifiee,148,382,71.8,0.005,
+SLB2-m1 (LTSmin onthefly),2,0,!client_receive_1 W lb_receive_client_1,0.000127,verifiee,0.028,verifiee,296,912,73.0,0.005,
+SLB2-m1 (LTSmin onthefly),3,0,!lb_receive_client_1 W client_send_1,2.9e-05,verifiee,0.031,verifiee,148,382,71.8,0.005,
+SLB2-m1 (LTSmin onthefly),4,0,[](client_receive_1 -> (client_receive_1 U (!client_recei...,0.000417,verifiee,0.034,verifiee,1332,4980,80.8,0.005,
+SLB2-m1 (LTSmin onthefly),5,0,[](client_send_1 -> (client_send_1 U (!client_send_1 W cl...,0.000471,verifiee,0.041,verifiee,2324,9450,88.1,0.005,
+SLB2-m1 (LTSmin onthefly),6,0,[](lb_receive_client_1 -> (lb_receive_client_1 U (!lb_rec...,0.000452,verifiee,0.042,verifiee,1882,7134,84.8,0.005,
+SLB2-m1 (LTSmin onthefly),7,0,[](client_send_2 -> (client_send_2 U (!client_receive_1 W...,0.000795,violee,0.038,violee,26,59,77.9,0.005,
+SLB2-m1 (LTSmin onthefly),8,0,[]<>client_receive_1 -> []<>client_send_1,0.000413,verifiee,0.036,verifiee,1830,8212,84.5,0.005,
+SLB2-m1 (LTSmin onthefly),9,0,[]<>client_receive_1 -> []<>client_send_1,0.000333,verifiee,0.037,verifiee,1830,8212,84.5,0.005,
+SLB2-m1 (LTSmin onthefly),10,0,<>[]!client_send_1 -> <>[]!client_receive_1,0.000353,verifiee,0.04,verifiee,1830,8212,84.5,0.005,
+SLB2-m1 (LTSmin onthefly),11,0,[](client_send_1 -> <>client_receive_1),0.00027,violee,0.029,violee,21,51,68.9,0.005,
+SLB2-m1 (LTSmin onthefly),12,0,[](lb_receive_client_1 -> <>client_receive_1),0.000268,violee,0.031,violee,21,43,68.7,0.005,
+SLB2-m1 (LTSmin onthefly),13,0,[](client_send_1 -> <>(lb_receive_client_1 || client_send...,0.000348,verifiee,0.035,verifiee,1000,3222,78.5,0.005,
+SLB2-m1 (LTSmin onthefly),14,0,<>client_send_1,4.1e-05,violee,0.029,violee,9,13,68.6,0.005,
+SLB2-m1 (LTSmin onthefly),15,0,[]!client_send_1,0.000196,violee,0.032,violee,27,76,72.0,0.005,
+SLB2-m1 (LTSmin onthefly),16,0,[]<>client_send_1,0.000195,violee,0.032,violee,10,16,70.6,0.005,
+SLB2-m1 (LTSmin onthefly),17,0,!client_send_1 U client_receive_1,0.00018,violee,0.032,violee,9,29,68.7,0.005,
+SLB2-m1 (LTSmin onthefly),18,0,!client_receive_1 U client_send_1,4.1e-05,violee,0.028,violee,9,13,68.7,0.005,
+SLB2-m1 (LTSmin onthefly),19,0,!client_send_2 W client_send_1,0.000151,violee,0.029,violee,10,23,70.9,0.005,
+SLB2-m1 (LTSmin onthefly),20,0,[](client_send_2 -> <>client_receive_2),0.000493,violee,0.03,violee,13,22,70.6,0.005,
+SLB2-m1 (LTSmin complet),1,0,!client_receive_1 W client_send_1,0.000102,verifiee,0.045,verifiee,148,382,99.1,0.005,0.175
+SLB2-m1 (LTSmin complet),2,0,!client_receive_1 W lb_receive_client_1,0.000127,verifiee,0.041,verifiee,296,912,100.0,0.005,0.175
+SLB2-m1 (LTSmin complet),3,0,!lb_receive_client_1 W client_send_1,2.9e-05,verifiee,0.044,verifiee,148,382,98.9,0.005,0.175
+SLB2-m1 (LTSmin complet),4,0,[](client_receive_1 -> (client_receive_1 U (!client_recei...,0.000417,verifiee,0.048,verifiee,1332,4980,107.8,0.005,0.175
+SLB2-m1 (LTSmin complet),5,0,[](client_send_1 -> (client_send_1 U (!client_send_1 W cl...,0.000471,verifiee,0.057,verifiee,2324,9450,115.0,0.005,0.175
+SLB2-m1 (LTSmin complet),6,0,[](lb_receive_client_1 -> (lb_receive_client_1 U (!lb_rec...,0.000452,verifiee,0.055,verifiee,1882,7134,111.9,0.005,0.175
+SLB2-m1 (LTSmin complet),7,0,[](client_send_2 -> (client_send_2 U (!client_receive_1 W...,0.000795,violee,0.042,violee,26,59,104.6,0.005,0.175
+SLB2-m1 (LTSmin complet),8,0,[]<>client_receive_1 -> []<>client_send_1,0.000413,verifiee,0.051,verifiee,1830,8212,111.5,0.005,0.175
+SLB2-m1 (LTSmin complet),9,0,[]<>client_receive_1 -> []<>client_send_1,0.000333,verifiee,0.051,verifiee,1830,8212,111.6,0.005,0.175
+SLB2-m1 (LTSmin complet),10,0,<>[]!client_send_1 -> <>[]!client_receive_1,0.000353,verifiee,0.052,verifiee,1830,8212,111.5,0.005,0.175
+SLB2-m1 (LTSmin complet),11,0,[](client_send_1 -> <>client_receive_1),0.00027,violee,0.041,violee,21,51,95.5,0.005,0.175
+SLB2-m1 (LTSmin complet),12,0,[](lb_receive_client_1 -> <>client_receive_1),0.000268,violee,0.041,violee,21,43,95.6,0.005,0.175
+SLB2-m1 (LTSmin complet),13,0,[](client_send_1 -> <>(lb_receive_client_1 || client_send...,0.000348,verifiee,0.049,verifiee,1000,3222,105.3,0.005,0.175
+SLB2-m1 (LTSmin complet),14,0,<>client_send_1,4.1e-05,violee,0.041,violee,9,13,95.3,0.005,0.175
+SLB2-m1 (LTSmin complet),15,0,[]!client_send_1,0.000196,violee,0.042,violee,27,76,98.4,0.005,0.175
+SLB2-m1 (LTSmin complet),16,0,[]<>client_send_1,0.000195,violee,0.039,violee,10,16,97.3,0.005,0.175
+SLB2-m1 (LTSmin complet),17,0,!client_send_1 U client_receive_1,0.00018,violee,0.042,violee,9,29,95.4,0.005,0.175
+SLB2-m1 (LTSmin complet),18,0,!client_receive_1 U client_send_1,4.1e-05,violee,0.037,violee,9,13,95.3,0.005,0.175
+SLB2-m1 (LTSmin complet),19,0,!client_send_2 W client_send_1,0.000151,violee,0.039,violee,10,23,97.5,0.005,0.175
+SLB2-m1 (LTSmin complet),20,0,[](client_send_2 -> <>client_receive_2),0.000493,violee,0.041,violee,13,22,97.3,0.005,0.175

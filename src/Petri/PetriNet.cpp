@@ -336,3 +336,10 @@ bool PetriNet::areTransitionsIncluded(const std::set<string> &list_transitions) 
     }
     return true;
 }
+
+int PetriNet::getPlaceIndex(const string &name) const {
+    for (size_t i {}; i < m_places.size(); ++i) {
+        if (m_places[i].getName() == name) return static_cast<int>(i);
+    }
+    return -1;
+}

@@ -7,14 +7,17 @@
 #include "Petri/Transition.h"
 #include "Petri/ModularPetriNet.h"
 
-DSSKripke::DSSKripke(const spot::bdd_dict_ptr &dict_ptr, ModuleSS *metagraph, const std::set<std::string> &aps,
+DSSKripke::DSSKripke(const spot::bdd_dict_ptr &dict_ptr, ModuleSS *metagraph, const ResolvedPropositions &propositions,
                      const bool fairness)
         : spot::twa(dict_ptr), m_metagraph(metagraph), m_fairness(fairness) {
     set_generalized_buchi(0); // No acceptance set: every infinite run is accepting
-    for (const auto &ap: aps) {
+    for (const auto &ap: propositions.transitions) {
         const bdd var {bdd_ithvar(register_ap(ap))};
         m_ap_vars.emplace(ap, var);
         m_no_ap &= !var;
+    }
+    for (const auto &predicate: propositions.predicates) {
+        m_predicates.emplace_back(predicate, bdd_ithvar(register_ap(predicate.name)));
     }
 }
 
@@ -31,9 +34,11 @@ DSSIterator *DSSKripke::succ_iter(const spot::state *s) const {
 }
 
 std::string DSSKripke::format_state(const spot::state *s) const {
-    const auto marking {static_cast<const DSSState *>(s)->getKey().marking};
+    const auto &key {static_cast<const DSSState *>(s)->getKey()};
+    const auto marking {key.marking};
     if (marking == &m_divergence) return "divergence";
     const auto petri {ModularPetriNet::getInstance().getModule(static_cast<int>(getIdModule()))};
+    if (isDivergence(key)) return "divergence in " + petri->getMarkingName(*marking);
     return petri->getMarkingName(*marking) + " (SCC " + petri->getSCCName(marking->getSCCContainer()) + ")";
 }
 
@@ -43,6 +48,14 @@ bdd DSSKripke::edgeCondition(const Transition *t) const {
     if (it == m_ap_vars.end()) return m_no_ap; // transition not observed by the formula
     // t is true, the other propositions are false
     return it->second & bdd_exist(m_no_ap, it->second);
+}
+
+bdd DSSKripke::stateLabel(const Marking *marking) const {
+    bdd label {bddtrue};
+    for (const auto &[predicate, var]: m_predicates) {
+        label &= predicate.holds(*marking) ? var : !var;
+    }
+    return label;
 }
 
 /*
@@ -58,14 +71,19 @@ bdd DSSKripke::edgeCondition(const Transition *t) const {
  *     a sync-closed SCC or in an SCC where another module can loop, or the closure contains a cycle
  *     (the other modules can synchronise forever without the module).
  *     Under fairness: only a marking of the closure in a sync-closed SCC.
+ *     With state-based propositions, a sync-closed SCC only lets the module stop in a marking without local
+ *     successor: from another marking of the SCC, the module keeps firing its local transitions (the edges of
+ *     the SCC), and stopping there would make its marking seen forever, which no execution does.
  */
 const DSSKripke::Successors &DSSKripke::getSuccessors(const DSSStateKey &state) const {
     if (const auto it {m_successors.find(state)}; it != m_successors.end()) return it->second;
     Successors &successors {m_successors[state]};
-    const DSSStateKey divergence {nullptr, &m_divergence};
-    if (state.marking == &m_divergence) {
+    const bool state_based {!m_predicates.empty()};
+    // With state-based propositions, the divergence state keeps the marking where the module stops
+    const DSSStateKey divergence {nullptr, state_based ? state.marking : &m_divergence};
+    if (isDivergence(state)) {
         // The divergence state loops forever without firing a transition
-        successors.emplace_back(divergence, nullptr);
+        successors.emplace_back(state, nullptr);
         return successors;
     }
     const size_t module {getIdModule()};
@@ -114,7 +132,8 @@ const DSSKripke::Successors &DSSKripke::getSuccessors(const DSSStateKey &state) 
     bool diverge {!m_fairness && closure_cycle};
     for (const auto &[ms, m]: closure) {
         SCC *scc {m->getSCCContainer()};
-        diverge = diverge || ms->isSyncClosed(scc) || (!m_fairness && ms->othersCanLoop(scc));
+        const bool may_stop_here {!state_based || m->getListSucc().empty()};
+        diverge = diverge || (ms->isSyncClosed(scc) && may_stop_here) || (!m_fairness && ms->othersCanLoop(scc));
         // Local transitions (in the same metastate)
         for (const auto &[t, dest]: m->getListSucc()) {
             successors.push_back({{ms, dest}, t});

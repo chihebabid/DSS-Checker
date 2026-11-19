@@ -1,0 +1,31 @@
+Modèle : SimpleLoadBal2.pnml | Propriétés : simpleloadbal2_3M_m1_props | Mode : complet | 2026-11-18 23:23:06
+
+Construction complète : 832 états, 2650 arcs, 0.169 s, 335.7 Mo
+
+(États / arcs ci-dessous : partie du produit explorée pendant la vérification)
+
+Propriété    | Temps (s) |      États |        Arcs | Mém. (Mo) | Résultat
+-------------+-----------+-------------+-------------+-----------+------------------------------
+prop1        |     0.043 |         148 |         382 |      99.2 | VÉRIFIÉE
+prop2        |     0.042 |         296 |         912 |     100.1 | VÉRIFIÉE
+prop3        |     0.038 |         148 |         382 |      99.0 | VÉRIFIÉE
+prop4        |     0.046 |        1332 |        4980 |     108.1 | VÉRIFIÉE
+prop5        |     0.052 |        2324 |        9450 |     115.3 | VÉRIFIÉE
+prop6        |     0.049 |        1882 |        7134 |     112.0 | VÉRIFIÉE
+prop7        |     0.041 |          26 |          59 |     104.6 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_complet/contre_exemples/ce_prop7.gcf)
+prop8        |     0.048 |        1830 |        8212 |     111.6 | VÉRIFIÉE
+prop9        |     0.048 |        1830 |        8212 |     111.6 | VÉRIFIÉE
+prop10       |     0.046 |        1830 |        8212 |     111.8 | VÉRIFIÉE
+prop11       |     0.036 |          21 |          51 |      95.6 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_complet/contre_exemples/ce_prop11.gcf)
+prop12       |     0.038 |          21 |          43 |      95.7 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_complet/contre_exemples/ce_prop12.gcf)
+prop13       |     0.044 |        1000 |        3222 |     105.5 | VÉRIFIÉE
+prop14       |     0.034 |           9 |          13 |      95.3 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_complet/contre_exemples/ce_prop14.gcf)
+prop15       |     0.037 |          27 |          76 |      98.7 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_complet/contre_exemples/ce_prop15.gcf)
+prop16       |     0.036 |          10 |          16 |      97.4 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_complet/contre_exemples/ce_prop16.gcf)
+prop17       |     0.035 |           9 |          29 |      95.6 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_complet/contre_exemples/ce_prop17.gcf)
+prop18       |     0.034 |           9 |          13 |      95.4 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_complet/contre_exemples/ce_prop18.gcf)
+prop19       |     0.034 |          10 |          23 |      97.5 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_complet/contre_exemples/ce_prop19.gcf)
+prop20       |     0.036 |          13 |          22 |      97.5 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_complet/contre_exemples/ce_prop20.gcf)
+
+Bilan : 10 vérifiée(s), 10 non vérifiée(s), 0 erreur(s).
+Temps total : 1.316 s

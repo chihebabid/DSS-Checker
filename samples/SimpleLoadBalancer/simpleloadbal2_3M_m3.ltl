@@ -1,0 +1,20 @@
+!lb_idle_receive_notification_2 W lb_route_to_1_1
+!lb_balancing_receive_notification_2 W lb_balance_to_1_5
+!lb_balance_to_1_5 W lb_receive_client_1
+[](lb_idle_receive_notification_2 -> (lb_idle_receive_notification_2 U (!lb_idle_receive_notification_2 W lb_route_to_1_1)))
+[](lb_route_to_1_1 -> (lb_route_to_1_1 U (!lb_route_to_1_1 W lb_idle_receive_notification_2)))
+[](lb_balance_to_1_5 -> (lb_balance_to_1_5 U (!lb_balance_to_1_5 W lb_balancing_receive_notification_2)))
+[](lb_receive_client_2 -> (lb_receive_client_2 U (!lb_idle_receive_notification_2 W lb_route_to_2_4)))
+[]<>lb_idle_receive_notification_2 -> []<>lb_route_to_1_1
+[]<>lb_balancing_receive_notification_2 -> []<>lb_receive_client_1
+<>[]!lb_route_to_1_1 -> <>[]!lb_idle_receive_notification_2
+[](lb_route_to_1_1 -> <>lb_idle_receive_notification_2)
+[](lb_balance_to_1_5 -> <>lb_balancing_receive_notification_2)
+[](lb_receive_client_1 -> <>(lb_balance_to_1_5 || lb_no_balance_1))
+<>lb_route_to_1_1
+[]!lb_route_to_1_1
+[]<>lb_route_to_1_1
+!lb_route_to_1_1 U lb_idle_receive_notification_2
+!lb_idle_receive_notification_2 U lb_route_to_1_1
+!lb_receive_client_2 W lb_route_to_1_1
+[](lb_receive_client_2 -> <>lb_route_to_2_4)

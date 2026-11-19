@@ -1,0 +1,31 @@
+Modèle : SimpleLoadBal2.pnml | Propriétés : simpleloadbal2_3M_m3_props | Mode : complet | 2026-11-18 23:26:35
+
+Construction complète : 832 états, 2650 arcs, 0.178 s, 335.2 Mo
+
+(États / arcs ci-dessous : partie du produit explorée pendant la vérification)
+
+Propriété    | Temps (s) |      États |        Arcs | Mém. (Mo) | Résultat
+-------------+-----------+-------------+-------------+-----------+------------------------------
+prop1        |     0.041 |          15 |          35 |      98.5 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop1.gcf)
+prop2        |     0.041 |         103 |         285 |     105.6 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop2.gcf)
+prop3        |     0.040 |         296 |         912 |     100.4 | VÉRIFIÉE
+prop4        |     0.042 |          24 |          63 |     104.6 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop4.gcf)
+prop5        |     0.043 |         171 |         501 |     106.7 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop5.gcf)
+prop6        |     0.053 |        1433 |        4519 |     116.0 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop6.gcf)
+prop7        |     0.041 |          15 |          38 |     104.6 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop7.gcf)
+prop8        |     0.038 |          10 |          26 |      93.2 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop8.gcf)
+prop9        |     0.041 |          76 |         172 |     104.9 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop9.gcf)
+prop10       |     0.036 |          10 |          26 |      93.5 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop10.gcf)
+prop11       |     0.041 |          32 |          81 |     104.9 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop11.gcf)
+prop12       |     0.049 |         684 |        2166 |     110.7 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop12.gcf)
+prop13       |     0.040 |          57 |         134 |     105.0 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop13.gcf)
+prop14       |     0.038 |           9 |          21 |      95.4 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop14.gcf)
+prop15       |     0.039 |          27 |          68 |      98.8 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop15.gcf)
+prop16       |     0.037 |          10 |          25 |      97.4 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop16.gcf)
+prop17       |     0.044 |          17 |          44 |     104.5 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop17.gcf)
+prop18       |     0.038 |          15 |          35 |      98.5 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop18.gcf)
+prop19       |     0.038 |          11 |          26 |      97.5 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop19.gcf)
+prop20       |     0.038 |          11 |          26 |      97.6 | NON VÉRIFIÉE (contre-exemple : resultats/SimpleLoadBal2_simpleloadbal2_3M_m3_props_complet/contre_exemples/ce_prop20.gcf)
+
+Bilan : 1 vérifiée(s), 19 non vérifiée(s), 0 erreur(s).
+Temps total : 1.313 s

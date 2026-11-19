@@ -1,0 +1,41 @@
+cas,propriete,module,formule,dss_temps_s,dss_verdict,ltsmin_temps_s,ltsmin_verdict,ltsmin_etats,ltsmin_arcs,ltsmin_mem_mo,dss_construction_s,ltsmin_construction_s
+A4-m3 (LTSmin onthefly),1,2,!End_Own_Acc_1_1 W Begin_Own_Acc_1,0.03042,verifiee,10.373,verifiee,3763125,37665000,2844.7,260.192,
+A4-m3 (LTSmin onthefly),2,2,!End_Ext_Acc_1_2 W Begin_Ext_Acc_1_2,0.089566,verifiee,30.015,verifiee,10378125,114682500,2977.9,260.192,
+A4-m3 (LTSmin onthefly),3,2,!Begin_Ext_Acc_1_2 W Req_Ext_Acc_1,0.023488,verifiee,8.409,verifiee,2953125,31320000,2821.5,260.192,
+A4-m3 (LTSmin onthefly),4,2,[](End_Own_Acc_1_1 -> (End_Own_Acc_1_1 U (!End_Own_Acc_1_...,0.344128,violee,24.57,violee,3039303,30616990,2853.8,260.192,
+A4-m3 (LTSmin onthefly),5,2,[](Begin_Own_Acc_1 -> (Begin_Own_Acc_1 U (!Begin_Own_Acc_...,0.394216,violee,0.037,violee,24,238,81.9,260.192,
+A4-m3 (LTSmin onthefly),6,2,[](Begin_Ext_Acc_1_2 -> (Begin_Ext_Acc_1_2 U (!Begin_Ext_...,0.102281,verifiee,37.149,verifiee,12403125,143943750,2986.3,260.192,
+A4-m3 (LTSmin onthefly),7,2,[](Begin_Ext_Acc_2_1 -> (Begin_Ext_Acc_2_1 U (!End_Own_Ac...,0.097166,verifiee,38.205,verifiee,12403126,143943760,2986.4,260.192,
+A4-m3 (LTSmin onthefly),8,2,[]<>End_Own_Acc_1_1 -> []<>Begin_Own_Acc_1,0.182777,verifiee,51.732,verifiee,16777175,187407427,2844.5,260.192,
+A4-m3 (LTSmin onthefly),9,2,[]<>End_Ext_Acc_1_2 -> []<>Req_Ext_Acc_1,0.163653,verifiee,47.379,verifiee,16777191,234674469,2863.2,260.192,
+A4-m3 (LTSmin onthefly),10,2,<>[]!Begin_Own_Acc_1 -> <>[]!End_Own_Acc_1_1,0.183082,verifiee,52.244,verifiee,16777175,187407427,2844.3,260.192,
+A4-m3 (LTSmin onthefly),11,2,[](Begin_Own_Acc_1 -> <>End_Own_Acc_1_1),0.069126,violee,0.031,violee,19,184,81.6,260.192,
+A4-m3 (LTSmin onthefly),12,2,[](Begin_Ext_Acc_1_2 -> <>End_Ext_Acc_1_2),0.060282,violee,3.573,violee,107277,1502963,1938.6,260.192,
+A4-m3 (LTSmin onthefly),13,2,[](Req_Ext_Acc_1 -> <>(Begin_Ext_Acc_1_2 || Begin_Ext_Acc...,0.064855,violee,0.113,violee,5042,67833,264.5,260.192,
+A4-m3 (LTSmin onthefly),14,2,<>Begin_Own_Acc_1,0.020151,violee,0.022,violee,2,9,54.2,260.192,
+A4-m3 (LTSmin onthefly),15,2,[]!Begin_Own_Acc_1,0.139859,violee,0.03,violee,19,185,81.7,260.192,
+A4-m3 (LTSmin onthefly),16,2,[]<>Begin_Own_Acc_1,0.015166,violee,0.022,violee,3,29,56.6,260.192,
+A4-m3 (LTSmin onthefly),17,2,!Begin_Own_Acc_1 U End_Own_Acc_1_1,0.13344,violee,0.021,violee,2,11,54.3,260.192,
+A4-m3 (LTSmin onthefly),18,2,!End_Own_Acc_1_1 U Begin_Own_Acc_1,0.024591,violee,0.022,violee,2,9,54.2,260.192,
+A4-m3 (LTSmin onthefly),19,2,!Begin_Ext_Acc_2_1 W Begin_Own_Acc_1,0.056292,violee,0.152,violee,7947,97169,334.5,260.192,
+A4-m3 (LTSmin onthefly),20,2,[](Begin_Ext_Acc_2_1 -> <>End_Ext_Acc_2_1),0.042687,violee,3.505,violee,107277,1504375,1941.1,260.192,
+A4-m3 (LTSmin complet),1,2,!End_Own_Acc_1_1 W Begin_Own_Acc_1,0.03042,verifiee,18.639,verifiee,3763125,37665000,2883.9,260.192,0.367
+A4-m3 (LTSmin complet),2,2,!End_Ext_Acc_1_2 W Begin_Ext_Acc_1_2,0.089566,verifiee,56.444,verifiee,10378125,114682500,3016.6,260.192,0.367
+A4-m3 (LTSmin complet),3,2,!Begin_Ext_Acc_1_2 W Req_Ext_Acc_1,0.023488,verifiee,16.075,verifiee,2953125,31320000,2860.6,260.192,0.367
+A4-m3 (LTSmin complet),4,2,[](End_Own_Acc_1_1 -> (End_Own_Acc_1_1 U (!End_Own_Acc_1_...,0.344128,violee,45.082,violee,3039303,30616990,2892.4,260.192,0.367
+A4-m3 (LTSmin complet),5,2,[](Begin_Own_Acc_1 -> (Begin_Own_Acc_1 U (!Begin_Own_Acc_...,0.394216,violee,0.046,violee,24,238,119.0,260.192,0.367
+A4-m3 (LTSmin complet),6,2,[](Begin_Ext_Acc_1_2 -> (Begin_Ext_Acc_1_2 U (!Begin_Ext_...,0.102281,verifiee,69.594,verifiee,12403125,143943750,3025.4,260.192,0.367
+A4-m3 (LTSmin complet),7,2,[](Begin_Ext_Acc_2_1 -> (Begin_Ext_Acc_2_1 U (!End_Own_Ac...,0.097166,verifiee,210.818,verifiee,12403126,143943760,3024.1,260.192,0.367
+A4-m3 (LTSmin complet),8,2,[]<>End_Own_Acc_1_1 -> []<>Begin_Own_Acc_1,0.182777,verifiee,103.46,verifiee,16777175,187407427,2883.1,260.192,0.367
+A4-m3 (LTSmin complet),9,2,[]<>End_Ext_Acc_1_2 -> []<>Req_Ext_Acc_1,0.163653,verifiee,98.762,verifiee,16777191,234674469,2902.2,260.192,0.367
+A4-m3 (LTSmin complet),10,2,<>[]!Begin_Own_Acc_1 -> <>[]!End_Own_Acc_1_1,0.183082,verifiee,100.93,verifiee,16777175,187407427,2883.8,260.192,0.367
+A4-m3 (LTSmin complet),11,2,[](Begin_Own_Acc_1 -> <>End_Own_Acc_1_1),0.069126,violee,0.051,violee,19,184,118.8,260.192,0.367
+A4-m3 (LTSmin complet),12,2,[](Begin_Ext_Acc_1_2 -> <>End_Ext_Acc_1_2),0.060282,violee,4.091,violee,107277,1502963,1975.9,260.192,0.367
+A4-m3 (LTSmin complet),13,2,[](Req_Ext_Acc_1 -> <>(Begin_Ext_Acc_1_2 || Begin_Ext_Acc...,0.064855,violee,0.148,violee,5042,67833,301.8,260.192,0.367
+A4-m3 (LTSmin complet),14,2,<>Begin_Own_Acc_1,0.020151,violee,0.04,violee,2,9,92.0,260.192,0.367
+A4-m3 (LTSmin complet),15,2,[]!Begin_Own_Acc_1,0.139859,violee,0.049,violee,19,185,118.8,260.192,0.367
+A4-m3 (LTSmin complet),16,2,[]<>Begin_Own_Acc_1,0.015166,violee,0.039,violee,3,29,94.2,260.192,0.367
+A4-m3 (LTSmin complet),17,2,!Begin_Own_Acc_1 U End_Own_Acc_1_1,0.13344,violee,0.037,violee,2,11,92.1,260.192,0.367
+A4-m3 (LTSmin complet),18,2,!End_Own_Acc_1_1 U Begin_Own_Acc_1,0.024591,violee,0.037,violee,2,9,92.0,260.192,0.367
+A4-m3 (LTSmin complet),19,2,!Begin_Ext_Acc_2_1 W Begin_Own_Acc_1,0.056292,violee,0.249,violee,7947,97169,373.2,260.192,0.367
+A4-m3 (LTSmin complet),20,2,[](Begin_Ext_Acc_2_1 -> <>End_Ext_Acc_2_1),0.042687,violee,4.215,violee,107277,1504375,1978.3,260.192,0.367

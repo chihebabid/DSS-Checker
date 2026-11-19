@@ -1,0 +1,1 @@
+[]<>(action == "lb_idle_receive_notification_2") -> []<>(action == "lb_route_to_1_1")

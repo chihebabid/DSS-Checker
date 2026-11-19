@@ -6,7 +6,7 @@
 #include "Petri/Transition.h"
 #include "SpotMC/DSSKripke.h"
 DSSIterator::DSSIterator(const DSSStateKey &state, const DSSKripke *kripke)
-        : m_kripke(kripke), m_succ(kripke->getSuccessors(state)) {
+        : m_kripke(kripke), m_succ(kripke->getSuccessors(state)), m_state_label(kripke->stateLabel(state.marking)) {
 }
 
 
@@ -29,5 +29,5 @@ DSSState *DSSIterator::dst() const {
 }
 
 bdd DSSIterator::cond() const {
-    return m_kripke->edgeCondition(m_succ[m_current_edge].second);
+    return m_state_label & m_kripke->edgeCondition(m_succ[m_current_edge].second);
 }

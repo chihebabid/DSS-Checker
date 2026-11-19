@@ -1,0 +1,27 @@
+Modèle : SimpleLoadBal2.pnml | Propriétés : simpleloadbal2_3M_m1_props | Mode : onthefly | 2026-11-18 23:18:46
+
+Propriété    | Temps (s) |      États |        Arcs | Mém. (Mo) | Résultat
+-------------+-----------+-------------+-------------+-----------+------------------------------
+prop1        |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop1.log)
+prop2        |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop2.log)
+prop3        |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop3.log)
+prop4        |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop4.log)
+prop5        |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop5.log)
+prop6        |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop6.log)
+prop7        |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop7.log)
+prop8        |     0.003 |           ? |           ? |       6.2 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop8.log)
+prop9        |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop9.log)
+prop10       |     0.003 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop10.log)
+prop11       |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop11.log)
+prop12       |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop12.log)
+prop13       |     0.004 |           ? |           ? |       6.2 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop13.log)
+prop14       |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop14.log)
+prop15       |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop15.log)
+prop16       |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop16.log)
+prop17       |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop17.log)
+prop18       |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop18.log)
+prop19       |     0.004 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop19.log)
+prop20       |     0.003 |           ? |           ? |       6.1 | ERREUR (voir resultats/SimpleLoadBal2_simpleloadbal2_3M_m1_props_onthefly/logs/prop20.log)
+
+Bilan : 0 vérifiée(s), 0 non vérifiée(s), 20 erreur(s).
+Temps total : 0.443 s

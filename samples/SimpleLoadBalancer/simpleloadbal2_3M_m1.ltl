@@ -1,0 +1,20 @@
+!client_receive_1 W client_send_1
+!client_receive_1 W lb_receive_client_1
+!lb_receive_client_1 W client_send_1
+[](client_receive_1 -> (client_receive_1 U (!client_receive_1 W client_send_1)))
+[](client_send_1 -> (client_send_1 U (!client_send_1 W client_receive_1)))
+[](lb_receive_client_1 -> (lb_receive_client_1 U (!lb_receive_client_1 W client_receive_1)))
+[](client_send_2 -> (client_send_2 U (!client_receive_1 W client_receive_2)))
+[]<>client_receive_1 -> []<>client_send_1
+[]<>client_receive_1 -> []<>client_send_1
+<>[]!client_send_1 -> <>[]!client_receive_1
+[](client_send_1 -> <>client_receive_1)
+[](lb_receive_client_1 -> <>client_receive_1)
+[](client_send_1 -> <>(lb_receive_client_1 || client_send_2))
+<>client_send_1
+[]!client_send_1
+[]<>client_send_1
+!client_send_1 U client_receive_1
+!client_receive_1 U client_send_1
+!client_send_2 W client_send_1
+[](client_send_2 -> <>client_receive_2)

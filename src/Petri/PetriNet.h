@@ -84,6 +84,9 @@ public:
     void printMetaStateEx(MetaState *ms);
 
     bool areTransitionsIncluded(const std::set<string> &list_transitions);
+
+    // Index of the place named name in the markings of this module, -1 if the module has no such place
+    [[nodiscard]] int getPlaceIndex(const string &name) const;
 private:
     int m_number;
 

@@ -1,0 +1,1 @@
+[]((action == "client_send_2") -> <>(action == "client_receive_2"))

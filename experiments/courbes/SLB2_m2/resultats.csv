@@ -1,0 +1,41 @@
+cas,propriete,module,formule,dss_temps_s,dss_verdict,ltsmin_temps_s,ltsmin_verdict,ltsmin_etats,ltsmin_arcs,ltsmin_mem_mo,dss_construction_s,ltsmin_construction_s
+SLB2-m2 (LTSmin onthefly),1,1,!server_endloop_1 W server_notify_1,0.000159,verifiee,0.028,verifiee,206,499,72.2,0.005,
+SLB2-m2 (LTSmin onthefly),2,1,!server_endloop_2 W server_notify_2,0.000128,verifiee,0.03,verifiee,356,893,73.6,0.005,
+SLB2-m2 (LTSmin onthefly),3,1,!server_notify_2 W server_process_3,0.000207,violee,0.034,violee,111,255,78.9,0.005,
+SLB2-m2 (LTSmin onthefly),4,1,[](server_endloop_1 -> (server_endloop_1 U (!server_endlo...,0.000714,verifiee,0.044,verifiee,1868,7207,84.8,0.005,
+SLB2-m2 (LTSmin onthefly),5,1,[](server_notify_1 -> (server_notify_1 U (!server_notify_...,0.000727,verifiee,0.039,verifiee,1864,7633,84.6,0.005,
+SLB2-m2 (LTSmin onthefly),6,1,[](server_notify_2 -> (server_notify_2 U (!server_notify_...,0.000726,verifiee,0.042,verifiee,1866,7660,84.7,0.005,
+SLB2-m2 (LTSmin onthefly),7,1,[](server_process_1 -> (server_process_1 U (!server_endlo...,0.000646,verifiee,0.034,verifiee,1239,4244,80.1,0.005,
+SLB2-m2 (LTSmin onthefly),8,1,[]<>server_endloop_1 -> []<>server_notify_1,0.000781,verifiee,0.045,verifiee,1874,8327,84.7,0.005,
+SLB2-m2 (LTSmin onthefly),9,1,[]<>server_endloop_2 -> []<>server_process_3,0.000903,violee,0.035,violee,68,149,78.4,0.005,
+SLB2-m2 (LTSmin onthefly),10,1,<>[]!server_notify_1 -> <>[]!server_endloop_1,0.000739,verifiee,0.037,verifiee,1874,8327,84.6,0.005,
+SLB2-m2 (LTSmin onthefly),11,1,[](server_notify_1 -> <>server_endloop_1),0.000647,violee,0.03,violee,20,39,72.0,0.005,
+SLB2-m2 (LTSmin onthefly),12,1,[](server_notify_2 -> <>server_endloop_2),0.00055,violee,0.032,violee,49,124,78.2,0.005,
+SLB2-m2 (LTSmin onthefly),13,1,[](server_process_3 -> <>(server_notify_2 || lb_idle_rece...,0.000104,violee,0.034,violee,46,116,78.2,0.005,
+SLB2-m2 (LTSmin onthefly),14,1,<>server_notify_1,3.5e-05,violee,0.032,violee,13,28,76.4,0.005,
+SLB2-m2 (LTSmin onthefly),15,1,[]!server_notify_1,3.4e-05,violee,0.039,violee,14,32,71.9,0.005,
+SLB2-m2 (LTSmin onthefly),16,1,[]<>server_notify_1,7.5e-05,violee,0.03,violee,13,30,70.4,0.005,
+SLB2-m2 (LTSmin onthefly),17,1,!server_notify_1 U server_endloop_1,4.2e-05,violee,0.031,violee,14,32,71.9,0.005,
+SLB2-m2 (LTSmin onthefly),18,1,!server_endloop_1 U server_notify_1,4.2e-05,violee,0.034,violee,13,28,76.4,0.005,
+SLB2-m2 (LTSmin onthefly),19,1,!server_process_1 W server_notify_1,3.8e-05,violee,0.033,violee,91,207,79.4,0.005,
+SLB2-m2 (LTSmin onthefly),20,1,[](server_process_1 -> <>server_notify_1),0.000179,violee,0.031,violee,23,55,74.1,0.005,
+SLB2-m2 (LTSmin complet),1,1,!server_endloop_1 W server_notify_1,0.000159,verifiee,0.045,verifiee,206,499,99.4,0.005,0.21
+SLB2-m2 (LTSmin complet),2,1,!server_endloop_2 W server_notify_2,0.000128,verifiee,0.05,verifiee,356,893,100.6,0.005,0.21
+SLB2-m2 (LTSmin complet),3,1,!server_notify_2 W server_process_3,0.000207,violee,0.048,violee,111,255,105.4,0.005,0.21
+SLB2-m2 (LTSmin complet),4,1,[](server_endloop_1 -> (server_endloop_1 U (!server_endlo...,0.000714,verifiee,0.056,verifiee,1868,7207,111.9,0.005,0.21
+SLB2-m2 (LTSmin complet),5,1,[](server_notify_1 -> (server_notify_1 U (!server_notify_...,0.000727,verifiee,0.054,verifiee,1864,7633,111.8,0.005,0.21
+SLB2-m2 (LTSmin complet),6,1,[](server_notify_2 -> (server_notify_2 U (!server_notify_...,0.000726,verifiee,0.053,verifiee,1866,7660,111.8,0.005,0.21
+SLB2-m2 (LTSmin complet),7,1,[](server_process_1 -> (server_process_1 U (!server_endlo...,0.000646,verifiee,0.051,verifiee,1239,4244,107.3,0.005,0.21
+SLB2-m2 (LTSmin complet),8,1,[]<>server_endloop_1 -> []<>server_notify_1,0.000781,verifiee,0.053,verifiee,1874,8327,111.7,0.005,0.21
+SLB2-m2 (LTSmin complet),9,1,[]<>server_endloop_2 -> []<>server_process_3,0.000903,violee,0.046,violee,68,149,105.1,0.005,0.21
+SLB2-m2 (LTSmin complet),10,1,<>[]!server_notify_1 -> <>[]!server_endloop_1,0.000739,verifiee,0.055,verifiee,1874,8327,111.8,0.005,0.21
+SLB2-m2 (LTSmin complet),11,1,[](server_notify_1 -> <>server_endloop_1),0.000647,violee,0.042,violee,20,39,98.5,0.005,0.21
+SLB2-m2 (LTSmin complet),12,1,[](server_notify_2 -> <>server_endloop_2),0.00055,violee,0.043,violee,49,124,104.9,0.005,0.21
+SLB2-m2 (LTSmin complet),13,1,[](server_process_3 -> <>(server_notify_2 || lb_idle_rece...,0.000104,violee,0.042,violee,46,116,104.9,0.005,0.21
+SLB2-m2 (LTSmin complet),14,1,<>server_notify_1,3.5e-05,violee,0.046,violee,13,28,102.4,0.005,0.21
+SLB2-m2 (LTSmin complet),15,1,[]!server_notify_1,3.4e-05,violee,0.042,violee,14,32,98.5,0.005,0.21
+SLB2-m2 (LTSmin complet),16,1,[]<>server_notify_1,7.5e-05,violee,0.041,violee,13,30,96.4,0.005,0.21
+SLB2-m2 (LTSmin complet),17,1,!server_notify_1 U server_endloop_1,4.2e-05,violee,0.045,violee,14,32,98.5,0.005,0.21
+SLB2-m2 (LTSmin complet),18,1,!server_endloop_1 U server_notify_1,4.2e-05,violee,0.043,violee,13,28,102.4,0.005,0.21
+SLB2-m2 (LTSmin complet),19,1,!server_process_1 W server_notify_1,3.8e-05,violee,0.047,violee,91,207,106.1,0.005,0.21
+SLB2-m2 (LTSmin complet),20,1,[](server_process_1 -> <>server_notify_1),0.000179,violee,0.042,violee,23,55,100.7,0.005,0.21

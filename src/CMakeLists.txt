@@ -78,6 +78,8 @@ add_executable(distributedstatespace
         SpotMC/DSSState.h
         SpotMC/ParseFormulaFile.cpp
         SpotMC/ParseFormulaFile.h
+        SpotMC/Propositions.cpp
+        SpotMC/Propositions.h
 
 )
 

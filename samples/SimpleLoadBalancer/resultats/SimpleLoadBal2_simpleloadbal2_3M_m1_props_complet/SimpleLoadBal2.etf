@@ -1,0 +1,327 @@
+begin state
+client_idle_1:place client_idle_2:place client_waiting_1:place client_waiting_2:place client_request_1:place client_request_2:place client_ack_1:place client_ack_2:place server_idle_1:place server_idle_2:place server_waiting_1:place server_waiting_2:place server_processed_1:place server_processed_2:place server_notification_1:place server_notification_2:place server_notification_ack_1:place server_notification_ack_2:place server_request_1_1:place server_request_1_2:place server_request_2_1:place server_request_2_2:place lb_idle_1:place lb_routing_1_1:place lb_routing_1_2:place lb_balancing_1:place lb_load_1_0:place lb_load_1_1:place lb_load_1_2:place lb_load_2_0:place lb_load_2_1:place lb_load_2_2:place
+end state
+begin edge
+action:action
+end edge
+begin init
+1 1 0 0 0 0 0 0 1 1 0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 1 0 0 1 0 0
+end init
+begin trans
+ 1/0 * 0/1 * 0/1 * * * * * * * * * * * * * * * * * * * * * * * * * * * 0
+end trans
+begin trans
+ * 1/0 * 0/1 * 0/1 * * * * * * * * * * * * * * * * * * * * * * * * * * 1
+end trans
+begin trans
+ 0/1 * 1/0 * * * 1/0 * * * * * * * * * * * * * * * * * * * * * * * * * 2
+end trans
+begin trans
+ * 0/1 * 1/0 * * * 1/0 * * * * * * * * * * * * * * * * * * * * * * * * 3
+end trans
+begin trans
+ * * * * * * 0/1 * 1/0 * * * 0/1 * * * * * 1/0 * * * * * * * * * * * * * 4
+end trans
+begin trans
+ * * * * * * * 0/1 1/0 * * * 0/1 * * * * * * * 1/0 * * * * * * * * * * * 5
+end trans
+begin trans
+ * * * * * * 0/1 * * 1/0 * * * 0/1 * * * * * 1/0 * * * * * * * * * * * * 6
+end trans
+begin trans
+ * * * * * * * 0/1 * 1/0 * * * 0/1 * * * * * * * 1/0 * * * * * * * * * * 7
+end trans
+begin trans
+ * * * * * * * * * * 0/1 * 1/0 * 0/1 * * * * * * * * * * * * * * * * * 8
+end trans
+begin trans
+ * * * * * * * * * * * 0/1 * 1/0 * 0/1 * * * * * * * * * * * * * * * * 9
+end trans
+begin trans
+ * * * * * * * * 0/1 * 1/0 * * * * * 1/0 * * * * * * * * * * * * * * * 10
+end trans
+begin trans
+ * * * * * * * * * 0/1 * 1/0 * * * * * 1/0 * * * * * * * * * * * * * * 11
+end trans
+begin trans
+ * * * * 1/0 * * * * * * * * * * * * * * * * * 1/0 0/1 * * * * * * * * 12
+end trans
+begin trans
+ * * * * * 1/0 * * * * * * * * * * * * * * * * 1/0 * 0/1 * * * * * * * 13
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * 0/1 * * * 0/1 1/0 * * 1/0 0/1 * 1/1 * * 14
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * 0/1 * * * 0/1 1/0 * * 1/0 0/1 * * 1/1 * 15
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * 0/1 * * * 0/1 1/0 * * * 1/0 0/1 * 1/1 * 16
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * 0/1 * * * 0/1 1/0 * * * 1/0 0/1 * * 1/1 17
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * 0/1 * 0/1 * 1/0 * 1/0 0/1 * 1/1 * * 18
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * 0/1 * 0/1 * 1/0 * 1/0 0/1 * * 1/1 * 19
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * 0/1 * 0/1 * 1/0 * * 1/0 0/1 * 1/1 * 20
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * 0/1 * 0/1 * 1/0 * * 1/0 0/1 * * 1/1 21
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * 0/1 * * 0/1 1/0 * * * 1/1 * 1/0 0/1 * 22
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * 0/1 * * 0/1 1/0 * * * * 1/1 * 1/0 0/1 23
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * * 0/1 0/1 * 1/0 * * 1/1 * 1/0 0/1 * 24
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * * 0/1 0/1 * 1/0 * * * 1/1 * 1/0 0/1 25
+end trans
+begin trans
+ * * * * * * * * * * * * * * 1/0 * 0/1 * * * * * 1/0 * * 0/1 0/1 1/0 * * * * 26
+end trans
+begin trans
+ * * * * * * * * * * * * * * 1/0 * 0/1 * * * * * 1/0 * * 0/1 * 0/1 1/0 * * * 27
+end trans
+begin trans
+ * * * * * * * * * * * * * * * 1/0 * 0/1 * * * * 1/0 * * 0/1 * * * 0/1 1/0 * 28
+end trans
+begin trans
+ * * * * * * * * * * * * * * * 1/0 * 0/1 * * * * 1/0 * * 0/1 * * * * 0/1 1/0 29
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * * * 0/1 * * 1/0 1/1 * * 1/1 * * 30
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * * * 0/1 * * 1/0 1/1 * * * 1/1 * 31
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * * * 0/1 * * 1/0 * 1/1 * 1/1 * * 32
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * * * 0/1 * * 1/0 * 1/1 * * 1/1 * 33
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * * * 0/1 * * 1/0 * 1/1 * * * 1/1 34
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * * * 0/1 * * 1/0 * * 1/1 * 1/1 * 35
+end trans
+begin trans
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * 0/1 1/0 * * 0/1 * * 1/0 1/0 0/1 * * 0/1 1/0 37
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * 0/1 1/0 0/1 * * 1/0 1/0 0/1 * * 0/1 1/0 38
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * 1/0 0/1 * * 0/1 * * 1/0 * 0/1 1/0 1/0 0/1 * 39
+end trans
+begin trans
+ * * * * * * * * * * * * * * * * * * * * 1/0 0/1 0/1 * * 1/0 * 0/1 1/0 1/0 0/1 * 40
+end trans
+begin trans
+ * * * * * * * * * * * * * * 1/0 * 0/1 * * * * * * * * 1/1 0/1 1/0 * * * * 41
+end trans
+begin trans
+ * * * * * * * * * * * * * * 1/0 * 0/1 * * * * * * * * 1/1 * 0/1 1/0 * * * 42
+end trans
+begin trans
+ * * * * * * * * * * * * * * * 1/0 * 0/1 * * * * * * * 1/1 * * * 0/1 1/0 * 43
+end trans
+begin trans
+ * * * * * * * * * * * * * * * 1/0 * 0/1 * * * * * * * 1/1 * * * * 0/1 1/0 44
+end trans
+begin map guard_client_idle_1_ge_1:guard
+0 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 0
+1 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_client_idle_2_ge_1:guard
+* 0 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 0
+* 1 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_client_waiting_1_ge_1:guard
+* * 0 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 0
+* * 1 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_client_ack_1_ge_1:guard
+* * * * * * 0 * * * * * * * * * * * * * * * * * * * * * * * * * 0
+* * * * * * 1 * * * * * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_client_waiting_2_ge_1:guard
+* * * 0 * * * * * * * * * * * * * * * * * * * * * * * * * * * * 0
+* * * 1 * * * * * * * * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_client_ack_2_ge_1:guard
+* * * * * * * 0 * * * * * * * * * * * * * * * * * * * * * * * * 0
+* * * * * * * 1 * * * * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_server_idle_1_ge_1:guard
+* * * * * * * * 0 * * * * * * * * * * * * * * * * * * * * * * * 0
+* * * * * * * * 1 * * * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_server_request_1_1_ge_1:guard
+* * * * * * * * * * * * * * * * * * 0 * * * * * * * * * * * * * 0
+* * * * * * * * * * * * * * * * * * 1 * * * * * * * * * * * * * 1
+end map
+begin map guard_server_request_2_1_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * 0 * * * * * * * * * * * 0
+* * * * * * * * * * * * * * * * * * * * 1 * * * * * * * * * * * 1
+end map
+begin map guard_server_idle_2_ge_1:guard
+* * * * * * * * * 0 * * * * * * * * * * * * * * * * * * * * * * 0
+* * * * * * * * * 1 * * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_server_request_1_2_ge_1:guard
+* * * * * * * * * * * * * * * * * * * 0 * * * * * * * * * * * * 0
+* * * * * * * * * * * * * * * * * * * 1 * * * * * * * * * * * * 1
+end map
+begin map guard_server_request_2_2_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * 0 * * * * * * * * * * 0
+* * * * * * * * * * * * * * * * * * * * * 1 * * * * * * * * * * 1
+end map
+begin map guard_server_processed_1_ge_1:guard
+* * * * * * * * * * * * 0 * * * * * * * * * * * * * * * * * * * 0
+* * * * * * * * * * * * 1 * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_server_processed_2_ge_1:guard
+* * * * * * * * * * * * * 0 * * * * * * * * * * * * * * * * * * 0
+* * * * * * * * * * * * * 1 * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_server_waiting_1_ge_1:guard
+* * * * * * * * * * 0 * * * * * * * * * * * * * * * * * * * * * 0
+* * * * * * * * * * 1 * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_server_notification_ack_1_ge_1:guard
+* * * * * * * * * * * * * * * * 0 * * * * * * * * * * * * * * * 0
+* * * * * * * * * * * * * * * * 1 * * * * * * * * * * * * * * * 1
+end map
+begin map guard_server_waiting_2_ge_1:guard
+* * * * * * * * * * * 0 * * * * * * * * * * * * * * * * * * * * 0
+* * * * * * * * * * * 1 * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_server_notification_ack_2_ge_1:guard
+* * * * * * * * * * * * * * * * * 0 * * * * * * * * * * * * * * 0
+* * * * * * * * * * * * * * * * * 1 * * * * * * * * * * * * * * 1
+end map
+begin map guard_client_request_1_ge_1:guard
+* * * * 0 * * * * * * * * * * * * * * * * * * * * * * * * * * * 0
+* * * * 1 * * * * * * * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_lb_idle_1_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * * 0 * * * * * * * * * 0
+* * * * * * * * * * * * * * * * * * * * * * 1 * * * * * * * * * 1
+end map
+begin map guard_client_request_2_ge_1:guard
+* * * * * 0 * * * * * * * * * * * * * * * * * * * * * * * * * * 0
+* * * * * 1 * * * * * * * * * * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_lb_routing_1_1_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * * * 0 * * * * * * * * 0
+* * * * * * * * * * * * * * * * * * * * * * * 1 * * * * * * * * 1
+end map
+begin map guard_lb_load_1_0_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * * * * * * 0 * * * * * 0
+* * * * * * * * * * * * * * * * * * * * * * * * * * 1 * * * * * 1
+end map
+begin map guard_lb_load_2_0_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * 0 * * 0
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * 1 * * 1
+end map
+begin map guard_lb_load_2_1_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 0 * 0
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 1 * 1
+end map
+begin map guard_lb_load_1_1_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * * * * * * * 0 * * * * 0
+* * * * * * * * * * * * * * * * * * * * * * * * * * * 1 * * * * 1
+end map
+begin map guard_lb_load_2_2_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 0 0
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 1 1
+end map
+begin map guard_lb_routing_1_2_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * * * * 0 * * * * * * * 0
+* * * * * * * * * * * * * * * * * * * * * * * * 1 * * * * * * * 1
+end map
+begin map guard_lb_load_1_2_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * 0 * * * 0
+* * * * * * * * * * * * * * * * * * * * * * * * * * * * 1 * * * 1
+end map
+begin map guard_server_notification_1_ge_1:guard
+* * * * * * * * * * * * * * 0 * * * * * * * * * * * * * * * * * 0
+* * * * * * * * * * * * * * 1 * * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_server_notification_2_ge_1:guard
+* * * * * * * * * * * * * * * 0 * * * * * * * * * * * * * * * * 0
+* * * * * * * * * * * * * * * 1 * * * * * * * * * * * * * * * * 1
+end map
+begin map guard_lb_balancing_1_ge_1:guard
+* * * * * * * * * * * * * * * * * * * * * * * * * 0 * * * * * * 0
+* * * * * * * * * * * * * * * * * * * * * * * * * 1 * * * * * * 1
+end map
+% Type 'place' not exported, because 'Signed 32-bit integer' is not converted to enum.
+% This means you can not use variables of type 'place' in atomic predicates.
+begin sort action
+"client_send_1"
+"client_send_2"
+"client_receive_1"
+"client_receive_2"
+"server_process_1"
+"server_process_2"
+"server_process_3"
+"server_process_4"
+"server_notify_1"
+"server_notify_2"
+"server_endloop_1"
+"server_endloop_2"
+"lb_receive_client_1"
+"lb_receive_client_2"
+"lb_route_to_1_1"
+"lb_route_to_1_2"
+"lb_route_to_1_5"
+"lb_route_to_1_6"
+"lb_route_to_1_10"
+"lb_route_to_1_11"
+"lb_route_to_1_14"
+"lb_route_to_1_15"
+"lb_route_to_2_4"
+"lb_route_to_2_8"
+"lb_route_to_2_13"
+"lb_route_to_2_17"
+"lb_idle_receive_notification_2"
+"lb_idle_receive_notification_3"
+"lb_idle_receive_notification_5"
+"lb_idle_receive_notification_6"
+"lb_no_balance_1"
+"lb_no_balance_2"
+"lb_no_balance_4"
+"lb_no_balance_5"
+"lb_no_balance_6"
+"lb_no_balance_8"
+"lb_no_balance_9"
+"lb_balance_to_1_5"
+"lb_balance_to_1_6"
+"lb_balance_to_2_13"
+"lb_balance_to_2_14"
+"lb_balancing_receive_notification_2"
+"lb_balancing_receive_notification_3"
+"lb_balancing_receive_notification_5"
+"lb_balancing_receive_notification_6"
+end sort
+begin sort guard
+% This enum used to be a 'Boolean'.
+% To access the values below in atomic predicates, use quotes,
+% e.g. instead of writing 'var == true', write 'var == "true"'.
+"false"
+"true"
+end sort

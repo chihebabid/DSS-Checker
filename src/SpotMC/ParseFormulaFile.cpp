@@ -6,6 +6,7 @@
 #include <spot/tl/apcollect.hh>
 #include <spot/tl/print.hh>
 #include "SpotMC/ParseFormulaFile.h"
+#include "SpotMC/Propositions.h"
 
 
 ParseFormulaFile::ParseFormulaFile(const string &fileName) {
@@ -25,7 +26,8 @@ bool ParseFormulaFile::getNext(Formula &f) {
         getline(*m_file, input);
         if (input.empty()) return false;
         cout <<"\n***** Property#"<<m_formula_count<<"\n\tChecking formula: " << input << endl;
-        spot::parsed_formula pf = spot::parse_infix_psl(input);
+        // Comparisons "place op number" (state-based propositions, LTSmin syntax) become quoted atomic propositions
+        spot::parsed_formula pf = spot::parse_infix_psl(quoteComparisons(input));
         if (pf.format_errors(std::cerr)) {
             std::cerr << "Error in the formula format!\n";
             return false;
