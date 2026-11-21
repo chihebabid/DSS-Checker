@@ -28,7 +28,29 @@ public:
     // Requires Graphviz (dot and neato). Reflexive sync arcs are drawn as loops below their metastate.
     bool renderToFile(const string &filename);
 
-    void outputTXT();
+    // Size of the DSS, per module and in total (computed on the built, possibly reduced, DSS)
+    struct Stats {
+        struct Row {
+            size_t metastates {};    // meta-states of the module
+            size_t sccs {};          // SCCs, summed over the meta-states
+            size_t sync_arcs {};     // synchronisation arcs leaving the meta-states
+            size_t local_arcs {};    // local arcs, summed over the meta-states
+            size_t states {};        // markings, summed over the meta-states (a marking shared by k counts k times)
+            size_t stored_states {}; // markings actually stored (once per distinct local graph)
+            size_t local_graphs {};  // distinct local graphs stored
+        };
+        vector<Row> modules;
+        Row total;
+        size_t built_metastates {}; // meta-states built, before the reduction merges some of them
+    };
+
+    Stats computeStats();
+
+    // Print the statistics of the DSS as a table, one row per module plus a total row
+    void printStats(std::ostream &out);
+
+    // Save the statistics of the DSS in a text file
+    void outputTXT(const string &filename);
 
     ModuleSS* getModuleGraph(const size_t index) const;
 
@@ -64,6 +86,7 @@ private:
 
     ModularPetriNet *m_petri;
     bool m_reduction;
+    size_t m_built_metastates {}; // see Stats::built_metastates
     DistributedSS m_dss;
     // Label of the arcs of the modules that do not participate in their fusion (see arcLabel()); it has no transition
     TransitionFusionSet m_tau;

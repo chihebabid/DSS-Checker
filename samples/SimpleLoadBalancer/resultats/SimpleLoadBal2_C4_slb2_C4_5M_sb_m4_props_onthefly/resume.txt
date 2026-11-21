@@ -1,0 +1,27 @@
+Model: SimpleLoadBal2_C4.pnml | Properties: slb2_C4_5M_sb_m4_props | Mode: onthefly | 2026-11-19 10:36:03
+
+Property     |  Time (s) |      States |        Arcs | Mem. (MB) | Result
+-------------+-----------+-------------+-------------+-----------+------------------------------
+prop1        |     0.308 |       80696 |      410448 |     410.0 | VERIFIED
+prop2        |     0.308 |       80696 |      410448 |     409.9 | VERIFIED
+prop3        |     0.304 |       80696 |      410448 |     410.2 | VERIFIED
+prop4        |     0.306 |       80696 |      410448 |     409.9 | VERIFIED
+prop5        |     0.301 |       80696 |      410448 |     410.0 | VERIFIED
+prop6        |     0.012 |           1 |           0 |      21.7 | VERIFIED
+prop7        |     0.308 |       80696 |      410448 |     410.0 | VERIFIED
+prop8        |     0.126 |       33054 |      101136 |     233.1 | VERIFIED
+prop9        |     0.173 |       51106 |      182420 |     301.7 | VERIFIED
+prop10       |     0.307 |       80696 |      410448 |     410.0 | VERIFIED
+prop11       |     0.034 |          80 |         307 |      79.8 | NOT VERIFIED (counterexample: resultats/SimpleLoadBal2_C4_slb2_C4_5M_sb_m4_props_onthefly/contre_exemples/ce_prop11.gcf)
+prop12       |     0.024 |           9 |          28 |      68.9 | NOT VERIFIED (counterexample: resultats/SimpleLoadBal2_C4_slb2_C4_5M_sb_m4_props_onthefly/contre_exemples/ce_prop12.gcf)
+prop13       |     0.032 |          66 |         272 |      79.3 | NOT VERIFIED (counterexample: resultats/SimpleLoadBal2_C4_slb2_C4_5M_sb_m4_props_onthefly/contre_exemples/ce_prop13.gcf)
+prop14       |     0.032 |          87 |         316 |      79.8 | NOT VERIFIED (counterexample: resultats/SimpleLoadBal2_C4_slb2_C4_5M_sb_m4_props_onthefly/contre_exemples/ce_prop14.gcf)
+prop15       |     0.033 |          80 |         307 |      79.6 | NOT VERIFIED (counterexample: resultats/SimpleLoadBal2_C4_slb2_C4_5M_sb_m4_props_onthefly/contre_exemples/ce_prop15.gcf)
+prop16       |     0.027 |           9 |          28 |      68.8 | NOT VERIFIED (counterexample: resultats/SimpleLoadBal2_C4_slb2_C4_5M_sb_m4_props_onthefly/contre_exemples/ce_prop16.gcf)
+prop17       |     0.029 |          80 |         308 |      79.7 | NOT VERIFIED (counterexample: resultats/SimpleLoadBal2_C4_slb2_C4_5M_sb_m4_props_onthefly/contre_exemples/ce_prop17.gcf)
+prop18       |     0.031 |          87 |         316 |      79.7 | NOT VERIFIED (counterexample: resultats/SimpleLoadBal2_C4_slb2_C4_5M_sb_m4_props_onthefly/contre_exemples/ce_prop18.gcf)
+prop19       |     0.034 |         155 |         631 |      81.4 | NOT VERIFIED (counterexample: resultats/SimpleLoadBal2_C4_slb2_C4_5M_sb_m4_props_onthefly/contre_exemples/ce_prop19.gcf)
+prop20       |     0.033 |          80 |         308 |      79.7 | NOT VERIFIED (counterexample: resultats/SimpleLoadBal2_C4_slb2_C4_5M_sb_m4_props_onthefly/contre_exemples/ce_prop20.gcf)
+
+Summary: 10 verified, 10 not verified, 0 error(s).
+Total time: 3.166 s

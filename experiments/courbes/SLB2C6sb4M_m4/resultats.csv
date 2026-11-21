@@ -1,0 +1,41 @@
+cas,propriete,module,formule,dss_temps_s,dss_verdict,ltsmin_temps_s,ltsmin_verdict,ltsmin_etats,ltsmin_arcs,ltsmin_mem_mo,dss_construction_s,ltsmin_construction_s,dss_metastates,dss_sccs,dss_sync_arcs,dss_local_arcs,dss_total_states,dss_stored_states,dss_local_graphs,ltsmin_full_states,ltsmin_full_arcs
+SLB2C6sb4M-m4 (LTSmin onthefly),1,3,[](lb_idle_1 <= 1),0.004204,verifiee,1.646,verifiee,384524,2160468,1215.1,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),2,3,[]((lb_load_1_0 == 1) -> ((lb_load_1_1 == 0) && (lb_load_1_2 == 0))),0.004028,verifiee,1.634,verifiee,384524,2160468,1215.1,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),3,3,[]((lb_idle_1 == 1) -> (lb_balancing_1 == 0)),0.003934,verifiee,1.612,verifiee,384524,2160468,1215.0,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),4,3,[]((lb_routing_1_1 == 1) -> (lb_idle_1 == 0)),0.003237,verifiee,1.535,verifiee,384524,2160468,1215.1,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),5,3,[](!((lb_routing_1_1 == 1) && (lb_routing_1_2 == 1))),0.003908,verifiee,1.597,verifiee,384524,2160468,1215.0,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),6,3,(lb_idle_1 == 1) && (lb_load_1_0 == 1) && (lb_load_2_0 == 1),0.001627,verifiee,0.016,verifiee,1,0,36.8,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),7,3,[]((lb_load_2_1 == 1) -> (lb_load_2_0 == 0)),0.002419,verifiee,1.671,verifiee,384524,2160468,1214.9,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),8,3,(lb_balancing_1 == 0) W ((lb_routing_1_1 == 1) || (lb_routing_1_2 == 1)),0.00132,verifiee,0.036,verifiee,133,168,71.7,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),9,3,(lb_load_1_1 == 0) W ((lb_routing_1_1 == 1) || (lb_routing_1_2 == 1)),0.001802,verifiee,0.034,verifiee,133,168,71.7,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),10,3,[](server_request_1_1 <= 2),0.002798,verifiee,1.565,verifiee,384524,2160468,1214.6,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),11,3,[](lb_idle_1 == 1),0.002601,violee,0.034,violee,12,39,74.8,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),12,3,<>(lb_balancing_1 == 1),0.004142,violee,0.033,violee,49,88,76.3,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),13,3,[](lb_routing_1_2 == 0),0.003252,violee,0.03,violee,12,39,75.0,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),14,3,[](server_request_1_1 == 0),0.08526,violee,0.032,violee,72,266,76.4,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),15,3,[]((lb_routing_1_1 == 1) -> <>(lb_idle_1 == 1)),0.002344,violee,0.153,violee,23006,79097,248.4,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),16,3,(lb_idle_1 == 1) U (lb_routing_1_1 == 1),0.001243,violee,0.032,violee,12,39,74.8,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),17,3,[]((lb_load_1_1 == 0) || (lb_load_2_1 == 0)),0.000565,violee,0.035,violee,98,378,77.0,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),18,3,[](lb_balancing_1 == 0),0.001112,violee,0.034,violee,16,55,74.9,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),19,3,<>[](lb_idle_1 == 1),0.000591,violee,0.033,violee,115,587,78.3,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin onthefly),20,3,[]<>(lb_load_1_0 == 1),0.000871,violee,0.031,violee,19,52,75.0,41.127,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m4 (LTSmin complet),1,3,[](lb_idle_1 <= 1),0.004204,verifiee,2.313,verifiee,384524,2160468,1243.8,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),2,3,[]((lb_load_1_0 == 1) -> ((lb_load_1_1 == 0) && (lb_load_1_2 == 0))),0.004028,verifiee,2.495,verifiee,384524,2160468,1244.0,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),3,3,[]((lb_idle_1 == 1) -> (lb_balancing_1 == 0)),0.003934,verifiee,2.317,verifiee,384524,2160468,1244.3,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),4,3,[]((lb_routing_1_1 == 1) -> (lb_idle_1 == 0)),0.003237,verifiee,2.393,verifiee,384524,2160468,1244.0,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),5,3,[](!((lb_routing_1_1 == 1) && (lb_routing_1_2 == 1))),0.003908,verifiee,2.558,verifiee,384524,2160468,1244.1,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),6,3,(lb_idle_1 == 1) && (lb_load_1_0 == 1) && (lb_load_2_0 == 1),0.001627,verifiee,0.028,verifiee,1,0,65.9,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),7,3,[]((lb_load_2_1 == 1) -> (lb_load_2_0 == 0)),0.002419,verifiee,2.388,verifiee,384524,2160468,1244.2,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),8,3,(lb_balancing_1 == 0) W ((lb_routing_1_1 == 1) || (lb_routing_1_2 == 1)),0.00132,verifiee,0.041,verifiee,133,168,101.1,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),9,3,(lb_load_1_1 == 0) W ((lb_routing_1_1 == 1) || (lb_routing_1_2 == 1)),0.001802,verifiee,0.046,verifiee,133,168,101.2,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),10,3,[](server_request_1_1 <= 2),0.002798,verifiee,2.204,verifiee,384524,2160468,1244.2,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),11,3,[](lb_idle_1 == 1),0.002601,violee,0.045,violee,12,39,105.4,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),12,3,<>(lb_balancing_1 == 1),0.004142,violee,0.046,violee,49,88,106.8,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),13,3,[](lb_routing_1_2 == 0),0.003252,violee,0.043,violee,12,39,105.4,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),14,3,[](server_request_1_1 == 0),0.08526,violee,0.044,violee,72,266,106.9,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),15,3,[]((lb_routing_1_1 == 1) -> <>(lb_idle_1 == 1)),0.002344,violee,0.197,violee,23006,79097,278.8,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),16,3,(lb_idle_1 == 1) U (lb_routing_1_1 == 1),0.001243,violee,0.042,violee,12,39,105.4,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),17,3,[]((lb_load_1_1 == 0) || (lb_load_2_1 == 0)),0.000565,violee,0.043,violee,98,378,107.5,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),18,3,[](lb_balancing_1 == 0),0.001112,violee,0.044,violee,16,55,105.5,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),19,3,<>[](lb_idle_1 == 1),0.000591,violee,0.046,violee,115,587,108.7,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m4 (LTSmin complet),20,3,[]<>(lb_load_1_0 == 1),0.000871,violee,0.041,violee,19,52,105.5,41.127,0.365,4724,41723,63918,52297,41723,1807,407,384524,2160460

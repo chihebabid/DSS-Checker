@@ -1,0 +1,13 @@
+[SLB2C4sb5M-m1] 20 formulas | DSS-Checker: 278.9-279.8 MB (mean 279.4) | LTSmin full: 50.4-439.0 MB (mean 225.3) | LTSmin onthefly: 21.8-410.1 MB (mean 196.2) | construction: DSS-Checker 269.1 MB, LTSmin full 427.8 MB
+   courbes/memoire_SLB2C4sb5M/memory-plots/SLB2C4sb5M-m1.pdf / .png
+[SLB2C4sb5M-m2] 20 formulas | DSS-Checker: 279.1-279.8 MB (mean 279.4) | LTSmin full: 50.3-438.8 MB (mean 221.5) | LTSmin onthefly: 21.6-410.1 MB (mean 192.4) | construction: DSS-Checker 269.3 MB, LTSmin full 427.7 MB
+   courbes/memoire_SLB2C4sb5M/memory-plots/SLB2C4sb5M-m2.pdf / .png
+[SLB2C4sb5M-m3] 20 formulas | DSS-Checker: 279.0-279.9 MB (mean 279.3) | LTSmin full: 50.6-439.1 MB (mean 233.6) | LTSmin onthefly: 21.9-410.2 MB (mean 204.3) | construction: DSS-Checker 269.2 MB, LTSmin full 427.5 MB
+   courbes/memoire_SLB2C4sb5M/memory-plots/SLB2C4sb5M-m3.pdf / .png
+[SLB2C4sb5M-m4] 20 formulas | DSS-Checker: 279.1-279.7 MB (mean 279.3) | LTSmin full: 50.6-439.0 MB (mean 239.5) | LTSmin onthefly: 21.7-410.2 MB (mean 210.2) | construction: DSS-Checker 269.1 MB, LTSmin full 427.6 MB
+   courbes/memoire_SLB2C4sb5M/memory-plots/SLB2C4sb5M-m4.pdf / .png
+[SLB2C4sb5M-m5] 20 formulas | DSS-Checker: 278.7-279.7 MB (mean 279.4) | LTSmin full: 51.0-439.3 MB (mean 224.6) | LTSmin onthefly: 21.8-410.1 MB (mean 194.7) | construction: DSS-Checker 269.2 MB, LTSmin full 427.6 MB
+   courbes/memoire_SLB2C4sb5M/memory-plots/SLB2C4sb5M-m5.pdf / .png
+[SLB2C4sb5M-all] 100 formulas | DSS-Checker: 278.7-279.9 MB (mean 279.4) | LTSmin full: 50.3-439.3 MB (mean 228.9) | LTSmin onthefly: 21.6-410.2 MB (mean 199.6) | construction: DSS-Checker 269.3 MB, LTSmin full 427.8 MB
+   courbes/memoire_SLB2C4sb5M/memory-plots/SLB2C4sb5M-all.pdf / .png
+   courbes/memoire_SLB2C4sb5M/memoire.csv

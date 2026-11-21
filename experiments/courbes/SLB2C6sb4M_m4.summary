@@ -1,0 +1,19 @@
+[SLB2C6sb4M-m4 (LTSmin onthefly)] DSS-Checker 10 V / 10 X  |  LTSmin 10 V / 10 X  |  disagreements: none
+   /home/chiheb/workspace/ProjectCPP/DSS-Checker/experiments/courbes/SLB2C6sb4M_m4/SLB2C6sb4M-m4_LTSmin_onthefly__par_propriete.png
+   /home/chiheb/workspace/ProjectCPP/DSS-Checker/experiments/courbes/SLB2C6sb4M_m4/SLB2C6sb4M-m4_LTSmin_onthefly__cumul.png
+[SLB2C6sb4M-m4 (LTSmin complet)] DSS-Checker 10 V / 10 X  |  LTSmin 10 V / 10 X  |  disagreements: none
+   /home/chiheb/workspace/ProjectCPP/DSS-Checker/experiments/courbes/SLB2C6sb4M_m4/SLB2C6sb4M-m4_LTSmin_complet__par_propriete.png
+   /home/chiheb/workspace/ProjectCPP/DSS-Checker/experiments/courbes/SLB2C6sb4M_m4/SLB2C6sb4M-m4_LTSmin_complet__cumul.png
+   /home/chiheb/workspace/ProjectCPP/DSS-Checker/experiments/courbes/SLB2C6sb4M_m4/comparaison_cas.png
+   /home/chiheb/workspace/ProjectCPP/DSS-Checker/experiments/courbes/SLB2C6sb4M_m4/resultats.csv
+
+State space size: DSS-Checker vs LTSmin
+  Case                            | Meta-states |  SCCs | Sync arcs | Total states | Stored states | LTSmin states | LTSmin arcs |  LTSmin kind | Ratio
+  --------------------------------+-------------+-------+-----------+--------------+---------------+---------------+-------------+--------------+------
+  SLB2C6sb4M-m4 (LTSmin onthefly) |        4724 | 41723 |     63918 |        41723 |          1807 |        384524 |     2160468 | max explored |   213
+  SLB2C6sb4M-m4 (LTSmin complet)  |        4724 | 41723 |     63918 |        41723 |          1807 |        384524 |     2160460 |         full |   213
+  Total states : markings summed over the meta-states; Stored states: markings kept in memory
+  LTSmin kind  : full = full state space (complet mode); max explored = largest product explored
+                 by one property (onthefly mode). '>=': truncated at the 2^24 table capacity
+  Ratio        : LTSmin states / DSS stored states
+   /home/chiheb/workspace/ProjectCPP/DSS-Checker/experiments/courbes/SLB2C6sb4M_m4/state_space.csv

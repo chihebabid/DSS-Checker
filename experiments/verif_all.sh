@@ -62,6 +62,16 @@ if [ "$MODE" = "complet" ]; then
     read -r ns na <<< "$(stats "$OUT/logs/comptage.log")"
     out "Full construction: %s states, %s arcs, %s s, %s MB\n\n" \
         "$ns" "$na" "$(elapsed $t0 $t1)" "$(mo "$OUT/logs/construction.mem")"
+    # State-based formulas ("place op number"): the places of the ETF are enums without values, so each
+    # comparison becomes a boolean state label added to the ETF (see etf_state_labels.py)
+    python3 "$(dirname "$0")/etf_state_labels.py" "$ETF" "$OUT/labels.etf" "$DIR" "$OUT/props_labels" \
+        > "$OUT/logs/labels.log" 2>&1
+    case $? in
+        0) ETF="$OUT/labels.etf"; LTL_DIR="$OUT/props_labels"
+           out "State-based formulas: %s\n\n" "$(cat "$OUT/logs/labels.log")" ;;
+        2) ;;
+        *) out "ERROR: adding state labels to the ETF failed (see %s)\n" "$OUT/logs/labels.log"; exit 1 ;;
+    esac
     out "(States / arcs below: part of the product explored during verification)\n\n"
 fi
 
@@ -77,7 +87,7 @@ for f in $(ls "$DIR"/prop*.ltl | sort -V); do
     ce="$OUT/contre_exemples/ce_$name.gcf"
     t0=$(now)
     if [ "$MODE" = "complet" ]; then
-        run_mem "$memf" etf2lts-seq -v --ltl="$f" --strategy=scc --state=table --trace="$ce" "$ETF" > "$log" 2>&1
+        run_mem "$memf" etf2lts-seq -v --ltl="${LTL_DIR:-$DIR}/$name.ltl" --strategy=scc --state=table --trace="$ce" "$ETF" > "$log" 2>&1
     else
         run_mem "$memf" pnml2lts-seq -v --ltl="$f" --strategy=scc --state=table --trace="$ce" "$MODEL" > "$log" 2>&1
     fi

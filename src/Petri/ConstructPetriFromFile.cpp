@@ -35,7 +35,6 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
     m_file = fopen(m_file_name.c_str(), "r");
     if (m_file) {
         //Cr�er le r�seau de Petri
-        cout << "Loading modular Petri net from file..." << endl;
         MPetri = &ModularPetriNet::getInstance();
         //Lecture de nombre de modules
         unsigned int nb_modules = 0;
@@ -43,15 +42,14 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
         getNextWord();
         word = getNextWord();
         nb_modules = atoi(word.c_str());
-        cout << "This modular Petri net consists of " << word << " modules" << endl;
-        cout << "Displaying informations related to the modular Petri net" << endl;
+        cout << "  Modules         : " << nb_modules << "\n";
         //Initialisation
         PetriNet *petri;
         vector<Place> places;
         vector<Transition> transitions;
         for (unsigned int ii = 0; ii < nb_modules; ii++) {
             int transition_code = 0;
-            cout << "Module n�" << (ii + 1) << endl;
+            if (m_verbose) cout << "  --- Module " << ii << " ---\n";
 
 
             getNextWord();
@@ -80,7 +78,7 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
                             place.setName(word.c_str());
                             place.setTokens(tokens);
                             places.push_back(place);
-                            cout << "Added place: " << word.c_str() << endl;
+                            if (m_verbose) cout << "    place " << word << " (" << tokens << " token(s))\n";
                         }
                     } while (word != "Marquage" && word != "End");
                 }
@@ -116,7 +114,7 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
             do {
                 transition_name = getNextWord();
                 if (transition_name != "End") {
-                    cout << "Transition: " << transition_name.c_str() << " has as place inputs ";
+                    if (m_verbose) cout << "    " << transition_name << " inputs :";
                     string item;
                     while (item != "]") {
                         item = getNextWord();
@@ -127,18 +125,18 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
                             weights.pop_back();
                             weights.push_back(int_weight);
                         } else if (item != "[" && item != "]") {
-                            cout << item.c_str() << "<";
+                            if (m_verbose) cout << " " << item;
                             input_places.push_back(item);
                             weights.push_back(1);
                         }
                     }
                     if (input_places.size() == weights.size())
                         petri->addInputPlaces(transition_name, input_places, weights);
-                    else cout << "Erreur liee au poids...";
+                    else cerr << "Error: inconsistent arc weights for the inputs of " << transition_name << "\n";
                     input_places.clear();
                     weights.clear();
+                    if (m_verbose) cout << "\n";
                 }
-                cout << endl;
             } while (transition_name != "End");
 
 
@@ -152,7 +150,7 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
             do {
                 transition_name = getNextWord();
                 if (transition_name != "End") {
-                    cout << "Transition: " << transition_name.c_str() << " has as output places ";
+                    if (m_verbose) cout << "    " << transition_name << " outputs:";
                     string item;
                     while (item != "]") {
                         item = getNextWord();
@@ -163,25 +161,26 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
                             weights.pop_back();
                             weights.push_back(int_weight);
                         } else if (item != "[" && item != "]") {
-                            cout << ">" << item.c_str();
+                            if (m_verbose) cout << " " << item;
                             output_places.push_back(item);
                             weights.push_back(1);
                         }
                     }
                     if (output_places.size() == weights.size())
                         petri->addOutputPlaces(transition_name, output_places, weights);
-                    else cout << "erreur liee au poids...";
+                    else cerr << "Error: inconsistent arc weights for the outputs of " << transition_name << "\n";
                     output_places.clear();
                     weights.clear();
+                    if (m_verbose) cout << "\n";
                 }
-                cout << endl;
             } while (transition_name != "End");
             MPetri->addModule(petri);
+            cout << "    module " << ii << "      : " << places.size() << " places, " << transitions.size()
+                 << " transitions\n";
         }
         /*************************************************/
         /** Lecture de transititions de syn,chronisation**/
         /*************************************************/
-        cout << "Determining synchronised transitions..." << endl;
         getNextWord();
         string transition;
         vector<string> sync_transitions;
@@ -189,15 +188,18 @@ ModularPetriNet *ConstructPetriFromFile::getModularPetrinet() {
         do {
             transition = getNextWord();
             if (transition != "End") {
-                cout << transition.c_str() << " ";
                 temp = transition;
                 sync_transitions.push_back(temp);
             }
 
         } while (transition != "End");
         MPetri->setSync(sync_transitions);
+        cout << "  Sync transitions: " << sync_transitions.size();
+        if (m_verbose) for (const auto &t: sync_transitions) cout << " " << t;
+        cout << "\n";
     } else {
-        cout << "Error: can't open file";
+        cerr << "Error: cannot open file " << m_file_name << "\n";
+        return MPetri;
     }
     fclose(m_file);
     return MPetri;

@@ -66,7 +66,6 @@ void DSSBuilder::build() {
 void DSSBuilder::buildInitialMS() {
     MetaState *ms;
     // Build initial meta-states
-    cout << "Build initial meta-states" << endl;
     auto productscc{new ProductSCC()};
     vector<MetaState *> list_metastates;
     for (int module {}; module < ModularPetriNet::getModuleCount(); ++module) {
@@ -233,6 +232,7 @@ void DSSBuilder::buildInitialMS() {
     vector<vector<MetaState *>> built(ModularPetriNet::getModuleCount());
     for (size_t module {}; module < ModularPetriNet::getModuleCount(); ++module) {
         built[module] = m_dss[module]->getListMetaStates();
+        m_built_metastates += built[module].size();
     }
     // End of the on the fly reduction, then reduction of the metastates by bisimulation (coarsest equivalence)
     for (size_t module {}; module < ModularPetriNet::getModuleCount(); ++module) m_dss[module]->finishMerges();
@@ -297,10 +297,6 @@ void DSSBuilder::writeDot(std::ostream &myfile, vector<SyncLoop> *loops) {
             }
 
             for (const auto &source: ms->getListMarkings()) {
-                if (!loops) {
-                    std::cout<<petri->getMarkingName(*source)<<"is "<<source->getSCCContainer()->isTerminal()<<"\n";
-                    std::cout<<petri->getMarkingName(*source)<<"closure is "<<ms->isSyncClosed(source->getSCCContainer())<<"\n";
-                }
                 auto sourceName = petri->getMarkingName(*source);
                 const auto &lsucc = source->getListSucc();
                 if (!lsucc.empty()) {
@@ -475,36 +471,61 @@ string DSSBuilder::getSourceProductName(const ArcSync *arc) {
     return res;
 }
 
-/*
- * @brief Check whether a metastate can be fused with another
- * @param ms a Metastate
- * @param module Module index
- * @return true if *ms can be fusedm else false
- */
-void DSSBuilder::outputTXT() {
-    uint32_t sumMS{}, sumStates{}, sumSCC{}, sumLocalEdges{}, sumSyncEdges{};
-    for (const auto &module: m_dss) {
-        sumMS += module->getMetaStateCount();
-        for (const auto &ms: module->getListMetaStates()) {
-            sumStates += ms->getListMarkings().size();
-            sumSCC += ms->getListSCCs()->size();
-            sumLocalEdges += ms->getArcCount();
-            sumSyncEdges += ms->getSyncSucc().size();
+DSSBuilder::Stats DSSBuilder::computeStats() {
+    Stats stats;
+    stats.built_metastates = m_built_metastates;
+    for (size_t module {}; module < ModularPetriNet::getModuleCount(); ++module) {
+        Stats::Row row;
+        row.metastates = m_dss[module]->getMetaStateCount();
+        for (const auto &ms: m_dss[module]->getListMetaStates()) {
+            row.sccs += ms->getListSCCs()->size();
+            row.sync_arcs += ms->getSyncSucc().size();
+            row.local_arcs += ms->getArcCount();
+            row.states += ms->getListMarkings().size();
         }
+        row.stored_states = m_petri->getModule(static_cast<int>(module))->getStoredMarkingCount();
+        row.local_graphs = m_petri->getModule(static_cast<int>(module))->getLocalGraphCount();
+        stats.total.metastates += row.metastates;
+        stats.total.sccs += row.sccs;
+        stats.total.sync_arcs += row.sync_arcs;
+        stats.total.local_arcs += row.local_arcs;
+        stats.total.states += row.states;
+        stats.total.stored_states += row.stored_states;
+        stats.total.local_graphs += row.local_graphs;
+        stats.modules.push_back(row);
     }
-    cout << "#MetaStates: " << sumMS << endl;
-    cout << "#States: " << sumStates << endl;
-    cout << "#SCCs: " << sumSCC << endl;
-    cout << "#Local edges: " << sumLocalEdges << endl;
-    cout << "#Sync edges:" << sumSyncEdges << endl;
-    // The markings are stored once per distinct local graph (shared by the metastates having the same markings)
-    size_t graphs {}, stored {};
-    for (int module {}; module < ModularPetriNet::getModuleCount(); ++module) {
-        graphs += m_petri->getModule(module)->getLocalGraphCount();
-        stored += m_petri->getModule(module)->getStoredMarkingCount();
+    return stats;
+}
+
+void DSSBuilder::printStats(std::ostream &out) {
+    const auto stats {computeStats()};
+    const auto row = [&out](const string &name, const Stats::Row &r) {
+        out << "  " << std::setw(6) << name << " | " << std::setw(11) << r.metastates << " | " << std::setw(10)
+            << r.sccs << " | " << std::setw(10) << r.sync_arcs << " | " << std::setw(10) << r.local_arcs << " | "
+            << std::setw(12) << r.states << " | " << std::setw(13) << r.stored_states << " | " << std::setw(12)
+            << r.local_graphs << "\n";
+    };
+    const string rule {"  -------+-------------+------------+------------+------------+--------------+"
+                       "---------------+-------------\n"};
+    out << "  " << std::setw(6) << "Module" << " | " << std::setw(11) << "Meta-states" << " | " << std::setw(10)
+        << "SCCs" << " | " << std::setw(10) << "Sync arcs" << " | " << std::setw(10) << "Local arcs" << " | "
+        << std::setw(12) << "Total states" << " | " << std::setw(13) << "Stored states" << " | " << std::setw(12)
+        << "Local graphs" << "\n";
+    out << rule;
+    for (size_t module {}; module < stats.modules.size(); ++module) row(std::to_string(module), stats.modules[module]);
+    out << rule;
+    row("Total", stats.total);
+    out << "  Total states : markings summed over the meta-states (a marking in k meta-states counts k times)\n";
+    out << "  Stored states: markings kept in memory (once per distinct local graph)\n";
+    if (stats.built_metastates > stats.total.metastates) {
+        out << "  Reduction    : " << stats.built_metastates << " meta-states built, "
+            << stats.built_metastates - stats.total.metastates << " merged by bisimulation\n";
     }
-    cout << "#Local graphs stored: " << graphs << endl;
-    cout << "#States stored: " << stored << endl;
+}
+
+void DSSBuilder::outputTXT(const string &filename) {
+    std::ofstream file(filename);
+    printStats(file);
 }
 
 ModuleSS* DSSBuilder::getModuleGraph(const size_t index) const {

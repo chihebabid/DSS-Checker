@@ -1,0 +1,3 @@
+case,dss_metastates,dss_sccs,dss_sync_arcs,dss_local_arcs,dss_total_states,dss_stored_states,ltsmin_states,ltsmin_arcs,ltsmin_kind,ltsmin_states/dss_stored_states
+SLB2C4sb-m1 (LTSmin onthefly),8851,224720,593050,460911,224720,33256,80696,410448,max explored,2.43
+SLB2C4sb-m1 (LTSmin complet),8851,224720,593050,460911,224720,33256,80696,410440,full,2.43

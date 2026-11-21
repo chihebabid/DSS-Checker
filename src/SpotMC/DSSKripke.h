@@ -56,6 +56,10 @@ public:
     // True if s is a divergence state
     [[nodiscard]] static bool isDivergence(const DSSStateKey &s) { return s.metastate == nullptr; }
 
+    // The formula has state-based / transition propositions (fast paths of DSSIterator::cond())
+    [[nodiscard]] bool hasPredicates() const { return !m_predicates.empty(); }
+    [[nodiscard]] bool hasTransitionAps() const { return !m_ap_vars.empty(); }
+
     [[nodiscard]] size_t getIdModule() const { return m_metagraph->getIdModule(); }
 
     // Successor of a state: (destination, fired transition of the module or nullptr)

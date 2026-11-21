@@ -28,6 +28,10 @@ Outputs (in the -o folder, default: courbes):
     space construction included in "full" (complet) mode).
   - comparaison_cas.png (at least two cases): total time per case.
   - resultats.csv: all measurements.
+  - state_space.csv: size of the DSS (meta-states, SCCs, sync arcs, total and stored
+    states) next to the size of the LTSmin state space, one row per case. The same
+    table is printed. LTSmin gives the full state space only in "full" (complet) mode;
+    in "onthefly" mode, the largest explored product is reported instead.
 
 The i-th DSS-Checker property (#i-1) is paired with LTSmin prop<i>
 (ltl2action.sh numbers the non-empty lines of the .ltl file in order).
@@ -72,63 +76,90 @@ class Prop:
     lts_mem: str = ""
 
 
+# DSS statistics (Total row of the "DSS statistics" table printed by distributedstatespace)
+DSS_STATS = ["metastates", "sccs", "sync_arcs", "local_arcs", "total_states", "stored_states", "local_graphs"]
+
+# LTSmin --state=table stores at most 2^24 states: a count at this value is a lower bound
+LTSMIN_TABLE_CAP = 2 ** 24
+
+
 @dataclass
 class Case:
     label: str
     props: list[Prop] = field(default_factory=list)
     dss_build: float | None = None  # s
     lts_build: float | None = None  # s (full mode only)
+    dss_stats: dict | None = None   # see DSS_STATS
+    lts_states: str = ""            # full state space (full mode only)
+    lts_arcs: str = ""
 
 
 # ----------------------------------------------------------------- parsing
 
 def parse_dss(path):
-    """run_mc.sh output: printed summary table, or full distributedstatespace log."""
+    """run_mc.sh output: printed summary table, or full distributedstatespace log.
+    Returns (properties, construction time in s, DSS statistics or None)."""
     text = Path(path).read_text(errors="replace")
-    if "***** Property#" in text:
-        return parse_dss_full_log(text)
-    return parse_dss_summary(text)
+    stats = parse_dss_stats(text)
+    if "***** Property#" in text or re.search(r"^Property #\d+", text, re.M):
+        return (*parse_dss_full_log(text), stats)
+    return (*parse_dss_summary(text), stats)
+
+
+def parse_dss_stats(text):
+    """Total row of the "DSS statistics" table (full log or run_mc.sh output):
+         Total |  637 |  2562 |  6379 |  20614 |  9580 |  1353 |  143"""
+    m = re.search(r"^\s*Total\s*\|(.*)$", text, re.M)
+    if not m:
+        return None
+    values = [c.strip() for c in m.group(1).split("|")]
+    if len(values) != len(DSS_STATS) or not all(v.isdigit() for v in values):
+        return None
+    return dict(zip(DSS_STATS, map(int, values)))
 
 
 def parse_dss_full_log(text):
+    """Full distributedstatespace log, current format (Property #i, Result: ...) or the
+    former one (***** Property#i, Property is verified ...)."""
     props, build, cur = [], None, None
     for line in text.splitlines():
-        if m := re.search(r"DSS building duration:\s*([\d.]+)\s*ms", line):
+        if m := re.search(r"(?:DSS building duration:|^DSS built in)\s*([\d.]+)\s*ms", line):
             build = float(m.group(1)) / 1000.0
-        elif m := re.search(r"\*\*\*\*\* Property#(\d+)", line):
+        elif m := re.search(r"^(?:\*\*\*\*\* Property#|Property #)(\d+)", line):
             cur = Prop(index=int(m.group(1)) + 1)
             props.append(cur)
         elif cur is None:
             continue
-        elif m := re.search(r"Checking formula:\s*(.*)", line):
+        elif m := re.search(r"(?:Checking formula:|^\s+Formula\s*:)\s*(.*)", line):
             cur.formula = m.group(1).strip()
-        elif m := re.search(r"checked against module #(\d+)", line):
+        elif m := re.search(r"(?:checked against module #|^\s+Module\s*:\s*)(\d+)", line):
             cur.module = m.group(1)
-        elif "Property is verified" in line:
+        elif "Property is verified" in line or re.search(r"^\s+Result\s*:\s*VERIFIED", line):
             cur.dss_ok = True
-        elif "Property is violated" in line:
+        elif "Property is violated" in line or re.search(r"^\s+Result\s*:\s*VIOLATED", line):
             cur.dss_ok = False
-        elif m := re.search(r"Verification duration:\s*([\d.eE+-]+)", line):
+        elif m := re.search(r"(?:Verification duration:|^\s+Verification time\s*:)\s*([\d.eE+-]+)", line):
             cur.dss_time = float(m.group(1))
     return props, build
 
 
 def parse_dss_summary(text):
-    """Table printed by run_mc.sh (French labels):
-         Construction du DSS : 684 ms
-         #     Module  Résultat   Durée vérif(s) Formule
-         0     0       VERIFIEE   0.000223       !End_Own_Acc_5_5 W ...
+    """Table printed by run_mc.sh (English labels, or French ones for former outputs):
+         DSS construction : 684 ms                (Construction du DSS : 684 ms)
+         #     Module  Result     Time (s)       Formula
+         0     0       VERIFIED   0.000223       !End_Own_Acc_5_5 W ...
     (the formula is truncated to 60 characters)."""
     props, build = [], None
+    verdicts = {"VERIFIED": True, "VIOLATED": False, "VERIFIEE": True, "VIOLEE": False}
     for line in text.splitlines():
-        if m := re.search(r"Construction du DSS\s*:\s*([\d.]+)\s*ms", line):
+        if m := re.search(r"(?:Construction du DSS|DSS construction)\s*:\s*([\d.]+)\s*ms", line):
             build = float(m.group(1)) / 1000.0
             continue
-        m = re.match(r"\s*(\d+)\s+(\S+)\s+(VERIFIEE|VIOLEE|\?\?)\s+(\S+)\s*(.*)$", line)
+        m = re.match(r"\s*(\d+)\s+(\S+)\s+(VERIFIED|VIOLATED|SKIPPED|VERIFIEE|VIOLEE|\?\?)\s+(\S+)\s*(.*)$", line)
         if not m:
             continue
         p = Prop(index=int(m.group(1)) + 1, module=m.group(2), formula=m.group(5).strip())
-        p.dss_ok = {"VERIFIEE": True, "VIOLEE": False}.get(m.group(3))
+        p.dss_ok = verdicts.get(m.group(3))
         try:
             p.dss_time = float(m.group(4))
         except ValueError:
@@ -144,10 +175,12 @@ def parse_ltsmin_resume(path):
     path = Path(path)
     if path.is_dir():
         path = path / "resume.txt"
-    rows, build = {}, None
+    rows, build, full = {}, None, ("", "")
     for line in path.read_text(errors="replace").splitlines():
         if m := re.search(r"(?:Construction complète|Full construction)\s*:.*?,\s*([\d.]+)\s*s", line):
             build = float(m.group(1))
+            if n := re.search(r":\s*(\S+)\s+(?:états|states),\s*(\S+)\s+arcs", line):
+                full = (n.group(1), n.group(2))
             continue
         cols = [c.strip() for c in line.split("|")]
         if len(cols) < 6 or not (m := re.fullmatch(r"prop(\d+)", cols[0])):
@@ -161,18 +194,19 @@ def parse_ltsmin_resume(path):
         rows[int(m.group(1))] = dict(time=t, ok=ok, states=cols[2], arcs=cols[3], mem=cols[4])
     if not rows:
         sys.exit(f"No property found in the LTSmin output {path}")
-    return rows, build
+    return rows, build, full
 
 
 def build_case(label, dss_log, lts_resume):
-    props, dss_build = parse_dss(dss_log)
-    rows, lts_build = parse_ltsmin_resume(lts_resume)
+    props, dss_build, dss_stats = parse_dss(dss_log)
+    rows, lts_build, (lts_states, lts_arcs) = parse_ltsmin_resume(lts_resume)
     by_idx = {p.index: p for p in props}
     for i, r in rows.items():
         p = by_idx.setdefault(i, Prop(index=i))
         p.lts_time, p.lts_ok = r["time"], r["ok"]
         p.lts_states, p.lts_arcs, p.lts_mem = r["states"], r["arcs"], r["mem"]
-    case = Case(label, sorted(by_idx.values(), key=lambda p: p.index), dss_build, lts_build)
+    case = Case(label, sorted(by_idx.values(), key=lambda p: p.index), dss_build, lts_build,
+                dss_stats, lts_states, lts_arcs)
     if len(props) != len(rows):
         print(f"[{label}] warning: {len(props)} DSS-Checker properties, {len(rows)} LTSmin", file=sys.stderr)
     return case
@@ -326,13 +360,72 @@ def write_csv(cases, path):
         w = csv.writer(fh)
         w.writerow(["cas", "propriete", "module", "formule", "dss_temps_s", "dss_verdict",
                     "ltsmin_temps_s", "ltsmin_verdict", "ltsmin_etats", "ltsmin_arcs",
-                    "ltsmin_mem_mo", "dss_construction_s", "ltsmin_construction_s"])
+                    "ltsmin_mem_mo", "dss_construction_s", "ltsmin_construction_s"]
+                   + [f"dss_{k}" for k in DSS_STATS] + ["ltsmin_full_states", "ltsmin_full_arcs"])
         v = lambda ok: "" if ok is None else ("verifiee" if ok else "violee")
         for c in cases:
+            stats = [(c.dss_stats or {}).get(k, "") for k in DSS_STATS]
             for p in c.props:
                 w.writerow([c.label, p.index, p.module, p.formula, p.dss_time, v(p.dss_ok),
                             p.lts_time, v(p.lts_ok), p.lts_states, p.lts_arcs, p.lts_mem,
-                            c.dss_build, c.lts_build])
+                            c.dss_build, c.lts_build] + stats + [c.lts_states, c.lts_arcs])
+
+
+# ----------------------------------------------------------------- state space size
+
+def lts_size(c):
+    """LTSmin state space size of a case: (states, arcs, kind). Full mode: the full state space;
+    onthefly mode: the largest product explored by one property."""
+    if c.lts_states:
+        return c.lts_states, c.lts_arcs, "full"
+    explored = [(int(p.lts_states), p.lts_arcs) for p in c.props if p.lts_states.isdigit()]
+    if explored:
+        s, a = max(explored)
+        return str(s), a, "max explored"
+    return "", "", ""
+
+
+def lower_bound(n):
+    """'>= n' when n reaches the LTSmin table capacity (2^24 states): the count is truncated."""
+    return f">= {n}" if n.isdigit() and int(n) >= LTSMIN_TABLE_CAP else n
+
+
+def ratio(a, b):
+    return f"{a / b:.3g}" if a and b else ""
+
+
+def write_state_space(cases, path):
+    """Prints and saves the size of the DSS next to the size of the LTSmin state space."""
+    head = ["case", "dss_metastates", "dss_sccs", "dss_sync_arcs", "dss_local_arcs", "dss_total_states",
+            "dss_stored_states", "ltsmin_states", "ltsmin_arcs", "ltsmin_kind", "ltsmin_states/dss_stored_states"]
+    rows = []
+    for c in cases:
+        st = c.dss_stats or {}
+        ls, la, kind = lts_size(c)
+        r = ratio(int(ls), st.get("stored_states")) if ls.isdigit() else ""
+        rows.append([c.label, st.get("metastates", ""), st.get("sccs", ""), st.get("sync_arcs", ""),
+                     st.get("local_arcs", ""), st.get("total_states", ""), st.get("stored_states", ""),
+                     lower_bound(ls), lower_bound(la) if la else la, kind, r])
+    with open(path, "w", newline="") as fh:
+        w = csv.writer(fh)
+        w.writerow(head)
+        w.writerows(rows)
+
+    cols = ["Case", "Meta-states", "SCCs", "Sync arcs", "Total states", "Stored states",
+            "LTSmin states", "LTSmin arcs", "LTSmin kind", "Ratio"]
+    table = [[r[0], r[1], r[2], r[3], r[5], r[6], r[7], r[8], r[9], r[10]] for r in rows]
+    widths = [max(len(str(x)) for x in col) for col in zip(cols, *table)]
+    fmt = lambda xs: "  " + " | ".join(str(x).ljust(w) if i == 0 else str(x).rjust(w)
+                                       for i, (x, w) in enumerate(zip(xs, widths)))
+    print("\nState space size: DSS-Checker vs LTSmin")
+    print(fmt(cols))
+    print("  " + "-+-".join("-" * w for w in widths))
+    for t in table:
+        print(fmt(t))
+    print("  Total states : markings summed over the meta-states; Stored states: markings kept in memory")
+    print("  LTSmin kind  : full = full state space (complet mode); max explored = largest product explored")
+    print("                 by one property (onthefly mode). '>=': truncated at the 2^24 table capacity")
+    print("  Ratio        : LTSmin states / DSS stored states")
 
 
 # ----------------------------------------------------------------- main
@@ -374,6 +467,8 @@ def main():
         print(f"   {plot_cases(plt, cases, outdir)}")
     write_csv(cases, outdir / "resultats.csv")
     print(f"   {outdir / 'resultats.csv'}")
+    write_state_space(cases, outdir / "state_space.csv")
+    print(f"   {outdir / 'state_space.csv'}")
 
 
 if __name__ == "__main__":

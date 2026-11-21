@@ -1,0 +1,1 @@
+((sp_lb_idle_1_eq_1 == "true")) && ((sp_lb_load_1_0_eq_1 == "true")) && ((sp_lb_load_2_0_eq_1 == "true"))

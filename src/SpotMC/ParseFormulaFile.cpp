@@ -25,16 +25,17 @@ bool ParseFormulaFile::getNext(Formula &f) {
         set<string> transitionSet;
         getline(*m_file, input);
         if (input.empty()) return false;
-        cout <<"\n***** Property#"<<m_formula_count<<"\n\tChecking formula: " << input << endl;
+        cout << "\nProperty #" << m_formula_count << "\n";
+        cout << "  Formula           : " << input << "\n";
         // Comparisons "place op number" (state-based propositions, LTSmin syntax) become quoted atomic propositions
         spot::parsed_formula pf = spot::parse_infix_psl(quoteComparisons(input));
         if (pf.format_errors(std::cerr)) {
-            std::cerr << "Error in the formula format!\n";
+            std::cerr << "Error: syntax error in the formula\n";
             return false;
         }
         spot::formula fo = pf.f;
         if (!fo.is_ltl_formula()) {
-            std::cerr << "Only LTL formulas are supported.\n";
+            std::cerr << "Error: only LTL formulas are supported\n";
             return false;
         }
         spot::atomic_prop_set p_list;
@@ -42,11 +43,9 @@ bool ParseFormulaFile::getNext(Formula &f) {
         for (const auto &i: p_list) {
             transitionSet.insert(i.ap_name());
         }
-        cout << "\tFormula in SPIN format: ";
-        print_spin_ltl(std::cout, fo) << endl;
-        cout << "\tBuilding negation of the formula ... ";
+        cout << "  SPIN format       : ";
+        print_spin_ltl(std::cout, fo) << "\n";
         spot::formula not_f = spot::formula::Not(pf.f);
-        cout << "done\n";
         ++m_formula_count;
         f= {not_f, std::move(transitionSet)};
         return true;

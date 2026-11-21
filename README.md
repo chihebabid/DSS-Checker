@@ -34,8 +34,28 @@ Algorithm:
 Print:
 --dot-output                Save the output graph in a dot file
 --svg-output                Render the output graph in an SVG file (requires Graphviz)
---txt-output                Save the output graph in a formatted text file
+--txt-output                Save the DSS statistics in a text file (model.pn.txt)
+--verbose                   List every place, transition and arc of the model while loading it
 ```
+
+### Output
+
+Once the DSS is built, and before any property is checked, its size is printed, per module and in total:
+
+```
+DSS statistics
+  Module | Meta-states |       SCCs |  Sync arcs | Local arcs | Total states | Stored states | Local graphs
+  -------+-------------+------------+------------+------------+--------------+---------------+-------------
+       0 |          66 |         66 |        220 |        440 |          286 |           286 |           66
+  ...
+   Total |         637 |       2562 |       6379 |      20614 |         9580 |          1353 |          143
+```
+
+- *Total states*: markings summed over the meta-states (a marking in k meta-states counts k times).
+- *Stored states*: markings actually kept in memory (once per distinct local graph).
+
+Each property is then reported with its module, the size of the Büchi automaton of its negation, its result
+(`VERIFIED`, `VIOLATED` or `SKIPPED`) and its verification time, followed by a summary.
 ### Reduction
 
 By default, the metastates of each module are reduced by bisimulation: metastates with the

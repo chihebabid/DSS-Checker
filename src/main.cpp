@@ -36,12 +36,9 @@ void saveGraph(spot::twa_graph_ptr &graph, const string &filename, const char *o
  * @return spot::twa_graph_ptr
  */
 spot::twa_graph_ptr formula2Automaton(const spot::formula &f, spot::bdd_dict_ptr bdd, bool save_dot = false) {
-    cout << "\tBuilding automata for not(formula) ... ";
     spot::translator tmp = spot::translator(bdd);
     tmp.set_type(spot::postprocessor::BA);
     spot::twa_graph_ptr af = tmp.run(f);
-//    spot::twa_graph_ptr af = spot::translator(bdd).run(f);
-    cout << "done\n";
 
     // save the generated automaton in a dot file
     if (save_dot) {
@@ -51,6 +48,10 @@ spot::twa_graph_ptr formula2Automaton(const spot::formula &f, spot::bdd_dict_ptr
     return af;
 }
 
+namespace {
+const string RULE(72, '=');
+const string THIN_RULE(72, '-');
+}
 
 
 int main(int argc, char *argv[]) {
@@ -81,86 +82,108 @@ int main(int argc, char *argv[]) {
     app.add_flag("--svg-output", svg_output, "Render the output graph in an SVG file (requires Graphviz)")->group("Print");
 
     bool txt_output{false};
-    app.add_flag("--txt-output", txt_output, "Save the output graph in a formatted text file")->group("Print");
+    app.add_flag("--txt-output", txt_output, "Save the DSS statistics in a text file (model.pn.txt)")->group("Print");
 
 
-    string property_file = "";
+    string property_file;
     app.add_option("--mc", property_file, "LTL property file")
             ->type_name("Path")
             ->check(CLI::ExistingFile);
 
+    bool verbose{false};
+    app.add_flag("--verbose", verbose, "List every place, transition and arc of the model while loading it")->group("Print");
+
     CLI11_PARSE(app, argc, argv);
+
+    cout << RULE << "\n DSS-Checker: Distributed State Space Checker\n" << RULE << "\n";
+    cout << "Model             : " << file_name << "\n";
+    if (!property_file.empty()) cout << "Properties        : " << property_file << "\n";
+    cout << "Reduction         : " << (reduction ? "enabled" : "disabled") << "\n";
+    if (!property_file.empty()) cout << "Fairness          : " << (fairness ? "enabled" : "disabled") << "\n";
 
     ConstructPetriFromFile construire;
     construire.setFileName(file_name);
+    construire.setVerbose(verbose);
 
-    ModularPetriNet *petri;
-
-    petri = construire.getModularPetrinet();
-    cout << "Petri net information loaded successfully...\n";
-    cout << "Petri net built from file : " << construire.getFileName() << endl;
+    cout << "\nModular Petri net\n";
+    ModularPetriNet *petri = construire.getModularPetrinet();
+    if (!petri) return 1;
 
     if (algorithm == "V1") {
-        cout << "Building the distributed state space (V1) has been started..."
-             << endl;
+        cout << "\nBuilding the distributed state space (V1)...\n";
         petri->buildDSS();
-        cout << "Distributed state space successfully built." << endl;
+        cout << "Distributed state space built\n";
     }  else {
-        cout << "Building DSS (new version) has been started...\n";
+        cout << "\nBuilding the distributed state space...\n";
         DSSBuilder builder(petri, reduction);
-        auto start = std::chrono::steady_clock::now();//clock();
+        auto start = std::chrono::steady_clock::now();
         builder.build();
         auto finish = std::chrono::steady_clock::now();
-        //finish = clock();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(finish - start).count();
-        cout<<"\nDSS building duration: "<< duration << " ms" << endl;
-        if (dot_output) builder.writeToFile(file_name + ".dot");
+        cout << "DSS built in " << duration << " ms\n";
+
+        cout << "\nDSS statistics\n";
+        builder.printStats(cout);
+
+        if (dot_output) {
+            builder.writeToFile(file_name + ".dot");
+            cout << "\nGraph saved in " << file_name << ".dot\n";
+        }
         if (svg_output && builder.renderToFile(file_name + ".svg")) cout << "Graph rendered in " << file_name << ".svg\n";
-        if (txt_output) builder.outputTXT();
+        if (txt_output) {
+            builder.outputTXT(file_name + ".txt");
+            cout << "Statistics saved in " << file_name << ".txt\n";
+        }
         if (property_file != "") {
+            cout << "\n" << RULE << "\n LTL model checking\n" << RULE << "\n";
             bool dot_formula {false};
+            size_t verified {}, violated {}, skipped {};
+            double total_time {};
             // build automata of the negation of the formula
             Formula negate_formula;
             ParseFormulaFile parse_file{property_file};
             auto my_bdd_dict{spot::make_bdd_dict()};
             while (parse_file.getNext(negate_formula)) {
-
-                spot::twa_graph_ptr af{formula2Automaton(negate_formula.f, my_bdd_dict, dot_formula)};
-
                 // Module having all the atomic propositions: transitions, and places for the state-based ones
                 const auto propositions {resolvePropositions(negate_formula.propositions)};
                 if (!propositions) {
                     // Note: Spot reads a name starting with F, G or X (FF1a_1) as an operator applied to the rest
                     // (F(F1a_1)): such transition names must be double-quoted in the formula ("FF1a_1")
-                    std::cout << "\tError: no module has all the transitions and places of the formula:";
-                    for (const auto &proposition: negate_formula.propositions) std::cout << " " << proposition;
-                    std::cout << "\n\tProperty skipped (names starting with F, G or X must be double-quoted)\n";
+                    cout << "  Result            : SKIPPED\n";
+                    cout << "  Reason            : no module has all the transitions and places of the formula:";
+                    for (const auto &proposition: negate_formula.propositions) cout << " " << proposition;
+                    cout << "\n  Hint              : names starting with F, G or X must be double-quoted\n";
+                    ++skipped;
                     continue;
                 }
                 const auto index_module {propositions->module};
-                std::cout << "\tProperty will be checked against module #" << index_module << std::endl;
+                cout << "  Module            : " << index_module << "\n";
                 if (!propositions->predicates.empty()) {
-                    std::cout << "\tState-based propositions:";
-                    for (const auto &predicate: propositions->predicates) std::cout << " [" << predicate.name << "]";
-                    std::cout << std::endl;
+                    cout << "  State propositions:";
+                    for (const auto &predicate: propositions->predicates) cout << " [" << predicate.name << "]";
+                    cout << "\n";
                 }
+                spot::twa_graph_ptr af{formula2Automaton(negate_formula.f, my_bdd_dict, dot_formula)};
+                cout << "  Buchi automaton   : " << af->num_states() << " states (negation of the formula)\n";
                 auto moduleGraph{builder.getModuleGraph(index_module)};
-                // build a twa graph of the SOG
 
                 auto k = std::make_shared<DSSKripke>(my_bdd_dict, moduleGraph, *propositions, fairness);
                 auto start_intersect{clock()};
                 auto res{(k->intersecting_run(af) == nullptr)};
                 auto finish_intersect{clock()};
-                if (res)
-                    cout << "\tProperty is verified...\n";
-                else
-                    cout << "\tProperty is violated...\n";
                 auto duration_intersect {static_cast<double>(finish_intersect - start_intersect) / CLOCKS_PER_SEC};
-                cout<<"\tVerification duration: "<<duration_intersect<<'\n';
+                total_time += duration_intersect;
+                if (res) ++verified; else ++violated;
+                cout << "  Result            : " << (res ? "VERIFIED" : "VIOLATED") << "\n";
+                cout << "  Verification time : " << duration_intersect << " s\n";
             }
+            cout << "\n" << RULE << "\n";
+            cout << "Summary           : " << verified + violated + skipped << " properties, " << verified
+                 << " verified, " << violated << " violated, " << skipped << " skipped\n";
+            cout << "Verification time : " << total_time << " s (total)\n";
+            cout << RULE << "\n";
         }
     }
-    //cout<<"\nDSS building duration: "<< duration << " seconds" << endl;
     if (dot_output && algorithm != "DSS") petri->writeToFile(file_name + ".dot");
     if (txt_output && algorithm != "DSS") petri->writeTextFile(file_name + ".txt");
     return 0;

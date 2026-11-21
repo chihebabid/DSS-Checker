@@ -1,0 +1,41 @@
+cas,propriete,module,formule,dss_temps_s,dss_verdict,ltsmin_temps_s,ltsmin_verdict,ltsmin_etats,ltsmin_arcs,ltsmin_mem_mo,dss_construction_s,ltsmin_construction_s,dss_metastates,dss_sccs,dss_sync_arcs,dss_local_arcs,dss_total_states,dss_stored_states,dss_local_graphs,ltsmin_full_states,ltsmin_full_arcs
+SLB2C6sb4M-m2 (LTSmin onthefly),1,1,[](client_idle_2 <= 6),0.612885,verifiee,1.685,verifiee,384524,2160468,1214.8,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),2,1,[]((client_idle_2 == 6) -> (client_waiting_2 == 0)),0.500635,verifiee,1.585,verifiee,384524,2160468,1215.0,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),3,1,[]((client_waiting_2 == 0) -> (client_idle_2 == 6)),0.495176,verifiee,1.578,verifiee,384524,2160468,1215.0,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),4,1,[]((client_ack_2 >= 1) -> (client_waiting_2 >= 1)),0.503707,verifiee,1.602,verifiee,384524,2160468,1214.9,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),5,1,[]((client_request_2 >= 1) -> (client_waiting_2 >= 1)),0.494229,verifiee,1.522,verifiee,384524,2160468,1215.0,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),6,1,[]((client_idle_2 == 0) -> (client_waiting_2 == 6)),0.520795,verifiee,1.58,verifiee,384524,2160468,1215.0,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),7,1,(client_idle_2 == 6) && (client_waiting_2 == 0),0.002479,verifiee,0.019,verifiee,1,0,36.7,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),8,1,[]((client_ack_2 >= 1) -> (client_idle_2 <= 5)),0.492416,verifiee,1.637,verifiee,384524,2160468,1214.7,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),9,1,(client_request_2 == 0) W (client_waiting_2 >= 1),0.010118,verifiee,0.067,verifiee,8320,20336,124.5,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),10,1,(client_ack_2 == 0) W (client_request_2 >= 1),0.000323,verifiee,0.067,verifiee,8320,20336,124.6,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),11,1,[](client_idle_2 == 6),0.257719,violee,0.033,violee,11,36,75.9,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),12,1,[](client_idle_2 >= 1),0.30578,violee,0.031,violee,62,225,79.1,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),13,1,<>(client_ack_2 >= 1),0.036707,violee,0.035,violee,360,549,82.4,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),14,1,[]<>(client_idle_2 == 6),0.584029,violee,0.029,violee,12,38,76.0,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),15,1,[](client_request_2 == 0),0.286432,violee,0.03,violee,11,36,75.8,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),16,1,(client_waiting_2 == 0) U (client_ack_2 >= 1),0.305701,violee,0.03,violee,11,36,76.0,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),17,1,<>[](client_idle_2 == 6),0.317944,violee,0.032,violee,10,60,74.9,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),18,1,[]((client_waiting_2 >= 1) -> <>(client_idle_2 == 6)),0.657567,violee,0.031,violee,12,38,75.9,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),19,1,[](client_request_2 <= 1),0.385712,violee,0.035,violee,137,555,78.0,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin onthefly),20,1,[]((client_waiting_2 >= 1) -> (client_ack_2 >= 1)),0.297791,violee,0.035,violee,11,36,75.6,44.184,,4724,41723,63918,52297,41723,1807,407,,
+SLB2C6sb4M-m2 (LTSmin complet),1,1,[](client_idle_2 <= 6),0.612885,verifiee,2.739,verifiee,384524,2160468,1243.6,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),2,1,[]((client_idle_2 == 6) -> (client_waiting_2 == 0)),0.500635,verifiee,2.691,verifiee,384524,2160468,1243.5,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),3,1,[]((client_waiting_2 == 0) -> (client_idle_2 == 6)),0.495176,verifiee,2.511,verifiee,384524,2160468,1243.7,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),4,1,[]((client_ack_2 >= 1) -> (client_waiting_2 >= 1)),0.503707,verifiee,2.694,verifiee,384524,2160468,1243.5,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),5,1,[]((client_request_2 >= 1) -> (client_waiting_2 >= 1)),0.494229,verifiee,2.395,verifiee,384524,2160468,1243.5,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),6,1,[]((client_idle_2 == 0) -> (client_waiting_2 == 6)),0.520795,verifiee,2.489,verifiee,384524,2160468,1243.5,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),7,1,(client_idle_2 == 6) && (client_waiting_2 == 0),0.002479,verifiee,0.027,verifiee,1,0,65.4,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),8,1,[]((client_ack_2 >= 1) -> (client_idle_2 <= 5)),0.492416,verifiee,2.26,verifiee,384524,2160468,1243.6,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),9,1,(client_request_2 == 0) W (client_waiting_2 >= 1),0.010118,verifiee,0.097,verifiee,8320,20336,153.2,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),10,1,(client_ack_2 == 0) W (client_request_2 >= 1),0.000323,verifiee,0.099,verifiee,8320,20336,153.3,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),11,1,[](client_idle_2 == 6),0.257719,violee,0.044,violee,11,36,105.5,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),12,1,[](client_idle_2 >= 1),0.30578,violee,0.045,violee,62,225,108.8,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),13,1,<>(client_ack_2 >= 1),0.036707,violee,0.049,violee,360,549,111.4,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),14,1,[]<>(client_idle_2 == 6),0.584029,violee,0.044,violee,12,38,105.4,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),15,1,[](client_request_2 == 0),0.286432,violee,0.043,violee,11,36,105.6,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),16,1,(client_waiting_2 == 0) U (client_ack_2 >= 1),0.305701,violee,0.042,violee,11,36,105.5,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),17,1,<>[](client_idle_2 == 6),0.317944,violee,0.042,violee,10,60,104.6,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),18,1,[]((client_waiting_2 >= 1) -> <>(client_idle_2 == 6)),0.657567,violee,0.043,violee,12,38,105.6,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),19,1,[](client_request_2 <= 1),0.385712,violee,0.045,violee,137,555,107.7,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460
+SLB2C6sb4M-m2 (LTSmin complet),20,1,[]((client_waiting_2 >= 1) -> (client_ack_2 >= 1)),0.297791,violee,0.044,violee,11,36,105.5,44.184,0.353,4724,41723,63918,52297,41723,1807,407,384524,2160460

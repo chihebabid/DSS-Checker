@@ -1,0 +1,1 @@
+(client_waiting_2 == 0) U (client_ack_2 >= 1)

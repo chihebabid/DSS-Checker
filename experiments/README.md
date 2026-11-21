@@ -15,8 +15,9 @@ This directory contains helper scripts to run batch LTL\X verification experimen
 
 The script `run_mc.sh` runs LTL\X verification using `distributedstatespace` on a modular Petri net model (`.pn`) and an LTL property file (`.ltl`), saves the full program output to a timestamped log file, and prints a formatted summary table reporting:
 - The **DSS construction duration**.
-- For each property: its ID, target module, verification status (`VERIFIEE` / `VIOLEE`), verification duration (s), and formula.
-- Total number of properties checked, verified, and violated, along with the total verification time.
+- The **DSS statistics**: meta-states, SCCs, sync arcs, local arcs, total states, stored states and local graphs, per module and in total.
+- For each property: its ID, target module, verification status (`VERIFIED` / `VIOLATED` / `SKIPPED`), verification duration (s), and formula.
+- Total number of properties checked, verified, violated, and skipped, along with the total verification time.
 
 ### Usage
 
@@ -99,3 +100,17 @@ Results are written to `resultats/<model>_<props_dir>_<mode>/`:
 - `resume.txt`: Summary table reporting the verification time (s), explored states and transitions of the product automaton, peak memory (MB), and status (`VERIFIED`, `NOT VERIFIED`, or `ERROR`) for each property.
 - `logs/`: Detailed LTSmin logs (`prop*.log`, `construction.log`, `comptage.log`) and memory measurement files (`*.mem`).
 - `contre_exemples/`: Counterexample traces (`ce_prop*.gcf`) for falsified properties.
+
+---
+
+## 4. Comparing DSS-Checker and LTSmin (`compare_times.py`)
+
+```bash
+./compare_times.py --case ERK10-m2 dss_erk10_m2.txt resultats/ERK10_erk_m2_complet -o courbes
+```
+
+Besides the time figures and `resultats.csv`, it prints and writes `state_space.csv`: the DSS statistics
+(meta-states, SCCs, sync arcs, total and stored states) next to the LTSmin state space. In `complet` mode this is
+the full state space; in `onthefly` mode, the largest product explored by one property. Counts at 2^24 are
+marked `>=` (LTSmin `--state=table` truncates there). DSS statistics require outputs produced by the current
+`distributedstatespace` (older logs are still read, without statistics).
